@@ -157,7 +157,7 @@ export class Component extends React.Component<Props, State> {
                 <div className={"panel-collapse collapse" + (collapsed ? "" : " in")} >
                     <div className="panel-body">
                         <div className="form-group col-md-3">
-                            <label /*for={"task-context-" + taskId}*/ className="control-label">Context</label>
+                            <label className="control-label">Context</label>
                             <TextInput.Component
                                  className="form-control"
                                  text={this.props.task.context}
@@ -165,7 +165,7 @@ export class Component extends React.Component<Props, State> {
                                  onSuccess={this.onContextChange.bind(this)} />
                         </div>
                         <div className="form-group col-md-3">
-                            <label /*for={"task-category-" + taskId}*/  className="control-label">Category</label>
+                            <label className="control-label">Category</label>
                             <TextInput.Component
                                  className="form-control"
                                  text={this.props.task.category}
@@ -173,7 +173,7 @@ export class Component extends React.Component<Props, State> {
                                  onSuccess={this.onCategoryChange.bind(this)} />
                         </div>
                         <div className="form-group col-md-3">
-                            <label /*for={"task-project-" + taskId}*/ className="control-label">Project</label>
+                            <label className="control-label">Project</label>
                             <TextInput.Component
                                  className="form-control"
                                  text={this.props.task.project}
@@ -181,7 +181,7 @@ export class Component extends React.Component<Props, State> {
                                  onSuccess={this.onProjectChange.bind(this)} />
                         </div>
                         <div className="form-group col-md-3">
-                            <label /*for={"task-story-" + taskId}*/ className="control-label">Story</label>
+                            <label className="control-label">Story</label>
                             <TextInput.Component
                                  className="form-control"
                                  text={this.props.task.story}
@@ -189,7 +189,7 @@ export class Component extends React.Component<Props, State> {
                                  onSuccess={this.onStoryChange.bind(this)} />
                         </div>
                         <div className="form-group col-sm-12">
-                            <label /*for={"task-project-" + taskId}*/ className="control-label">Subject</label>
+                            <label className="control-label">Subject</label>
                             <HtmlEditor.Component
                                 className="task-subject form-control"
                                 singleLine={false}
