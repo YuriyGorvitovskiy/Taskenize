@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        "noImplicitAny": false,
+        "jsx": "react",
+        "outDir": "./js",
+        "rootDir": "./ts",
+        "sourceMap": true
+    },
+    "atom": {
+        "rewriteTsconfig": true
+    },
+    "buildOnSave": true,
+    "exclude": [
+        "node_modules",
+        "typings/main.d.ts",
+        "typings/main"
+    ]
+}

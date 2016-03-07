@@ -1,0 +1,42 @@
+.task-title {
+    padding:     5px;
+    font-size: large;
+}
+
+.task-subject {
+    min-height:     10em;
+}
+
+.task .panel-heading,.panel-footer {
+    padding: 0;
+}
+
+.spacer {
+    width: 100%;
+    background: transparent;
+    border: 0;
+}
+
+.btn-blank {
+    padding: 0 17px;
+}
+
+.task .schedule {
+    width: 12em;
+}
+
+.task-checked {
+     padding: 5px 10px
+}
+
+.task-checked span {
+     font-size: large;
+}
+
+.task-timer {
+    padding: 3px 10px;
+}
+
+.task-timer span {
+    font-size: large;
+}
