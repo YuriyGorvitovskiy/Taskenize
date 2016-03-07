@@ -38,12 +38,11 @@ ubuntu 14.04> ./node_modules/typings/dist/bin/typings.js install
 Rebuild Taskenize>
 mac> scp ~/Development/Taskenize/OAuth/config.aws.secret.js ubuntu@ec2-54-213-45-213.us-west-2.compute.amazonaws.com:~/Taskenize/OAuth/config.secret.js
 ubuntu 14.04> cd ~/Taskenize/WebClient/
-ubuntu 14.04> ./node_modules/typescript/bin/tsc
+ubuntu 14.04> ./node_modules/.bin/tsc
 ubuntu 14.04> ./bin/browserify.js
 
 ubuntu 14.04> cd ~/Taskenize/WebServer/
-./node_modules/typescript/bin/tsc
-
+ubuntu 14.04> ./node_modules/.bin/tsc
 
 
 Mongo DB:
