@@ -34,7 +34,7 @@ app.use(Passport.initialize());
 Passport.use(new Google.OAuth2Strategy(<Google.IOAuth2StrategyOption>{
         clientID: config.google.client_id,
         clientSecret: config.google.client_secret,
-        callbackURL: "http://localhost:8080/auth/callback",
+        callbackURL: config.google.server_address + "/auth/callback",
         scope: ['https://www.googleapis.com/auth/plus.login']
     },
     function(accessToken, refreshToken, profile, done) {
@@ -50,13 +50,7 @@ Passport.use(new Google.OAuth2Strategy(<Google.IOAuth2StrategyOption>{
 ));
 app.use(Passport.session());
 
-app.get('/auth',
-    (req, res, next) => {
-        res.setHeader('Access-Control-Allow-Origin','*');
-        next();
-    },
-    Passport.authenticate('google', { session: false })
-);
+app.get('/auth', Passport.authenticate('google', { session: false }));
 app.get('/auth/callback',
     Passport.authenticate('google', { session: false, failureRedirect: '/login' }),
     function(req, res) {
@@ -85,4 +79,4 @@ app.use('/rest/*', (req, res, next) => {
 
 app.use('/rest/v1/tasks', RouterTasks.router);
 
-app.listen(8080);
+app.listen(config.server_port);
