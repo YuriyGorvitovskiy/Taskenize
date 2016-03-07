@@ -80,3 +80,4 @@ app.use('/rest/*', (req, res, next) => {
 app.use('/rest/v1/tasks', RouterTasks.router);
 
 app.listen(config.server_port);
+console.log('Listen for: ' + config.server_port);

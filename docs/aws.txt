@@ -35,7 +35,7 @@ ubuntu 14.04> cd ~/Taskenize/WebServer/
 ubuntu 14.04> npm install
 ubuntu 14.04> ./node_modules/typings/dist/bin/typings.js install
 
-ubuntu 14.04> sudo cp scripts/taskenize.conf /etc/init.d/
+ubuntu 14.04> sudo cp scripts/taskenize.conf /etc/init/
 
 Rebuild Taskenize>
 mac> scp ~/Development/Taskenize/OAuth/config.aws.secret.js ubuntu@ec2-54-213-45-213.us-west-2.compute.amazonaws.com:~/Taskenize/OAuth/config.secret.js
@@ -56,3 +56,11 @@ Log File         > cat /var/log/mongodb/mongod.log
 Git Commands:
 checkout branch > git checkout origin/feature/MakeDemon
 pull from origin> git pull origin
+
+Taskenize Demon:
+sudo start taskenize
+sudo status taskenize
+sudo stop taskenize
+
+sudo cat /var/log/taskenize.log
+sudo rm /var/log/taskenize.log
