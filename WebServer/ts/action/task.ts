@@ -34,7 +34,7 @@ export function getAll() : Promise<Model.Task[]> {
     return _cl.find({
         state: {$in: [Model.State.RUNNING, Model.State.PAUSED]}
     }).sort({
-        state: -1,
+        'scheduled': 1,
         'duration.0.end': -1
     }).toArray();
 }
@@ -114,7 +114,7 @@ export function pauseTask(_id: string | Mongo.ObjectID) : Promise<Model.Task> {
 
 function startTask(_id: string | Mongo.ObjectID) : Promise<Model.Task> {
     return update(_id, {
-        $set: {state: Model.State.RUNNING},
+        $set: {state: Model.State.RUNNING, scheduled: null},
         $push:{'duration':  { $each: [{begin: new Date(), end: null}], $position: 0}}
     })
 }

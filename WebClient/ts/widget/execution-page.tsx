@@ -1,4 +1,6 @@
 import * as React from 'react';
+import * as Moment from 'moment';
+
 import * as TaskPanel from './task-panel';
 import * as Model from '../model/task';
 
@@ -13,9 +15,10 @@ export class ExecutionPage extends React.Component<{},ExecutionPageState> {
             tasks: []
         };
 
-        Model.getAll().done(((tasks) => {
-            this.state.tasks = tasks as Model.Task[];
-            this.forceUpdate();
+        Model.getAll().done(((serverTasks) => {
+            var tasks = serverTasks as Model.Task[];
+            tasks.sort(Model.executionComparator);
+            this.setState({tasks});
         }).bind(this));
     }
 
@@ -26,12 +29,16 @@ export class ExecutionPage extends React.Component<{},ExecutionPageState> {
         });
 
         var panels = [];
+        var tomorrow = Moment().add(1,'days').startOf('day');
+        var nextDate = tomorrow;
         $.each(this.state.tasks, (index: number, task: Model.Task) => {
-            if (index == 2)
-                panels.push(<h1 key={"d"+index}>Tomorrow</h1>);
+            if (nextDate.isBefore(task.scheduled)) {
+                nextDate = Moment(task.scheduled).startOf('day');
+                panels.push(<h1 key={"d"+index}>{tomorrow.isSame(nextDate) ? 'Tomorrow' : nextDate.format('ddd D MMMM')}</h1>);
+                nextDate = nextDate.add(1, 'days');
+            }
             panels.push(<TaskPanel.Component key={index} task={task} onActivate={this.onActivate.bind(this)} onDelete={this.onDelete.bind(this)}/>);
         });
-
 
         return (
             <div className="container">
@@ -70,10 +77,6 @@ export class ExecutionPage extends React.Component<{},ExecutionPageState> {
 
     public onActivate(task: Model.Task, toActivate: boolean) {
         task.state = toActivate ? Model.State.RUNNING : Model.State.PAUSED;
-        if (toActivate) {
-            var tasks = [task].concat(this.state.tasks.filter((t) => (t !== task)));
-            this.setState({tasks});        
-        }
         Model.updateState(task)
             .then((changedTasks: Model.Task[]) => {
                 var tasks = [];
@@ -81,6 +84,7 @@ export class ExecutionPage extends React.Component<{},ExecutionPageState> {
                     var changedTask = changedTasks.filter((changedTask) => (oldTask._id==changedTask._id))[0];
                     tasks.push(changedTask || oldTask);
                 })
+                tasks.sort(Model.executionComparator);
                 this.setState({tasks});
             });
     }
