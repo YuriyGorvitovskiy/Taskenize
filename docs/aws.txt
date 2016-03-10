@@ -46,6 +46,8 @@ ubuntu 14.04> ./bin/browserify.js
 ubuntu 14.04> cd ~/Taskenize/WebServer/
 ubuntu 14.04> ./node_modules/.bin/tsc
 
+All together:
+ubuntu 14.04> ~/Taskenize/scripts/aws.update.sh 
 
 Mongo DB:
 Start Mongo DB   > sudo service mongod start
