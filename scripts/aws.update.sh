@@ -3,7 +3,7 @@
 echo 'checkout from github'
 cd ~/Taskenize/
 git checkout origin/master
-git pull origin
+git pull origin master
 
 echo 'build WebClient'
 cd ~/Taskenize/WebClient/
