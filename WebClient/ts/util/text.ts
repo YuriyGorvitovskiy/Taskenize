@@ -29,8 +29,12 @@ export function formatPeriod(from : Date, to : Date) : string {
 }
 
 export function formatDuration(duration : Moment.Duration) : string {
+    if (duration.asSeconds() < 0)
+        duration = Moment.duration(0, 'seconds');
+        
     var sec = duration.seconds();
     var min = duration.minutes();
     var hr = Math.floor(duration.asHours());
+
     return hr + ":" + pad0(min, 2) + ":" + pad0(sec, 2);
 }
