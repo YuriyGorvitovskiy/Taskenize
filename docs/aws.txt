@@ -1,5 +1,6 @@
 Connection to AWS
 mac> ssh ubuntu@ec2-54-213-45-213.us-west-2.compute.amazonaws.com
+mac> ssh ubuntu@ec2-54-67-67-41.us-west-1.compute.amazonaws.com
 
 Update All:
 ubuntu 14.04> sudo apt-get update
@@ -29,16 +30,19 @@ ubuntu 14.04> mkdir OAuth
 ubuntu 14.04> cd ~/Taskenize/WebClient/
 ubuntu 14.04> mkdir br
 ubuntu 14.04> npm install
-ubuntu 14.04> ./node_modules/typings/dist/bin/typings.js install
+ubuntu 14.04> ./node_modules/.bin/typings install
 
 ubuntu 14.04> cd ~/Taskenize/WebServer/
 ubuntu 14.04> npm install
-ubuntu 14.04> ./node_modules/typings/dist/bin/typings.js install
+ubuntu 14.04> ./node_modules/.bin/typings install
 
+ubuntu 14.04> cd ~/Taskenize
 ubuntu 14.04> sudo cp scripts/taskenize.conf /etc/init/
 
 Rebuild Taskenize>
 mac> scp ~/Development/Taskenize/OAuth/config.aws.secret.js ubuntu@ec2-54-213-45-213.us-west-2.compute.amazonaws.com:~/Taskenize/OAuth/config.secret.js
+mac> scp ~/Development/Taskenize/OAuth/config.aws.secret.js ubuntu@ec2-54-67-67-41.us-west-1.compute.amazonaws.com:~/Taskenize/OAuth/config.secret.js
+
 ubuntu 14.04> cd ~/Taskenize/WebClient/
 ubuntu 14.04> ./node_modules/.bin/tsc
 ubuntu 14.04> ./bin/browserify.js
@@ -47,13 +51,22 @@ ubuntu 14.04> cd ~/Taskenize/WebServer/
 ubuntu 14.04> ./node_modules/.bin/tsc
 
 All together:
-ubuntu 14.04> ~/Taskenize/scripts/aws.update.sh 
+ubuntu 14.04> ~/Taskenize/scripts/aws.update.sh
 
 Mongo DB:
 Start Mongo DB   > sudo service mongod start
 Stop Mongo DB    > sudo service mongod stop
 Restart Mongo DB > sudo service mongod restart
 Log File         > cat /var/log/mongodb/mongod.log
+
+Copy DB:
+ubuntu 14.04> cd ~
+ubuntu 14.04> mongoexport --db taskenize --collection tasks --out tasks.json
+mac> scp ubuntu@ec2-54-213-45-213.us-west-2.compute.amazonaws.com:~/tasks.json ~/Development/Taskenize/MongoBackup/tasks.json
+mac> scp ~/Development/Taskenize/MongoBackup/tasks.json ubuntu@ec2-54-67-67-41.us-west-1.compute.amazonaws.com:~/tasks.json
+ubuntu 14.04> cd ~
+ubuntu 14.04> mongoimport --db taskenize --collection tasks --file tasks.json
+
 
 Git Commands:
 checkout branch > git checkout origin/feature/MakeDemon
