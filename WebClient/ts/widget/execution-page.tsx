@@ -4,6 +4,9 @@ import * as Moment from 'moment';
 import * as TaskPanel from './task-panel';
 import * as Model from '../model/task';
 
+import * as StyleUtil from '../util/style';
+
+
 class ExecutionPageState {
     tasks: Model.Task[];
 }
@@ -23,11 +26,17 @@ export class ExecutionPage extends React.Component<{},ExecutionPageState> {
     }
 
     public render() {
+        var env = StyleUtil.findBootstrapEnvironment();
+        var full = (env == 'md' || env == 'lg');
+
         var actions = [];
         $.each(Model.Category.ALL, (index: number, category: Model.Category) => {
-            actions.push(<button key={index} type="button" className={"col-sm-2 btn btn-" + category.css} onClick={()=>this.onNewTask(category)}>{category.name}</button>);
+            actions.push(
+                <button key={index} type="button" className={"col-xs-2 btn btn-" + category.css} onClick={()=>this.onNewTask(category)}>
+                    <span className={"glyphicon glyphicon-" + category.glyph}></span>{full ? " " + category.name : ""}
+                </button>
+            );
         });
-
         var panels = [];
         var tomorrow = Moment().add(1,'days').startOf('day');
         var nextDate = tomorrow;
@@ -57,10 +66,10 @@ export class ExecutionPage extends React.Component<{},ExecutionPageState> {
 
     public onNewTask(category: Model.Category) {
         Model.postNew({
-            title:   category.prefix,
+            title:   category.title,
             subject: '',
             context: '',
-            category: '',
+            category: category.name,
             project: '',
             story: '',
             scheduled: null,

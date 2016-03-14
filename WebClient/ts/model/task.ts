@@ -17,14 +17,14 @@ export enum Context {
 
 export class Category {
     name:       string;
-    prefix:     string;
+    title:     string;
     glyph:      string;
     css:        string;
     autorun:    boolean;
 
     constructor(name: string, css: string, glyph: string, autorun: boolean) {
         this.name = name;
-        this.prefix = name + ":";
+        this.title = name;
         this.css = css;
         this.glyph = glyph;
         this.autorun = autorun;

@@ -43,13 +43,9 @@ export class Component extends React.Component<Props, State> {
     public render() {
         var active = this.props.task.state == Model.State.RUNNING;
         var completed = this.props.task.state == Model.State.COMPLETED;
+        var category = Model.Category.MAP[this.props.task.category];
 
-        var css = 'default';
-        var text = $("<div/>").html(this.props.task.title).text().trim();
-        Model.Category.ALL.forEach((cat) => {
-            if (TextUtil.startWith(text, cat.prefix))
-                css = cat.css;
-        });
+        var css = category ? category.css : 'default';
         var collapsed = this.props.task.collapsed;
         var taskId = this.props.task._id;
 
