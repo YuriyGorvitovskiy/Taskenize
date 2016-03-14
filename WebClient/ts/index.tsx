@@ -4,6 +4,7 @@ import * as ReactDOM from 'react-dom';
 import * as Nav from './widget/navigation-bar';
 import {ExecutionPage} from './widget/execution-page';
 import {InboxPage} from './widget/inbox-page';
+import {TestPage} from './widget/test-page';
 
 interface IndexPageState {
     pageId: Nav.PageId
@@ -13,7 +14,7 @@ class IndexPage extends React.Component<{},IndexPageState> {
     public constructor() {
         super();
         this.state={
-            pageId: Nav.PageId.EXECUTION
+            pageId: Nav.PageId.REPORT//EXECUTION
         };
     }
 
@@ -27,7 +28,7 @@ class IndexPage extends React.Component<{},IndexPageState> {
                 pageComponent = (<ExecutionPage />);
                 break;
             case Nav.PageId.REPORT:
-                pageComponent = (<h1>Report</h1>);
+                pageComponent = (<TestPage />);
                 break;
         }
         return (

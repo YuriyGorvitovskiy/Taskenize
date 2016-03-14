@@ -1,6 +1,11 @@
 .task-title {
     padding:     5px;
     font-size: large;
+    text-overflow: clip;
+    width: auto;
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
 }
 
 .task-subject {
@@ -39,4 +44,296 @@
 
 .task-timer span {
     font-size: large;
+}
+/**********************/
+.task-wide {
+    width: 100%;
+    height: 102px;
+    float: clear;
+    position: relative;
+}
+
+.task-wide .inside {
+    height: 100%;
+}
+
+.task-wide .complete {
+    width:  100px;
+    height: 100px;
+    float: left;
+    position: relative;
+}
+
+.task-wide .complete img {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.task-wide .complete span {
+    position: absolute;
+    top: 30px;
+    color: lightgrey;
+    font-size: 40px;
+    text-align: center;
+    width: 100px;
+}
+
+.task-wide .timer-btn {
+    margin: 0;
+    font-size: 25px;
+    width:  120px;
+    height: 100px;
+    float: right;
+}
+
+.task-wide .title {
+    padding: 0 5px;
+    text-align: left;
+    font-size: 20px;
+    text-overflow: clip;
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
+    height: 35px;
+}
+
+.task-wide .subject {
+    padding: 0 5px;
+    text-align: left;
+    text-overflow: clip;
+    overflow: hidden;
+    display: block;
+    height: 40px;
+}
+
+.task-wide .footer {
+    padding: 3px 0 5px 5px;
+    height: 25px;
+    display: block;
+    position: absolute;
+    white-space: nowrap;
+    left: 100px;
+    right: 120px;
+    bottom: 0;
+    text-overflow: clip;
+    overflow: hidden;
+}
+
+.task-wide .info {
+    display: inline-block;
+    text-align: left;
+}
+
+.task-wide .info .category {
+    display: inline-block;
+}
+
+.task-wide .defer {
+    padding: 0 5px;
+    background-color: white;
+    border: 1px solid lightgrey;
+
+    display: inline-block;
+    text-align: right;
+    float: right;
+}
+
+.task-wide .defer .category {
+    display: inline-block;
+}
+
+/**********************/
+.task-narrow {
+    width: 100%;
+    height: 66px;
+    float: clear;
+    position: relative;
+}
+
+.task-narrow .inside {
+    height: 100%;
+}
+
+.task-narrow .complete {
+    width:  64px;
+    height: 64px;
+    float: left;
+    position: relative;
+}
+
+.task-narrow .complete img {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.task-narrow .complete span {
+    position: absolute;
+    top: 20px;
+    color: lightgrey;
+    font-size: 25px;
+    text-align: center;
+    width: 64px;
+}
+
+.task-narrow .timer-btn {
+    margin: 0;
+    font-size: 25px;
+    width: 64px;
+    height: 64px;
+    float: right;
+}
+
+.task-narrow .title {
+    text-align: left;
+    font-weight: bold;
+    text-overflow: clip;
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
+}
+.task-narrow .subject {
+    text-align: left;
+    text-overflow: clip;
+    overflow: hidden;
+    display: block;
+    height: 40px;
+}
+
+.task-narrow .timer {
+    padding: 0 5px;
+    background-color: white;
+    border: 1px solid lightgrey;
+    text-align: center;
+    font-size: large;
+    font-weight: bold;
+    position: absolute;
+    right: 64px;
+    bottom: 0;
+    float: right;
+}
+
+/**********************/
+.test-task {
+    height: 102px;
+    float: clear;
+    position: relative;
+}
+.test-task-inside {
+    height: 100%;
+}
+.test-complete {
+    width:  100px;
+    height: 100px;
+    float: left;
+    position: relative;
+}
+.test-complete span {
+    position: absolute;
+    top: 30px;
+    color: lightgrey;
+    font-size: 40px;
+    text-align: center;
+    width: 100px;
+}
+.test-complete img {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.test-time-ctrl {
+    width:  120px;
+    height: 100px;
+    float: right;
+}
+.test-title {
+    padding: 5px;
+    text-align: left;
+    font-size: 25px;
+    text-overflow: clip;
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
+}
+
+.test-info {
+    position: absolute;
+    left: 100px;
+    bottom: 0;
+    right: 120px;
+}
+.test-info-cat {
+    padding: 5px;
+    float: left;
+}
+.test-info-defer {
+    padding: 5px;
+    float: right;
+}
+.test-timer {
+    padding: 5px;
+    text-align: center;
+    font-size: 25px;
+}
+.test-play {
+    padding: 5px;
+    text-align: center;
+    font-size: 25px;
+}
+
+.test-task-sm {
+    height: 66px;
+    float: clear;
+    position: relative;
+}
+.test-task-inside-sm {
+    height: 100%;
+}
+.test-complete-sm {
+    width:  64px;
+    height: 64px;
+    float: left;
+    position: relative;
+}
+.test-complete-sm span {
+    position: absolute;
+    top: 20px;
+    color: lightgrey;
+    font-size: 25px;
+    text-align: center;
+    width: 64px;
+}
+.test-complete-sm img {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.test-play-sm {
+    margin: 0;
+    font-size: 25px;
+    text-align: center;
+    width: 64px;
+    height: 64px;
+    float: right;
+}
+
+
+.test-title-sm {
+    text-align: left;
+    font-weight: bold;
+    text-overflow: clip;
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
+}
+
+.test-time-sm {
+    padding: 0 5px;
+    border: 1px solid lightgrey;
+    text-align: center;
+    font-size: large;
+    font-weight: bold;
+    position: absolute;
+    right: 64px;
+    bottom: 0;
+    float: right;
 }

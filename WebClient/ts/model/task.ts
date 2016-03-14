@@ -18,25 +18,32 @@ export enum Context {
 export class Category {
     name:       string;
     prefix:     string;
+    glyph:      string;
     css:        string;
     autorun:    boolean;
 
-    constructor(name: string, css: string, autorun: boolean) {
+    constructor(name: string, css: string, glyph: string, autorun: boolean) {
         this.name = name;
         this.prefix = name + ":";
         this.css = css;
+        this.glyph = glyph;
         this.autorun = autorun;
     }
 
     public static ALL = [
-        new Category("Task", "default", false),
-        new Category("Duty", "default", false),
-        new Category("Metting", "success", false),
-        new Category("Training", "info", true),
-        new Category("Help", "warning", true),
-        new Category("Support", "danger", true)
+        new Category("House", "default", "home", false),
+        new Category("Hobby", "success", "tower", false),
+        new Category("Recreation", "info", "tent", false),
+        new Category("Shop",  "info", "shopping-cart", false),
+        new Category("Education", "warning", "education", false),
+        new Category("Pleasure", "danger", "facetime-video", false),
     ];
+
+    public static MAP = {};
 };
+(() => {
+    Category.ALL.map((a)=>{Category.MAP[a.name] = a});
+})();
 
 export interface Period {
     begin:      Date;
@@ -218,6 +225,16 @@ export function calculateDuration(task: Task) : Moment.Duration {
     return task.duration.reduce((prev: Moment.Duration, curr: Period, index, array) : Moment.Duration => {
         var end : Moment.Moment = (curr.end == null ? Moment() : Moment(curr.end));
         var period : Moment.Duration = Moment.duration(end.diff(Moment(curr.begin)));
+        return period.add(prev);
+    }, Moment.duration(0));
+}
+
+export function calculateCompletedDuration(task: Task) : Moment.Duration {
+    return task.duration.reduce((prev: Moment.Duration, curr: Period, index, array) : Moment.Duration => {
+        if (curr.end == null)
+            return prev;
+
+        var period : Moment.Duration = Moment.duration(Moment(curr.end).diff(Moment(curr.begin)));
         return period.add(prev);
     }, Moment.duration(0));
 }
