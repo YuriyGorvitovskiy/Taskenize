@@ -53,4 +53,8 @@ export class Component extends React.Component<Props, State> {
     public onStoryChange() {
 
     }
+
+    public onScheduleChange() {
+        
+    }
 };

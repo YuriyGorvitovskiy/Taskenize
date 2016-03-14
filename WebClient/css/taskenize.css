@@ -94,7 +94,7 @@
     white-space: nowrap;
     overflow: hidden;
     display: block;
-    height: 35px;
+    height: 30px;
 }
 
 .task-wide .subject {
@@ -103,7 +103,7 @@
     text-overflow: clip;
     overflow: hidden;
     display: block;
-    height: 40px;
+    height: 45px;
 }
 
 .task-wide .footer {
@@ -126,6 +126,7 @@
 
 .task-wide .info .category {
     display: inline-block;
+    min-width: 20px;
 }
 
 .task-wide .defer {

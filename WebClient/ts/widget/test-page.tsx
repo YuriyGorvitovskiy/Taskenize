@@ -30,12 +30,13 @@ export class TestPage extends React.Component<{},{}> {
         var panels = [];
         for(var index = 0; index < 5; ++index) {
             var task: Model.Task = {
+                _id:        "id_" + index,
                 state:      index == 0 ? Model.State.RUNNING : index == 1 ? Model.State.COMPLETED : Model.State.PAUSED,
                 title:      "Task title number " + index + ".",
                 subject:    "Task subject of some description number " + index + ".",
                 context:    "Context" + index,
                 category:   Model.Category.ALL[index%6].name,
-                project:    "Project" + index,
+                project:    index ? "Project" + index : "",
                 story:      "Story" + index,
                 scheduled:  Moment(PAGE_START_MOMENT).add(index, 'd').toDate(),
                 duration:   [
