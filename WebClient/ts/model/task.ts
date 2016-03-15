@@ -17,14 +17,14 @@ export enum Context {
 
 export class Category {
     name:       string;
-    prefix:     string;
+    title:     string;
     glyph:      string;
     css:        string;
     autorun:    boolean;
 
     constructor(name: string, css: string, glyph: string, autorun: boolean) {
         this.name = name;
-        this.prefix = name + ":";
+        this.title = name;
         this.css = css;
         this.glyph = glyph;
         this.autorun = autorun;
@@ -246,6 +246,6 @@ export function executionComparator(a: Task, b: Task) : number {
     var bt = b.scheduled == null ? 0 : b.scheduled.getTime();
     if (at != bt) return at - bt;
     at = a.duration.length == 0 ? 0 : a.duration[0].end == null ? 0 : a.duration[0].end.getTime();
-    at = b.duration.length == 0 ? 0 : b.duration[0].end == null ? 0 : b.duration[0].end.getTime();
+    bt = b.duration.length == 0 ? 0 : b.duration[0].end == null ? 0 : b.duration[0].end.getTime();
     return bt - at;
 }

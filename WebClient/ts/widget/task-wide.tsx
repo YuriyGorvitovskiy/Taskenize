@@ -4,6 +4,7 @@ import * as Moment from 'moment';
 
 import * as Model from '../model/task';
 import * as Complete from './complete-button';
+import * as Calendar from './calendar-link';
 import * as Play from './timer-button-wide';
 import * as HtmlEditor from './html-editor';
 import * as TaskCommon from './task-common';
@@ -44,28 +45,8 @@ export class Component extends TaskCommon.Component {
                         onCancel={this.onSubjectChange.bind(this)}
                     />
                     <div className="footer">
-                        <div className="defer">
-                            <a href="#"><span className="glyphicon glyphicon-calendar" aria-hidden="true"></span></a>&nbsp;
-                            <HtmlEditor.Component
-                                className="category"
-                                singleLine={true}
-                                html={TextUtil.formatDate(this.props.task.scheduled, false)}
-                                onSuccess={this.onStoryChange.bind(this)}
-                                onCancel={this.onStoryChange.bind(this)}
-                            />&nbsp;
-                            <a href="#">+1</a>&nbsp;
-                            <a href="#">+7</a>&nbsp;
-                            <a href="#">+30</a>
-                        </div>
                         <div className="info">
-                            <HtmlEditor.Component
-                                className="category"
-                                singleLine={true}
-                                html={this.props.task.context}
-                                onSuccess={this.onContextChange.bind(this)}
-                                onCancel={this.onContextChange.bind(this)}
-                            />
-                            <label>&nbsp;&bull;&nbsp;</label>
+                            <label>c:&nbsp;</label>
                             <HtmlEditor.Component
                                 className="category"
                                 singleLine={true}
@@ -73,7 +54,15 @@ export class Component extends TaskCommon.Component {
                                 onSuccess={this.onCategoryChange.bind(this)}
                                 onCancel={this.onCategoryChange.bind(this)}
                             />
-                            <label>&nbsp;&bull;&nbsp;</label>
+                            <label>&nbsp;x:&nbsp;</label>
+                            <HtmlEditor.Component
+                                className="category"
+                                singleLine={true}
+                                html={this.props.task.context}
+                                onSuccess={this.onContextChange.bind(this)}
+                                onCancel={this.onContextChange.bind(this)}
+                            />
+                            <label>&nbsp;p:&nbsp;</label>
                             <HtmlEditor.Component
                                 className="category"
                                 singleLine={true}
@@ -81,7 +70,7 @@ export class Component extends TaskCommon.Component {
                                 onSuccess={this.onProjectChange.bind(this)}
                                 onCancel={this.onProjectChange.bind(this)}
                             />
-                            <label>&nbsp;&bull;&nbsp;</label>
+                            <label>&nbsp;s:&nbsp;</label>
                             <HtmlEditor.Component
                                 className="category"
                                 singleLine={true}
@@ -90,10 +79,26 @@ export class Component extends TaskCommon.Component {
                                 onCancel={this.onStoryChange.bind(this)}
                             />
                         </div>
+                        <div className="defer">
+                            <Calendar.Component
+                                id={this.props.task._id}
+                                date={this.props.task.scheduled}
+                                onChange={this.onScheduledCalendarChange.bind(this)}
+                            />&nbsp;
+                            <HtmlEditor.Component
+                                className="category"
+                                singleLine={true}
+                                html={TextUtil.formatDate(this.props.task.scheduled, false)}
+                                onSuccess={this.onScheduledChange.bind(this)}
+                                onCancel={this.onScheduledChange.bind(this)}
+                            />&nbsp;
+                            <a href="#" onClick={this.onScheduledNextDay.bind(this)} >+1</a>&nbsp;
+                            <a href="#" onClick={this.onScheduledNextWeek.bind(this)} >+7</a>&nbsp;
+                            <a href="#" onClick={this.onScheduledNextMonth.bind(this)} >+30</a>
+                        </div>
                     </div>
                 </div>
             </div>
         );
     }
-
 };

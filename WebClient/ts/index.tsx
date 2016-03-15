@@ -14,7 +14,7 @@ class IndexPage extends React.Component<{},IndexPageState> {
     public constructor() {
         super();
         this.state={
-            pageId: Nav.PageId.REPORT//EXECUTION
+            pageId: Nav.PageId.EXECUTION
         };
     }
 

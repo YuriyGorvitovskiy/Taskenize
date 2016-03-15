@@ -1,8 +1,12 @@
 import * as React from 'react';
 import * as Moment from 'moment';
 
-import * as TaskPanel from './task-panel';
+import * as TaskWide from './task-wide';
+import * as TaskNarrow from './task-narrow';
 import * as Model from '../model/task';
+
+import * as StyleUtil from '../util/style';
+
 
 class ExecutionPageState {
     tasks: Model.Task[];
@@ -23,11 +27,17 @@ export class ExecutionPage extends React.Component<{},ExecutionPageState> {
     }
 
     public render() {
+        var env = StyleUtil.findBootstrapEnvironment();
+        var full = (env == 'md' || env == 'lg');
+
         var actions = [];
         $.each(Model.Category.ALL, (index: number, category: Model.Category) => {
-            actions.push(<button key={index} type="button" className={"col-sm-2 btn btn-" + category.css} onClick={()=>this.onNewTask(category)}>{category.name}</button>);
+            actions.push(
+                <button key={index} type="button" className={"col-xs-2 btn btn-" + category.css} onClick={()=>this.onNewTask(category)}>
+                    <span className={"glyphicon glyphicon-" + category.glyph}></span>{full ? " " + category.name : ""}
+                </button>
+            );
         });
-
         var panels = [];
         var tomorrow = Moment().add(1,'days').startOf('day');
         var nextDate = tomorrow;
@@ -37,7 +47,10 @@ export class ExecutionPage extends React.Component<{},ExecutionPageState> {
                 panels.push(<h1 key={"d"+index}>{tomorrow.isSame(nextDate) ? 'Tomorrow' : nextDate.format('ddd D MMMM')}</h1>);
                 nextDate = nextDate.add(1, 'days');
             }
-            panels.push(<TaskPanel.Component key={index} task={task} onActivate={this.onActivate.bind(this)} onDelete={this.onDelete.bind(this)}/>);
+            if (full)
+                panels.push(<TaskWide.Component key={index} task={task} onStateChange={this.onStateChange.bind(this)} onDelete={this.onDelete.bind(this)}/>);
+            else
+                panels.push(<TaskNarrow.Component key={index} task={task} onStateChange={this.onStateChange.bind(this)} onDelete={this.onDelete.bind(this)}/>);
         });
 
         return (
@@ -57,10 +70,10 @@ export class ExecutionPage extends React.Component<{},ExecutionPageState> {
 
     public onNewTask(category: Model.Category) {
         Model.postNew({
-            title:   category.prefix,
+            title:   category.title,
             subject: '',
             context: '',
-            category: '',
+            category: category.name,
             project: '',
             story: '',
             scheduled: null,
@@ -71,12 +84,12 @@ export class ExecutionPage extends React.Component<{},ExecutionPageState> {
             var tasks = [task].concat(this.state.tasks);
             this.setState({tasks});
             if (category.autorun)
-                this.onActivate(task, true);
+                this.onStateChange(task, Model.State.RUNNING);
         });
     }
 
-    public onActivate(task: Model.Task, toActivate: boolean) {
-        task.state = toActivate ? Model.State.RUNNING : Model.State.PAUSED;
+    public onStateChange(task: Model.Task, newState: Model.State) {
+        task.state = newState;
         Model.updateState(task)
             .then((changedTasks: Model.Task[]) => {
                 var tasks = [];

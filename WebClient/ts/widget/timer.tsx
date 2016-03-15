@@ -16,17 +16,20 @@ export interface State {
 export class Component extends React.Component<Props, {}> {
 
     timer: number = null;
+    mounted: boolean = false;
 
     public constructor() {
         super();
     }
 
     public componentDidMount() {
-        if (this.props.active)
+        this.mounted = true;
+        if (this.props.active && this.timer === null)
             this.timer = setInterval(this.onTick.bind(this), 1000);
     }
 
     public componentWillUnmount() {
+        this.mounted = false;
         if (this.timer !== null)
             clearInterval(this.timer);
     }
@@ -41,6 +44,10 @@ export class Component extends React.Component<Props, {}> {
         if (this.props.active)
             duration = Moment.duration(duration).add(Moment.duration(Moment().diff(Moment(this.props.from))));
 
-        return <div className="timer">{TextUtil.formatDuration(duration)}</div>
+        if (this.props.active && this.mounted && this.timer === null)
+            this.timer = setInterval(this.onTick.bind(this), 1000);
+
+        return <div className={"timer" + (this.props.active ? " active" : "")}>{TextUtil.formatDuration(duration)}</div>
+
     }
 }
