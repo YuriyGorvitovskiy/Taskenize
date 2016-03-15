@@ -31,12 +31,12 @@ export class Category {
     }
 
     public static ALL = [
-        new Category("House", "default", "home", false),
-        new Category("Hobby", "success", "tower", false),
+        new Category("House", "danger", "home", false),
+        new Category("Hobby", "default", "tower", false),
         new Category("Recreation", "info", "tent", false),
-        new Category("Shop",  "info", "shopping-cart", false),
+        new Category("Shop",  "warning", "shopping-cart", false),
         new Category("Education", "warning", "education", false),
-        new Category("Pleasure", "danger", "facetime-video", false),
+        new Category("Pleasure", "success", "facetime-video", false),
     ];
 
     public static MAP = {};
