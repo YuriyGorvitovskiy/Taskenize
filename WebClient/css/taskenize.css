@@ -144,6 +144,15 @@
     display: inline-block;
 }
 
+.task-wide .delete {
+    color: lightgrey;
+    padding: 0;
+    display: block;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+}
+
 /**********************/
 .task-narrow {
     width: 100%;

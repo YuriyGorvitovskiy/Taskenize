@@ -38,6 +38,11 @@ export class Component extends React.Component<Props, State> {
         this.props.onStateChange(this.props.task, Model.State.RUNNING);
     }
 
+    public onDelete(ev) {
+        ev.preventDefault();
+        this.props.onDelete(this.props.task);
+    }
+
     public onTitleChange(htmlNew: string) {
         if (this.props.task.title == htmlNew)
             return;
