@@ -15,4 +15,4 @@ cd ~/Taskenize/WebServer/
 ./node_modules/.bin/tsc
 
 echo 'restart server'
-sudo service mongod restart
+sudo service taskenize restart
