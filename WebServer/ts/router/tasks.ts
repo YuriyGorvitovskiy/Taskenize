@@ -31,8 +31,8 @@ router.get('/', function(req, res) {
 router.post('/', function(req, res) {
     Action.insert(req.body.title,
                   req.body.subject,
-                  req.body.context,
                   req.body.category,
+                  req.body.context,
                   req.body.project,
                   req.body.story,
                   req.body.scheduled,
