@@ -148,7 +148,7 @@ export function completeTask(_id: string | Mongo.ObjectID) : Promise<Model.Task>
                 return task;
 
             case Model.State.RUNNING:
-                return pauseRunningTasks([toId(_id)], Model.State.COMPLETED).then((tasks) => task[0]);
+                return pauseRunningTasks([toId(_id)], Model.State.COMPLETED).then((tasks) => tasks[0]);
         }
         return update(_id, {$set: {state: Model.State.COMPLETED}});
     });

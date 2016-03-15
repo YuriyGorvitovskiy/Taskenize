@@ -246,6 +246,6 @@ export function executionComparator(a: Task, b: Task) : number {
     var bt = b.scheduled == null ? 0 : b.scheduled.getTime();
     if (at != bt) return at - bt;
     at = a.duration.length == 0 ? 0 : a.duration[0].end == null ? 0 : a.duration[0].end.getTime();
-    at = b.duration.length == 0 ? 0 : b.duration[0].end == null ? 0 : b.duration[0].end.getTime();
+    bt = b.duration.length == 0 ? 0 : b.duration[0].end == null ? 0 : b.duration[0].end.getTime();
     return bt - at;
 }

@@ -46,9 +46,9 @@ export class TestPage extends React.Component<{},{}> {
                 collapsed:  true
             }
             if (full)
-                panels.push(<TaskWide.Component key={index} task={task}/>);
+                panels.push(<TaskWide.Component key={index} task={task} onStateChange={null} onDelete={null}/>);
             else
-                panels.push(<TaskNarrow.Component key={index} task={task}/>);
+                panels.push(<TaskNarrow.Component key={index} task={task} onStateChange={null} onDelete={null}/>);
         };
         for(var index = 5; index < 10; ++index) {
             panels.push(<TaskPanel.Component key={index} active={index == 0} complete={index%5==0} category={Model.Category.ALL[index%6]}/>);

@@ -83,23 +83,22 @@ export class Component extends TaskCommon.Component {
                             <Calendar.Component
                                 id={this.props.task._id}
                                 date={this.props.task.scheduled}
-                                onChange={this.onScheduleChange.bind(this)}
+                                onChange={this.onScheduledCalendarChange.bind(this)}
                             />&nbsp;
                             <HtmlEditor.Component
                                 className="category"
                                 singleLine={true}
                                 html={TextUtil.formatDate(this.props.task.scheduled, false)}
-                                onSuccess={this.onScheduleChange.bind(this)}
-                                onCancel={this.onScheduleChange.bind(this)}
+                                onSuccess={this.onScheduledChange.bind(this)}
+                                onCancel={this.onScheduledChange.bind(this)}
                             />&nbsp;
-                            <a href="#">+1</a>&nbsp;
-                            <a href="#">+7</a>&nbsp;
-                            <a href="#">+30</a>
+                            <a href="#" onClick={this.onScheduledNextDay.bind(this)} >+1</a>&nbsp;
+                            <a href="#" onClick={this.onScheduledNextWeek.bind(this)} >+7</a>&nbsp;
+                            <a href="#" onClick={this.onScheduledNextMonth.bind(this)} >+30</a>
                         </div>
                     </div>
                 </div>
             </div>
         );
     }
-
 };

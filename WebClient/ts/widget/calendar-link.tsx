@@ -63,6 +63,7 @@ export class Component extends React.Component<Props, {}> {
         );
     }
     public onClick(ev: any) {
+        ev.preventDefault();
         ev.stopPropagation();
         var item: any = $("#" + this.schedule_btn_id);
         item.popover('show');
