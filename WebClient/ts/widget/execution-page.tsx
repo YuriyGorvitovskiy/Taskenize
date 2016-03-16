@@ -25,7 +25,7 @@ export class ExecutionPage extends React.Component<{},ExecutionPageState> {
             this.setState({tasks});
         }).bind(this));
     }
-
+    public onCompo
     public render() {
         var env = StyleUtil.findBootstrapEnvironment();
         var full = (env == 'md' || env == 'lg');

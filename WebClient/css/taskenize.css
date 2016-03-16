@@ -190,44 +190,6 @@
     right: -64px;
 }
 
-.task-narrow:nth-child(2) .left-action {
-    left: -96px;
-}
-.task-narrow:nth-child(2) .panel {
-    left: -32px;
-}
-.task-narrow:nth-child(2) .right-action {
-    right: -32px;
-}
-.task-narrow:nth-child(3) .left-action {
-    left: -128px;
-}
-.task-narrow:nth-child(3) .panel {
-    left: -64px;
-}
-.task-narrow:nth-child(3) .right-action {
-    right: 0px;
-}
-
-.task-narrow:nth-child(4) .left-action {
-    left: -32px;
-}
-.task-narrow:nth-child(4) .panel {
-    left: 32px;
-}
-.task-narrow:nth-child(4) .right-action {
-    right: -96px;
-}
-.task-narrow:nth-child(5) .left-action {
-    left: 0px;
-}
-.task-narrow:nth-child(5) .panel {
-    left: 64px;
-}
-.task-narrow:nth-child(5) .right-action {
-    right: -64px;
-}
-
 .task-narrow .inside {
     height: 64px;
     position: relative;
