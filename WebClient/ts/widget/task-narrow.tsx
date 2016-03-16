@@ -104,7 +104,7 @@ export class Component extends TaskCommon.Component {
         this.setSlidePos(slide);
 
         ev.preventDefault();
-        return false;
+        return true;
     }
     public onTouchEnd(ev: React.TouchEvent) {
         if (this.initialTouch == null)
