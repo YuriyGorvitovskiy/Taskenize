@@ -10,7 +10,9 @@ import * as HtmlEditor from './html-editor';
 import * as TaskCommon from './task-common';
 
 
-const TOUCH_TOLERANCE = 10;
+const TOUCH_TOLERANCE = 32;
+const SLIDE_LEFT = 64;
+const SLIDE_RIGHT = -64;
 const SLIDE_LEFT_MAX  = 72;
 const SLIDE_RIGHT_MIN  = -72;
 
@@ -110,9 +112,9 @@ export class Component extends TaskCommon.Component {
 
         var slide = this.lastTouch.pageX - this.initialTouch.pageX;
         if (slide > SLIDE_LEFT_MAX/3)
-            this.animateSlidePos(64);
+            this.animateSlidePos(SLIDE_LEFT);
         else if (slide < SLIDE_RIGHT_MIN/3)
-            this.animateSlidePos(-64);
+            this.animateSlidePos(SLIDE_RIGHT);
         else
             this.animateSlidePos(0);
 
@@ -151,14 +153,14 @@ export class Component extends TaskCommon.Component {
     }
 
     public setSlidePos(pos :number) {
-        this.leftActions.style.left = (pos - 64) + 'px';
+        this.leftActions.style.left = (pos - SLIDE_LEFT) + 'px';
         this.taskPanel.style.left = pos + 'px';
-        this.rightActions.style.right = (-pos - 64) + 'px';
+        this.rightActions.style.right = (-pos + SLIDE_RIGHT) + 'px';
     }
 
     public animateSlidePos(pos :number) {
-        $(this.leftActions).animate({left: (pos - 64) + 'px'}, 500);
+        $(this.leftActions).animate({left: (pos - SLIDE_LEFT) + 'px'}, 500);
         $(this.taskPanel).animate({left: pos + 'px'}, 500);
-        $(this.rightActions).animate({right: (-pos - 64) + 'px'}, 500);
+        $(this.rightActions).animate({right: (-pos + SLIDE_RIGHT) + 'px'}, 500);
     }
 };
