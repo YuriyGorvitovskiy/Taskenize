@@ -25,26 +25,30 @@ export class Component extends TaskCommon.Component {
         var from = active ? Moment(this.props.task.duration[0].begin) : null;
 
         return (
-            <div className={"task-narrow panel panel-" + (active ? "primary" : "default")}>
-                <div className={"inside bg-" + (category ? category.css : "default")}>
-                    <Complete.Narrow task={task} onComplete={this.onComplete.bind(this)} onPause={this.onPause.bind(this)}/>
-                    <Play.Component task={task} onPlay={this.onPlay.bind(this)} onPause={this.onPause.bind(this)}/>
-                    <Timer.Component active={active} from={from} plus={plus} />
-                    <HtmlEditor.Component
-                        className="title"
-                        singleLine={true}
-                        html={this.props.task.title}
-                        onSuccess={this.onTitleChange.bind(this)}
-                        onCancel={this.onTitleChange.bind(this)}
-                     />
-                     <HtmlEditor.Component
-                         className="subject"
-                         singleLine={false}
-                         html={this.props.task.subject}
-                         onSuccess={this.onSubjectChange.bind(this)}
-                         onCancel={this.onSubjectChange.bind(this)}
-                      />
+            <div className="task-narrow">
+                <button className="left-action btn btn-primary"><b>+1</b></button>
+                <div className={"panel panel-" + (active ? "primary" : "default")}>
+                    <div className={"inside bg-" + (category ? category.css : "default")}>
+                        <Complete.Narrow task={task} onComplete={this.onComplete.bind(this)} onPause={this.onPause.bind(this)}/>
+                        <Play.Component task={task} onPlay={this.onPlay.bind(this)} onPause={this.onPause.bind(this)}/>
+                        <Timer.Component active={active} from={from} plus={plus} />
+                        <HtmlEditor.Component
+                            className="title"
+                            singleLine={true}
+                            html={this.props.task.title}
+                            onSuccess={this.onTitleChange.bind(this)}
+                            onCancel={this.onTitleChange.bind(this)}
+                         />
+                         <HtmlEditor.Component
+                             className="subject"
+                             singleLine={false}
+                             html={this.props.task.subject}
+                             onSuccess={this.onSubjectChange.bind(this)}
+                             onCancel={this.onSubjectChange.bind(this)}
+                          />
+                    </div>
                 </div>
+                <button className="right-action  btn btn-danger"><span className="glyphicon glyphicon-trash"/></button>
             </div>
         );
     }

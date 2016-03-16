@@ -158,11 +158,79 @@
     width: 100%;
     height: 66px;
     float: clear;
+
     position: relative;
+    overflow: hidden;
+}
+.task-narrow .left-action {
+    text-align: center;
+    vertical-align: middle;
+    font-size: 25px;
+
+    width: 64px;
+    height: 66px;
+    position: absolute;
+    left: -64px;
+}
+.task-narrow .panel {
+    width: 100%;
+    height: 66px;
+    position: absolute;
+    left: 0;
+}
+
+.task-narrow .right-action {
+    text-align: center;
+    vertical-align: middle;
+    font-size: 25px;
+
+    width: 64px;
+    height: 66px;
+    position: absolute;
+    right: -64px;
+}
+
+.task-narrow:nth-child(2) .left-action {
+    left: -96px;
+}
+.task-narrow:nth-child(2) .panel {
+    left: -32px;
+}
+.task-narrow:nth-child(2) .right-action {
+    right: -32px;
+}
+.task-narrow:nth-child(3) .left-action {
+    left: -128px;
+}
+.task-narrow:nth-child(3) .panel {
+    left: -64px;
+}
+.task-narrow:nth-child(3) .right-action {
+    right: 0px;
+}
+
+.task-narrow:nth-child(4) .left-action {
+    left: -32px;
+}
+.task-narrow:nth-child(4) .panel {
+    left: 32px;
+}
+.task-narrow:nth-child(4) .right-action {
+    right: -96px;
+}
+.task-narrow:nth-child(5) .left-action {
+    left: 0px;
+}
+.task-narrow:nth-child(5) .panel {
+    left: 64px;
+}
+.task-narrow:nth-child(5) .right-action {
+    right: -64px;
 }
 
 .task-narrow .inside {
-    height: 100%;
+    height: 64px;
+    position: relative;
 }
 
 .task-narrow .complete {
