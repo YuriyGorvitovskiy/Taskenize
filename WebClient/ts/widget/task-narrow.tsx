@@ -103,7 +103,6 @@ export class Component extends TaskCommon.Component {
         slide = Math.max(SLIDE_RIGHT_MIN, Math.min(SLIDE_LEFT_MAX, slide));
         this.setSlidePos(slide);
 
-        ev.preventDefault();
         return true;
     }
     public onTouchEnd(ev: React.TouchEvent) {
