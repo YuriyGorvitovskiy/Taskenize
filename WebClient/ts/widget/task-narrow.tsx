@@ -26,8 +26,6 @@ export class Component extends TaskCommon.Component {
 
     public constructor() {
         super();
-        this.state = {
-        }
     }
 
     public render() {

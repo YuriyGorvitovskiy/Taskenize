@@ -8,25 +8,28 @@ import * as Calendar from './calendar-link';
 import * as Play from './timer-button-wide';
 import * as HtmlEditor from './html-editor';
 import * as TaskCommon from './task-common';
+import * as TaskDuration from './task-duration';
 import * as TextUtil from '../util/text';
 
 
 export class Component extends TaskCommon.Component {
     public constructor() {
         super();
-        this.state = {
-        }
     }
 
     public render() {
         var task = this.props.task;
         var active = (task.state == Model.State.RUNNING);
+        var collapsed = this.state.collapsed;
         var category = Model.Category.MAP[task.category];
         var plus = Model.calculateCompletedDuration(this.props.task);
         var from = active ? Moment(this.props.task.duration[0].begin) : null;
+        var duration = null;
+        if (!collapsed && task.duration && task.duration.length > 0)
+            duration = (<TaskDuration.Component task={this.props.task} />);
 
         return (
-            <div className={"task-wide panel panel-" + (active ? "primary" : "default")}>
+            <div className={"task-wide" + (collapsed ? " task-collapsed" : " task-expanded") + " panel panel-" + (active ? "primary" : "default")}>
                 <div className={"inside bg-" + (category ? category.css : "default")}>
                     <Complete.Wide task={task} onComplete={this.onComplete.bind(this)} onPause={this.onPause.bind(this)}/>
                     <Play.Component task={task} onPlay={this.onPlay.bind(this)} onPause={this.onPause.bind(this)}/>
@@ -44,23 +47,24 @@ export class Component extends TaskCommon.Component {
                         onSuccess={this.onSubjectChange.bind(this)}
                         onCancel={this.onSubjectChange.bind(this)}
                     />
+                    {duration}
                     <div className="footer">
                         <div className="info">
-                            <label>c:&nbsp;</label>
-                            <HtmlEditor.Component
-                                className="category"
-                                singleLine={true}
-                                html={this.props.task.category}
-                                onSuccess={this.onCategoryChange.bind(this)}
-                                onCancel={this.onCategoryChange.bind(this)}
-                            />
-                            <label>&nbsp;x:&nbsp;</label>
+                            <label>x:&nbsp;</label>
                             <HtmlEditor.Component
                                 className="category"
                                 singleLine={true}
                                 html={this.props.task.context}
                                 onSuccess={this.onContextChange.bind(this)}
                                 onCancel={this.onContextChange.bind(this)}
+                            />
+                            <label>&nbsp;c:&nbsp;</label>
+                            <HtmlEditor.Component
+                                className="category"
+                                singleLine={true}
+                                html={this.props.task.category}
+                                onSuccess={this.onCategoryChange.bind(this)}
+                                onCancel={this.onCategoryChange.bind(this)}
                             />
                             <label>&nbsp;p:&nbsp;</label>
                             <HtmlEditor.Component
@@ -94,14 +98,22 @@ export class Component extends TaskCommon.Component {
                             />&nbsp;
                             <a href="#" onClick={this.onScheduledNextDay.bind(this)} >+1</a>&nbsp;
                             <a href="#" onClick={this.onScheduledNextWeek.bind(this)} >+7</a>&nbsp;
-                            <a href="#" onClick={this.onScheduledNextMonth.bind(this)} >+30</a>
+                            <a href="#" onClick={this.onScheduledNextMonth.bind(this)} >+30</a>&nbsp;
                         </div>
                     </div>
                     <a className="delete" href="#" onClick={this.onDelete.bind(this)} >
                         <span className="glyphicon glyphicon-trash" />
                     </a>
+                    <a className="expand" href="#" onClick={this.onOpen.bind(this)} >
+                        <span className={"glyphicon glyphicon-triangle-" + (collapsed ? "right" : "bottom")} />
+                    </a>
                 </div>
             </div>
         );
+    }
+
+    public onOpen(ev) {
+        ev.preventDefault();
+        this.setState({collapsed: !this.state.collapsed});
     }
 };

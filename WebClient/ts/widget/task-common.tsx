@@ -16,13 +16,14 @@ export interface Props extends React.Props<Component> {
 };
 
 interface State {
-
+    collapsed: boolean;
 }
 
 export class Component extends React.Component<Props, State> {
     public constructor() {
         super();
         this.state = {
+            collapsed: true
         }
     }
 
