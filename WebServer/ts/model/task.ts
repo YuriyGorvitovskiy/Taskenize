@@ -11,6 +11,7 @@ export interface Period {
 
 export interface Task {
     _id?:       string;
+    user_id:    string;
     state:      State;
     title:      string;
     subject:    string;
