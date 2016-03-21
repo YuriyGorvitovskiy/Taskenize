@@ -8,13 +8,6 @@ var  _cl  : Mongo.Collection  = null;
 export function connect(db : Mongo.Db) {
     _db = db;
     _cl = db.collection('tasks');
-
-    //Migration to add user_id field
-    _cl.find({}).limit(1).next()
-        .then((task: Model.Task) => {
-            if (task.user_id == null)
-                _cl.updateMany({},{$set : {"user_id":"103797599429081501264"}}, {upsert: false});
-        });
 }
 
 function toId(_id: string | Mongo.ObjectID) : Mongo.ObjectID {
