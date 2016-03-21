@@ -1,5 +1,6 @@
 import * as $ from 'jquery';
 import * as React from 'react';
+import * as Model from '../model/user';
 
 export enum PageId {
     REVIEW,
@@ -42,21 +43,51 @@ export interface INavigationBarProps extends React.Props<NavigationBar> {
     onPage : (pageId: PageId) => void;
 }
 
-export class NavigationBar extends React.Component<INavigationBarProps,{}> {
+export interface INavigationBarState {
+    user : Model.User;
+}
+
+export class NavigationBar extends React.Component<INavigationBarProps,INavigationBarState> {
+    public constructor() {
+        super();
+        this.state = {
+            user: null
+        };
+
+        Model.get().done(((user) => {
+            this.setState({user});
+        }).bind(this));
+    }
+
     public render() {
         var topMenu = [];
         var active = this.props.active;
         var onPage = this.props.onPage;
         $.each(NavigationInfo.instance.pages, (index: number, page: Page) => {
             topMenu.push(<li className={active == page.id ? 'active' : ''} key={index}>
-                <a href="#" onClick={(evt)=>{evt.preventDefault();onPage(page.id);}} >{page.name}</a>
+                <a href="#" onClick={this.onPageMenu.bind(this, page)} >{page.name}</a>
             </li>);
         });
+        if (this.state.user != null && this.state.user.image != null) {
+            topMenu.push(
+                <li key="user-image">
+                    <img className="img-responsive img-circle"
+                        src={this.state.user.image}
+                        alt={this.state.user.display_name}
+                        title={this.state.user.display_name}/>
+                </li>
+            );
+        }
+        topMenu.push(
+            <li key="user-logout">
+                <a href="/logout" >Logout</a>
+            </li>
+        );
         return (
             <nav className="navbar navbar-default navbar-fixed-top">
                 <div className="container-fluid">
                     <div className="navbar-header">
-                        <button type = "button" className = "navbar-toggle" data-toggle = "collapse" data-target = "#navbar-collapse" style={{padding:"5px"}}>
+                        <button type = "button" className = "navbar-toggle" data-toggle ="collapse" data-target = "#navbar-collapse" style={{padding:"5px"}}>
                             <span className = "sr-only">Toggle navigation</span>
                             <span className = "glyphicon glyphicon-menu-hamburger" style={{marginLeft:"3px", marginRight:"3px", fontSize:"large"}}></span>
                         </button>
@@ -70,5 +101,11 @@ export class NavigationBar extends React.Component<INavigationBarProps,{}> {
                 </div>
             </nav>
         );
+    }
+
+    onPageMenu(page : Page, ev) {
+        ev.preventDefault();
+        $("#navbar-collapse").collapse('hide');
+        this.props.onPage(page.id);
     }
 }
