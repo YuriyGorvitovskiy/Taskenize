@@ -22,14 +22,16 @@ router.use(MethodOverride(function(req, res){
 }));
 
 router.get('/', function(req, res) {
-    Action.getAll()
+    Action.getAll(req.session['user']._id)
         .then(Util.jsonResponse(res))
         .catch(Util.errorResponse(res, 'get all tasks'));
 });
 
 //POST a new task
 router.post('/', function(req, res) {
-    Action.insert(req.body.title,
+    //console.log('Session["user"] ' + JSON.stringify(req.session['user']));
+    Action.insert(req.session['user']._id,
+                  req.body.title,
                   req.body.subject,
                   req.body.category,
                   req.body.context,

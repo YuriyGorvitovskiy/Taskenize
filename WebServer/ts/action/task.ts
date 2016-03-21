@@ -8,6 +8,13 @@ var  _cl  : Mongo.Collection  = null;
 export function connect(db : Mongo.Db) {
     _db = db;
     _cl = db.collection('tasks');
+
+    //Migration to add user_id field
+    _cl.find({}).limit(1).next()
+        .then((task: Model.Task) => {
+            if (task.user_id == null)
+                _cl.updateMany({},{$set : {"user_id":"103797599429081501264"}}, {upsert: false});
+        });
 }
 
 function toId(_id: string | Mongo.ObjectID) : Mongo.ObjectID {
@@ -30,8 +37,9 @@ export function getMany(_ids: (string | Mongo.ObjectID)[]) : Promise<Model.Task[
     return _cl.find({_id: {$in: toIds(_ids)}}).toArray();
 }
 
-export function getAll() : Promise<Model.Task[]> {
+export function getAll(user_id: string) : Promise<Model.Task[]> {
     return _cl.find({
+        user_id: user_id,
         state: {$in: [Model.State.RUNNING, Model.State.PAUSED]}
     }).sort({
         'scheduled': 1,
@@ -43,7 +51,8 @@ export function getRunning() : Promise<Model.Task[]> {
     return _cl.find({state: Model.State.RUNNING}).toArray();
 }
 
-export function insert( title:      string,
+export function insert( user_id:    string,
+                        title:      string,
                         subject:    string,
                         category:   string,
                         context:    string,
@@ -52,6 +61,7 @@ export function insert( title:      string,
                         scheduled:  Date,
                         collapsed:  boolean) : Promise<Model.Task> {
     var task : Model.Task = {
+        user_id:   user_id,
         state:     Model.State.PAUSED,
         title:     title || "",
         subject:   subject || "",
