@@ -10,7 +10,7 @@ import * as HtmlEditor from './html-editor';
 import * as TaskCommon from './task-common';
 
 
-const TOUCH_TOLERANCE = 32;
+const TOUCH_TOLERANCE = 64;
 const SLIDE_LEFT = 64;
 const SLIDE_RIGHT = -64;
 const SLIDE_LEFT_MAX  = 72;
@@ -97,9 +97,10 @@ export class Component extends TaskCommon.Component {
             return true;
 
         this.lastTouch = $.extend({}, ev.touches[0]);
-        var slide = this.lastTouch.pageX - this.initialTouch.pageX;
+        var slide = this.lastTouch.screenX - this.initialTouch.screenX;
         slide = Math.max(SLIDE_RIGHT_MIN, Math.min(SLIDE_LEFT_MAX, slide));
         this.setSlidePos(slide);
+
 
         return true;
     }
@@ -108,9 +109,9 @@ export class Component extends TaskCommon.Component {
             return true;
 
         var slide = this.lastTouch.pageX - this.initialTouch.pageX;
-        if (slide > SLIDE_LEFT_MAX/3)
+        if (slide > SLIDE_LEFT_MAX*2/3)
             this.animateSlidePos(SLIDE_LEFT);
-        else if (slide < SLIDE_RIGHT_MIN/3)
+        else if (slide < SLIDE_RIGHT_MIN*2/3)
             this.animateSlidePos(SLIDE_RIGHT);
         else
             this.animateSlidePos(0);
@@ -136,7 +137,7 @@ export class Component extends TaskCommon.Component {
             return false;
         }
         var touch = ev.touches[0];
-        if (Math.abs(touch.pageY - this.initialTouch.pageY) > TOUCH_TOLERANCE) {
+        if (Math.abs(touch.screenY - this.initialTouch.screenY) > TOUCH_TOLERANCE) {
             this.animateSlidePos(0);
             this.resetTouch();
             return false;
