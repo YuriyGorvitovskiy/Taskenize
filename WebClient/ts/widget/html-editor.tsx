@@ -90,7 +90,6 @@ export class Component extends React.Component<Props, State> {
         var html = ev.clipboardData.getData('text/html');
         if (!html) {
             html = ev.clipboardData.getData('text/plain');
-            html = html.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
             var regexToken = /(((ftp|https?):\/\/)[\-\w@:%_\+.~#?,&\/\/=]+)|((mailto:)?[_.\w-]+@([\w][\w\-]+\.)+[a-zA-Z]{2,3})/g;
             html = html.replace(regexToken, '<a href="$1">$1</a>');
@@ -136,7 +135,7 @@ export class Component extends React.Component<Props, State> {
         if (this.props.onSuccess)
             this.props.onSuccess(this.state.htmlNew);
     }
-    
+
     public onEscape(event: React.KeyboardEvent) {
         event.preventDefault();
         event.stopPropagation();
