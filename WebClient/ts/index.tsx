@@ -2,9 +2,9 @@ import './bootstrap';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as Nav from './widget/navigation-bar';
-import {ExecutionPage} from './widget/execution-page';
 import {InboxPage} from './widget/inbox-page';
-import {TestPage} from './widget/test-page';
+import {ExecutionPage} from './widget/execution-page';
+import * as ReportPage from './widget/report-page';
 
 interface IndexPageState {
     pageId: Nav.PageId
@@ -28,7 +28,7 @@ class IndexPage extends React.Component<{},IndexPageState> {
                 pageComponent = (<ExecutionPage />);
                 break;
             case Nav.PageId.REPORT:
-                pageComponent = (<TestPage />);
+                pageComponent = (<ReportPage.Component />);
                 break;
         }
         return (
