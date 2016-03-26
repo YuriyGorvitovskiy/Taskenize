@@ -86,6 +86,7 @@ export class Component extends TaskCommon.Component {
         super.onDelete(ev);
     }
     public onTouchStart(ev: React.TouchEvent) {
+        //console.log("onTouchStart – SY: " + ev.touches[0].screenY + ", PY: " + ev.touches[0].pageY + ", CY: " + ev.touches[0].clientY);
         if (ev.touches.length != 1)
             return true;
 
@@ -93,6 +94,7 @@ export class Component extends TaskCommon.Component {
         return true;
     }
     public onTouchMove(ev: React.TouchEvent) {
+        //console.log("onTouchMove – SY: " + ev.touches[0].screenY + ", PY: " + ev.touches[0].pageY + ", CY: " + ev.touches[0].clientY);
         if (!this.checkTouch(ev))
             return true;
 
@@ -101,10 +103,10 @@ export class Component extends TaskCommon.Component {
         slide = Math.max(SLIDE_RIGHT_MIN, Math.min(SLIDE_LEFT_MAX, slide));
         this.setSlidePos(slide);
 
-
         return true;
     }
     public onTouchEnd(ev: React.TouchEvent) {
+        //console.log("onTouchEnd – SY: " + ev.touches[0].screenY + ", PY: " + ev.touches[0].pageY + ", CY: " + ev.touches[0].clientY);
         if (this.initialTouch == null)
             return true;
 
@@ -137,7 +139,7 @@ export class Component extends TaskCommon.Component {
             return false;
         }
         var touch = ev.touches[0];
-        if (Math.abs(touch.screenY - this.initialTouch.screenY) > TOUCH_TOLERANCE) {
+        if (Math.abs(touch.clientY - this.initialTouch.clientY) > TOUCH_TOLERANCE) {
             this.animateSlidePos(0);
             this.resetTouch();
             return false;
