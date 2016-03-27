@@ -6,7 +6,6 @@
     "express-session": "github:DefinitelyTyped/DefinitelyTyped/express-session/express-session.d.ts#3ca0e0306a56b3dff5e6999dbd1627bf30201cfc",
     "method-override": "github:DefinitelyTyped/DefinitelyTyped/method-override/method-override.d.ts#2b58083c57296eca8691d258edb9cbb6b17f2b95",
     "mime": "github:DefinitelyTyped/DefinitelyTyped/mime/mime.d.ts#cb5206a8ac1c9a3ddfd126f5ecea6729b2361452",
-    "moment": "github:DefinitelyTyped/DefinitelyTyped/moment/moment.d.ts#56295f5058cac7ae458540423c50ac2dcf9fc711",
     "mongodb": "github:DefinitelyTyped/DefinitelyTyped/mongodb/mongodb.d.ts#3cf5221c92ba0cef413449fb4fb2fd1ffbfbcfbf",
     "mongoose": "github:DefinitelyTyped/DefinitelyTyped/mongoose/mongoose.d.ts#cebde64b3a1d63d07ee7c7dbc49b631ce220d027",
     "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#48c1e3c1d6baefa4f1a126f188c27c4fefd36bff",
