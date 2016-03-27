@@ -17,7 +17,7 @@ export enum Context {
 
 export class Category {
     name:       string;
-    title:     string;
+    title:      string;
     glyph:      string;
     css:        string;
     autorun:    boolean;

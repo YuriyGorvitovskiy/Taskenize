@@ -37,7 +37,7 @@ propertyToRequestNames[Property.CONTEXT] = 'context';
 propertyToRequestNames[Property.CATEGORY] = 'category';
 propertyToRequestNames[Property.PROJECT] = 'project';
 propertyToRequestNames[Property.STORY] = 'story';
-propertyToRequestNames[Property.TASK] = 'task';
+propertyToRequestNames[Property.TASK] = 'title';
 
 export interface Report {
     title:      string;
@@ -75,30 +75,31 @@ export function calculatePeriod(ancor: Ancor, range: Range) : Task.Period {
 }
 
 export function get(period: Task.Period, group_by: Property) {
-    var data: Request = {
-        period: period,
+    var data = {
+        begin: period.begin,
+        end: period.end,
         group_by: propertyToRequestNames[group_by]
     };
 
     return $.getJSON('/rest/v1/report/',data).then(parseReportJson);
 }
 
-function parseReportJson(json: any) : Report {
-    var report : Report = {
-        title:      json.title,
-        duration:   Moment.duration(json.duration),
-        reports:    []
-    };
-    $.each(json.reports, (index: number, sub: any) => {
-        report.reports.push(parseReportJson(sub));
+function parseReportJson(json: any[]) : Report[] {
+    var reports : Report[] = [];
+    $.each(json, (index: number, sub: any) => {
+        reports.push({
+           title:       sub.title,
+           duration:   Moment.duration(sub.duration),
+           reports:    parseReportJson(sub.reports)
+       });
     });
-    return report;
+    return reports;
 }
 
 export function reportComparator(a: Report, b: Report) : number {
     var diff = a.duration.asMilliseconds() - b.duration.asMilliseconds();
     if (diff != 0)
-        return diff;
+        return -diff; // descending order
 
     if (a.title < b.title)
         return -1;
@@ -107,7 +108,7 @@ export function reportComparator(a: Report, b: Report) : number {
     return 0;
 }
 
-export function sort(report: Report, comporator: (a: Report, b: Report) => number ) {
-    report.reports.sort(comporator);
-    $.each(report.reports, (i, r) => sort(r, comporator));
+export function sort(reports: Report[], comporator: (a: Report, b: Report) => number ) {
+    reports.sort(comporator);
+    $.each(reports, (i, r) => sort(r.reports, comporator));
 }
