@@ -6,10 +6,12 @@ import * as Passport from 'passport';
 import * as Google from 'passport-google-oauth';
 import * as Mongo from 'mongodb';
 
-import * as ActionTask  from './action/task';
-import * as ActionUser  from './action/user';
+import * as ActionTask from './action/task';
+import * as ActionUser from './action/user';
+import * as ActionReport from './action/report';
 import * as RouterTasks from './router/tasks';
 import * as RouterUser from './router/user';
+import * as RouterReport from './router/report';
 import * as Util from './router/util';
 
 var config = require('../../OAuth/config.secret.js').config;
@@ -22,6 +24,7 @@ Mongo.MongoClient.connect('mongodb://@127.0.0.1:27017/taskenize')
         db = _db;
         ActionTask.connect(_db);
         ActionUser.connect(_db);
+        ActionReport.connect(_db);
         console.log('Connection to DB Successful')
     })
     .catch((err) => console.log('Connection to DB Failed: ' + err));
@@ -97,6 +100,7 @@ app.use('/rest/*', (req, res, next) => {
 
 app.use('/rest/v1/tasks', RouterTasks.router);
 app.use('/rest/v1/user', RouterUser.router);
+app.use('/rest/v1/report', RouterReport.router);
 
 app.listen(config.server_port);
 console.log('Listen for: ' + config.server_port);

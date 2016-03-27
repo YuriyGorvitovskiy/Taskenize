@@ -6,12 +6,15 @@ import * as TaskNarrow from './task-narrow';
 import * as Model from '../model/report';
 
 import * as StyleUtil from '../util/style';
+import * as TextUtil from '../util/text';
+
+const sanitizeHTML = require('sanitize-html');
 
 interface State {
     ancor: Model.Ancor;
     range: Model.Range;
     group_by: Model.Property;
-    report: Model.Report;
+    reports: Model.Report[];
 }
 
 const anchorLabel : {[key:number]: string} = {};
@@ -41,6 +44,24 @@ export class Component extends React.Component<{},State> {
         var ancor = anchorLabel[this.state.ancor];
         var range = rangeLabel[this.state.range];
         var group_by = propertyLabel[this.state.group_by];
+        var reportRows = [];
+        $.each(this.state.reports, (index, report) => {
+            reportRows.push(
+                <tr className="report-group" key={index}>
+                    <td className="title">{report.title}</td>
+                    <td className="duration">{TextUtil.formatDuration(report.duration)}</td>
+                </tr>
+            );
+            $.each(report.reports, (subIndex, subReport) => {
+                var innerHtml = {__html:sanitizeHTML(subReport.title)};
+                reportRows.push(
+                    <tr className="report-sub" key={index + "-" + subIndex}>
+                        <td className="title"><span dangerouslySetInnerHTML={innerHtml}></span></td>
+                        <td className="duration">{TextUtil.formatDuration(subReport.duration)}</td>
+                    </tr>
+                );
+            });
+        });
         return (
             <div className="container">
                 <div className="row">
@@ -119,8 +140,9 @@ export class Component extends React.Component<{},State> {
                 </div>
                 <div className="row"><br/></div>
                 <div className="row">
-                    <div className="panel-group" id="reports">
-                    </div>
+                    <table className="table report"><tbody>
+                        {reportRows}
+                    </tbody></table>
                 </div>
             </div>
         );
@@ -146,7 +168,7 @@ export class Component extends React.Component<{},State> {
             ancor: ancor,
             range: range,
             group_by: group_by,
-            report: null
+            reports: []
         };
         if (this.state == null)
             this.state = newState;
@@ -154,13 +176,13 @@ export class Component extends React.Component<{},State> {
             this.setState(newState);
 
         Model.get(Model.calculatePeriod(ancor, range), group_by).done(((serverReport) => {
-            var report = serverReport as Model.Report;
-            Model.sort(report, Model.reportComparator);
+            var reports = serverReport as Model.Report[];
+            Model.sort(reports, Model.reportComparator);
             this.setState({
                 ancor: ancor,
                 range: range,
                 group_by: group_by,
-                report: report
+                reports: reports
             });
         }).bind(this));
     }

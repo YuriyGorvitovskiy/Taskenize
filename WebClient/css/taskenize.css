@@ -302,6 +302,26 @@
     bottom: 0;
     float: right;
 }
+/**********************/
+.report {
+    width: 100%;
+}
+.report-group {
+    font-size: large;
+    font-weight: bold;
+}
+.report-sub .title {
+    padding-left: 3em;
+}
+
+.report .title {
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+.report .duration {
+    text-align: right;
+}
 
 /**********************/
 .test-task {
