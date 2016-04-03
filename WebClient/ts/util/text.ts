@@ -11,6 +11,12 @@ export function pad0(str: any, digits : number) : string {
     return s;
 }
 
+export function formatInputDateTimeLocal(date : Date, withSecs: boolean) : string {
+    if (date == null)
+        return '';
+    return Moment(date).format('YYYY-MM-DDTHH:mm' + (withSecs ? ':ss' : ''));
+};
+
 export function formatDate(date : Date, withSecs: boolean) : string {
     if (date == null)
         return '';
@@ -31,7 +37,7 @@ export function formatPeriod(from : Date, to : Date) : string {
 export function formatDuration(duration : Moment.Duration) : string {
     if (duration.asSeconds() < 0)
         duration = Moment.duration(0, 'seconds');
-        
+
     var sec = duration.seconds();
     var min = duration.minutes();
     var hr = Math.floor(duration.asHours());

@@ -19,11 +19,15 @@ export class Component extends React.Component<Props, {}> {
 
     public render() {
         var active = (this.props.task.state == Model.State.RUNNING);
+        var plus = Model.calculateCompletedDuration(this.props.task);
+        var from = active ? Moment(this.props.task.duration[0].begin) : null;
         var onClick = active ? this.props.onPause : this.props.onPlay;
         return (
             <button className={"timer-btn btn btn-" + (active ? "primary" : "default")} onClick={onClick}>
+                <Timer.Component active={active} from={from} plus={plus} />
                 <div className="glyph"><span className={"glyphicon glyphicon-" + (active ? "pause": "play")}></span></div>
             </button>
         );
+
     }
 }

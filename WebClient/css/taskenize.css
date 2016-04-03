@@ -268,10 +268,17 @@
 
 .task-narrow .timer-btn {
     margin: 0;
-    font-size: 25px;
-    width: 64px;
+    padding: 0;
+    font-size: 13px;
+    font-weight: bold;
+    width:  64px;
     height: 64px;
     float: right;
+    line-height: 20px;
+}
+
+.task-narrow .timer-btn .glyph {
+    font-size: 20px;
 }
 
 .task-narrow .title {
@@ -290,18 +297,207 @@
     height: 40px;
 }
 
-.task-narrow .timer {
-    padding: 0 5px;
-    background-color: white;
-    border: 1px solid lightgrey;
-    text-align: center;
-    font-size: large;
+.task-narrow .expand {
+    font-size: small;
     font-weight: bold;
     position: absolute;
     right: 64px;
     bottom: 0;
     float: right;
+    height: 25px;
+    width: 64px;
 }
+
+/**********************/
+.task-narrow-expanded {
+    width: 100%;
+    float: none;
+
+    position: relative;
+    overflow: hidden;
+}
+
+.task-narrow-expanded .panel {
+    width: 100%;
+}
+
+.task-narrow-expanded .complete {
+    width:  64px;
+    height: 64px;
+    float: left;
+    position: relative;
+}
+
+.task-narrow-expanded .complete img {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.task-narrow-expanded .complete span {
+    position: absolute;
+    top: 20px;
+    color: lightgrey;
+    font-size: 25px;
+    text-align: center;
+    width: 64px;
+}
+
+.task-narrow-expanded .timer-btn {
+    margin: 0;
+    padding: 0;
+    font-size: 13px;
+    font-weight: bold;
+    width:  64px;
+    height: 64px;
+    float: right;
+    line-height: 20px;
+}
+
+.task-narrow-expanded .timer-btn .glyph {
+    font-size: 20px;
+}
+
+.task-narrow-expanded .expand {
+    font-size: small;
+    font-weight: bold;
+    float: right;
+    height: 25px;
+    width: 64px;
+}
+
+.task-narrow-expanded .label-title {
+    margin-top: 5px;
+}
+
+.task-narrow-expanded .title {
+    border-style: solid;
+    border-width: 1px;
+    border-color: grey;
+    border-radius: 3px;
+    background-color: white;
+    margin-bottom: 5px;
+    text-align: left;
+    font-weight: bold;
+    text-overflow: clip;
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
+}
+
+.task-narrow-expanded .label-subject {
+    clear: left;
+    margin: 5px;
+    display: block;
+}
+
+.task-narrow-expanded .subject {
+    border-style: solid;
+    border-width: 1px;
+    border-color: grey;
+    border-radius: 3px;
+    background-color: white;
+    text-align: left;
+    text-overflow: clip;
+    margin: 0 5px 5px 5px;
+    overflow: hidden;
+    display: block;
+}
+.task-narrow-expanded .label-category {
+    clear: left;
+    margin: 5px;
+    display: block;
+}
+
+.task-narrow-expanded .category {
+    border-style: solid;
+    border-width: 1px;
+    border-color: grey;
+    border-radius: 3px;
+    background-color: white;
+    text-align: left;
+    text-overflow: clip;
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
+    margin: 0 5px 5px 5px;
+}
+
+.task-narrow-expanded .label-subject {
+    clear: left;
+    margin: 5px;
+    display: block;
+}
+
+.task-narrow-expanded .duration .timer {
+    padding: 0 5px;
+    background-color: white;
+    border-style: solid;
+    border-width: 1px;
+    border-color: grey;
+    border-radius: 3px;
+    text-align: center;
+    font-size: large;
+    font-weight: bold;
+    margin: 0 5px 5px 5px;
+    float: right;
+}
+
+.task-narrow-expanded .label-duration {
+    font-size: large;
+    font-weight: bold;
+    margin: 5px;
+    margin-bottom: 7px;
+    display: block;
+}
+
+.task-narrow-expanded .duration-block {
+    padding: 5px;
+    padding-bottom: 0;
+    border-style: solid;
+    border-width: 1px;
+    border-color: grey;
+    border-radius: 3px;
+    margin: 3px 5px;
+    position: relative;
+}
+.task-narrow-expanded .duration-block input {
+    margin-bottom: 5px;
+    /*width: 200px;*/
+    width: 70%;
+    height: 25px;
+    text-align: center;
+}
+
+.task-narrow-expanded .duration-block .timer {
+    margin-top: 14px;
+    width: 100px;
+}
+
+.task-narrow-expanded .duration-block button {
+    float: right;
+    margin-top: 10px;
+}
+
+.task-narrow-expanded .duration-block .button-spacer {
+    float: right;
+    margin-top: 10px;
+    width: 40px;
+}
+
+.task-narrow-expanded .duration-block .duration-time label {
+    font-weight: bold;
+    display: block;
+}
+
+.task-narrow-expanded .delete {
+    margin: 0;
+    width: 100%;
+    text-align: right;
+}
+.task-narrow-expanded .delete button {
+    margin: 5px;
+}
+
 /**********************/
 .report {
     width: 100%;
