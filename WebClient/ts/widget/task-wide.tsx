@@ -8,7 +8,7 @@ import * as Calendar from './calendar-link';
 import * as Play from './timer-button-wide';
 import * as HtmlEditor from './html-editor';
 import * as TaskCommon from './task-common';
-import * as TaskDuration from './task-duration';
+import * as TaskDuration from './task-wide-duration';
 import * as TextUtil from '../util/text';
 
 

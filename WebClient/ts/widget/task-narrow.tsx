@@ -7,7 +7,9 @@ import * as Complete from './complete-button';
 import * as Play from './timer-button-narrow';
 import * as Timer from './timer';
 import * as HtmlEditor from './html-editor';
+import * as TaskDuration from './task-narrow-duration';
 import * as TaskCommon from './task-common';
+import * as TextUtil from '../util/text';
 
 
 const TOUCH_TOLERANCE = 64;
@@ -34,14 +36,59 @@ export class Component extends TaskCommon.Component {
         var category = Model.Category.MAP[task.category];
         var plus = Model.calculateCompletedDuration(this.props.task);
         var from = active ? Moment(this.props.task.duration[0].begin) : null;
+        var collapsed = this.state.collapsed;
 
+        var duration = null;
+        if (!collapsed && task.duration && task.duration.length > 0)
+            duration = (<TaskDuration.Component task={this.props.task} />);
+
+        if (collapsed) {
+            return (
+                <div className="task-narrow">
+                    <button className="left-action btn btn-primary"
+                            ref={(c) => this.leftActions = c}
+                            onClick={this.onScheduledNextDay.bind(this)}>
+                        <b>+1</b>
+                    </button>
+                    <div className={"panel panel-" + (active ? "primary" : "default")}
+                         onTouchStart={this.onTouchStart.bind(this)}
+                         onTouchMove={this.onTouchMove.bind(this)}
+                         onTouchEnd={this.onTouchEnd.bind(this)}
+                         onTouchCancel={this.onTouchCancel.bind(this)}
+                         ref={(c) => this.taskPanel = c}>
+                        <div className={"inside bg-" + (category ? category.css : "default")}>
+                            <Complete.Narrow task={task} onComplete={this.onComplete.bind(this)} onPause={this.onPause.bind(this)}/>
+                            <Play.Component task={task} onPlay={this.onPlay.bind(this)} onPause={this.onPause.bind(this)}/>
+                            <button className="btn btn-default expand"
+                                    onClick={this.onCollapse.bind(this)}>
+                                <span className="glyph"><span className="glyphicon glyphicon-triangle-bottom"></span></span>
+                            </button>
+                            <HtmlEditor.Component
+                                className="title"
+                                singleLine={true}
+                                html={this.props.task.title}
+                                onSuccess={this.onTitleChange.bind(this)}
+                                onCancel={this.onTitleChange.bind(this)}
+                             />
+                             <HtmlEditor.Component
+                                 className="subject"
+                                 singleLine={false}
+                                 html={this.props.task.subject}
+                                 onSuccess={this.onSubjectChange.bind(this)}
+                                 onCancel={this.onSubjectChange.bind(this)}
+                              />
+                        </div>
+                    </div>
+                    <button className="right-action  btn btn-danger"
+                            ref={(c) => this.rightActions = c}
+                            onClick={this.onDelete.bind(this)}>
+                        <span className="glyphicon glyphicon-trash"/>
+                    </button>
+                </div>
+            );
+        }
         return (
-            <div className="task-narrow">
-                <button className="left-action btn btn-primary"
-                        ref={(c) => this.leftActions = c}
-                        onClick={this.onScheduledNextDay.bind(this)}>
-                    <b>+1</b>
-                </button>
+            <div className="task-narrow-expanded">
                 <div className={"panel panel-" + (active ? "primary" : "default")}
                      onTouchStart={this.onTouchStart.bind(this)}
                      onTouchMove={this.onTouchMove.bind(this)}
@@ -51,28 +98,94 @@ export class Component extends TaskCommon.Component {
                     <div className={"inside bg-" + (category ? category.css : "default")}>
                         <Complete.Narrow task={task} onComplete={this.onComplete.bind(this)} onPause={this.onPause.bind(this)}/>
                         <Play.Component task={task} onPlay={this.onPlay.bind(this)} onPause={this.onPause.bind(this)}/>
-                        <Timer.Component active={active} from={from} plus={plus} />
+                        <label className="label-title">Title:</label>
+                        <button className="btn btn-default expand"
+                                onClick={this.onCollapse.bind(this)}>
+                            <div className="glyph"><span className="glyphicon glyphicon-triangle-top"></span></div>
+                        </button>
                         <HtmlEditor.Component
                             className="title"
                             singleLine={true}
                             html={this.props.task.title}
                             onSuccess={this.onTitleChange.bind(this)}
                             onCancel={this.onTitleChange.bind(this)}
-                         />
-                         <HtmlEditor.Component
+                        />
+                        <label className="label-subject">Subject:</label>
+                        <HtmlEditor.Component
                              className="subject"
                              singleLine={false}
                              html={this.props.task.subject}
                              onSuccess={this.onSubjectChange.bind(this)}
                              onCancel={this.onSubjectChange.bind(this)}
-                          />
+                        />
+                        <label className="label-category">Context:</label>
+                        <HtmlEditor.Component
+                            className="category"
+                            singleLine={true}
+                            html={this.props.task.context}
+                            onSuccess={this.onContextChange.bind(this)}
+                            onCancel={this.onContextChange.bind(this)}
+                        />
+                        <label className="label-category">Category:</label>
+                        <HtmlEditor.Component
+                            className="category"
+                            singleLine={true}
+                            html={this.props.task.category}
+                            onSuccess={this.onCategoryChange.bind(this)}
+                            onCancel={this.onCategoryChange.bind(this)}
+                        />
+                        <label className="label-category">Project:</label>
+                        <HtmlEditor.Component
+                            className="category"
+                            singleLine={true}
+                            html={this.props.task.project}
+                            onSuccess={this.onProjectChange.bind(this)}
+                            onCancel={this.onProjectChange.bind(this)}
+                        />
+                        <label className="label-category">Story:</label>
+                        <HtmlEditor.Component
+                            className="category"
+                            singleLine={true}
+                            html={this.props.task.story}
+                            onSuccess={this.onStoryChange.bind(this)}
+                            onCancel={this.onStoryChange.bind(this)}
+                        />
+                        <label className="label-category">Schedule:</label>
+                        <div className="input-group">
+                            <span className="input-group-btn">
+                                <button className="btn btn-primary"
+                                        onClick={this.onScheduledNextDay.bind(this)}>
+                                    <b>+1</b>
+                                </button>
+                                <button className="btn btn-primary"
+                                        onClick={this.onScheduledNextWeek.bind(this)}>
+                                    <b>+7</b>
+                                </button>
+                                <button className="btn btn-primary"
+                                        onClick={this.onScheduledNextMonth.bind(this)}>
+                                    <b>+30</b>
+                                </button>
+                            </span>
+                            <input  type="datetime-local"
+                                    className="form-control"
+                                    value={TextUtil.formatInputDateTimeLocal(this.props.task.scheduled, false)}
+                                    onChange={this.onScheduledChange.bind(this)}
+                            />
+                        </div>
+                        <div className="duration" >
+                            <Timer.Component active={active} from={from} plus={plus} onClick={this.onCollapse.bind(this)}/>
+                            <label className="label-duration">Duration:</label>
+                            {duration}
+                        </div>
+                        <div className="delete">
+                            <button className="btn btn-danger"
+                                    ref={(c) => this.rightActions = c}
+                                    onClick={this.onDelete.bind(this)}>
+                                <span className="glyphicon glyphicon-trash"/>
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <button className="right-action  btn btn-danger"
-                        ref={(c) => this.rightActions = c}
-                        onClick={this.onDelete.bind(this)}>
-                    <span className="glyphicon glyphicon-trash"/>
-                </button>
             </div>
         );
     }
@@ -81,10 +194,22 @@ export class Component extends TaskCommon.Component {
         super.onScheduledNextDay(ev);
         this.animateSlidePos(0);
     }
+
+    public onScheduledChange(ev) {
+        super.onScheduledChange(ev.target.value);
+    }
     public onDelete(ev) {
         this.setSlidePos(0);
         super.onDelete(ev);
     }
+    public onCollapse(ev: React.SyntheticEvent) {
+        ev.preventDefault();
+        console.log("onCollapse");
+        this.setState({
+            collapsed: !this.state.collapsed
+        });
+    }
+
     public onTouchStart(ev: React.TouchEvent) {
         //console.log("onTouchStart – SY: " + ev.touches[0].screenY + ", PY: " + ev.touches[0].pageY + ", CY: " + ev.touches[0].clientY);
         if (ev.touches.length != 1)

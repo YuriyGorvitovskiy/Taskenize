@@ -7,6 +7,7 @@ export interface Props extends React.Props<Component> {
     active: boolean;
     from:   Moment.Moment;
     plus:   Moment.Duration;
+    onClick?: (ev: React.SyntheticEvent) => any;
 };
 
 export interface State {
@@ -47,7 +48,11 @@ export class Component extends React.Component<Props, {}> {
         if (this.props.active && this.mounted && this.timer === null)
             this.timer = setInterval(this.onTick.bind(this), 1000);
 
-        return <div className={"timer" + (this.props.active ? " active" : "")}>{TextUtil.formatDuration(duration)}</div>
-
+        return (
+            <div onClick={this.props.onClick}
+                 className={"timer" + (this.props.active ? " active" : "")}>
+                 {TextUtil.formatDuration(duration)}
+            </div>
+        );
     }
 }
