@@ -22,4 +22,12 @@ export interface Task {
     scheduled:  Date;
     duration:   Period[];
     collapsed:  boolean;
+    created_time:   Date;
+    completed_time: Date;
 };
+
+export interface Query {
+    user_id: string;
+    state: State | State[];
+    completed_period?: Period;
+}

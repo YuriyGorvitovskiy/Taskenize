@@ -11,6 +11,28 @@ export function pad0(str: any, digits : number) : string {
     return s;
 }
 
+export function formatGroupDay(date : Date, emptyIsToday: boolean) : string {
+    if (date == null)
+        return emptyIsToday ? 'Today' : '';
+
+    var dayAfterTommorow = Moment().add(2,'days').startOf('day');
+    var tommorow = Moment().add(1,'days').startOf('day');
+    var today = Moment().startOf('day');
+    var yesterday = Moment().add(-1,'days').startOf('day');
+
+    var moment = Moment(date);
+    if (moment.isBetween(today, tommorow))
+        return 'Today';
+
+    if (moment.isBetween(yesterday, today))
+        return 'Yesterday';
+
+    if (moment.isBetween(tommorow, dayAfterTommorow))
+        return 'Tomorrow';
+
+    return moment.format('ddd D MMMM');
+};
+
 export function formatInputDateTimeLocal(date : Date, withSecs: boolean) : string {
     if (date == null)
         return '';

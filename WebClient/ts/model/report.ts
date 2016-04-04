@@ -20,6 +20,7 @@ export enum Property {
     PROJECT,
     STORY,
     TASK,
+    COMPLETED_TIME
 }
 
 const rangeToUnitOfTime : {[key:number]: string} = {};
@@ -38,6 +39,7 @@ propertyToRequestNames[Property.CATEGORY] = 'category';
 propertyToRequestNames[Property.PROJECT] = 'project';
 propertyToRequestNames[Property.STORY] = 'story';
 propertyToRequestNames[Property.TASK] = 'title';
+propertyToRequestNames[Property.COMPLETED_TIME] = 'completed_time';
 
 export interface Report {
     title:      string;
@@ -103,7 +105,7 @@ export function reportComparator(a: Report, b: Report) : number {
 
     if (a.title < b.title)
         return -1;
-    if (a.title < b.title)
+    if (a.title > b.title)
         return 1;
     return 0;
 }

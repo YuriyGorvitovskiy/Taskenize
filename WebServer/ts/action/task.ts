@@ -8,6 +8,44 @@ var  _cl  : Mongo.Collection  = null;
 export function connect(db : Mongo.Db) {
     _db = db;
     _cl = db.collection('tasks');
+
+    //Migration to add completed_time and created_time field
+    _cl.find({}).limit(1).next()
+        .then((task: Model.Task) => {
+            if (task.created_time == null) {
+                _cl.find({}).forEach(
+                    (task: Model.Task) => {
+                        var created_time = task.duration.length > 0 ? task.duration[task.duration.length - 1].begin : new Date();
+                        var completed_time = null;
+                        if (task.state == Model.State.COMPLETED)
+                            completed_time = task.duration.length > 0 ? task.duration[0].end : new Date();
+
+                        _cl.updateOne(
+                            {_id: task._id},
+                            {
+                                $set : {
+                                    created_time:   created_time,
+                                    completed_time: completed_time
+                                }
+                            },
+                            (error, result) => {
+                                if (result.matchedCount == 1) {
+                                    console.log("Updating task: " +  task._id + ", created_time: " + task.created_time + ", completed_time: " + task.completed_time);
+                                }
+                                if (error) {
+                                    console.log("Update error: " + JSON.stringify(error));
+                                }
+                            }
+                        );
+                    },
+                    (error) => {
+                        if (error) {
+                            console.log("Find error: " + JSON.stringify(error));
+                        }
+                    }
+                );
+            }
+        });
 }
 
 function toId(_id: string | Mongo.ObjectID) : Mongo.ObjectID {
@@ -30,11 +68,23 @@ export function getMany(_ids: (string | Mongo.ObjectID)[]) : Promise<Model.Task[
     return _cl.find({_id: {$in: toIds(_ids)}}).toArray();
 }
 
-export function getAll(user_id: string) : Promise<Model.Task[]> {
-    return _cl.find({
-        user_id: user_id,
-        state: {$in: [Model.State.RUNNING, Model.State.PAUSED]}
-    }).sort({
+export function getAll(query: Model.Query) : Promise<Model.Task[]> {
+    var filter = {
+        user_id: query.user_id,
+    };
+    if (query.state != null) {
+        var states = [];
+        [].concat(query.state).forEach((state) => states.push(parseInt(state)));
+        filter['state'] = {$in: states};
+    }
+    if (query.completed_period != null) {
+        filter['completed_time'] = {
+            $gte: query.completed_period.begin,
+            $lt: query.completed_period.end
+        };
+    }
+    //console.log("Filter: " + JSON.stringify(filter));
+    return _cl.find(filter).sort({
         'scheduled': 1,
         'duration.0.end': -1
     }).toArray();
@@ -52,7 +102,8 @@ export function insert( user_id:    string,
                         project:    string,
                         story:      string,
                         scheduled:  Date,
-                        collapsed:  boolean) : Promise<Model.Task> {
+                        collapsed:  boolean,
+                        created_time:  Date) : Promise<Model.Task> {
     var task : Model.Task = {
         user_id:   user_id,
         state:     Model.State.PAUSED,
@@ -64,7 +115,9 @@ export function insert( user_id:    string,
         story:     story || "",
         scheduled: scheduled || null,
         duration:  [],
-        collapsed: collapsed == null ? true : collapsed
+        collapsed: collapsed == null ? true : collapsed,
+        created_time: created_time || null,
+        completed_time: null
     };
     return _cl.insertOne(task)
         .then(() => {return task});
@@ -93,36 +146,43 @@ export function removeDuration(_id: string | Mongo.ObjectID, index: number) : Pr
             .then(() => get(_id));
 }
 
-function pauseRunningTasks(_ids: Mongo.ObjectID[], pauseState: Model.State) : Promise<Model.Task[]> {
+function pauseRunningTasks(_ids: Mongo.ObjectID[], pauseState: Model.State, time: Date) : Promise<Model.Task[]> {
     return updateMany(
         _ids,
         {$set: {
             state:              pauseState,
-            'duration.0.end':   new Date()
+            'duration.0.end':   time || new Date()
         }}
     );
 }
-export function pauseTask(_id: string | Mongo.ObjectID) : Promise<Model.Task> {
+export function pauseTask(_id: string | Mongo.ObjectID, time: Date) : Promise<Model.Task> {
     return get(_id).then((task) => {
         switch(task.state) {
             case Model.State.PAUSED:
                 return task;
 
             case Model.State.RUNNING:
-                return pauseRunningTasks([toId(_id)], Model.State.PAUSED).then((tasks) => tasks[0]);
+                return pauseRunningTasks([toId(_id)], Model.State.PAUSED, time).then((tasks) => tasks[0]);
         }
-        return update(_id, {$set: {state: Model.State.PAUSED}});
+        return update(_id, {$set: {
+            state: Model.State.PAUSED,
+            completed_time: null
+        }});
     });
 }
 
-function startTask(_id: string | Mongo.ObjectID) : Promise<Model.Task> {
+function startTask(_id: string | Mongo.ObjectID, time: Date) : Promise<Model.Task> {
     return update(_id, {
-        $set: {state: Model.State.RUNNING, scheduled: null},
-        $push:{'duration':  { $each: [{begin: new Date(), end: null}], $position: 0}}
+        $set: {
+            state: Model.State.RUNNING,
+            scheduled: null,
+            completed_time: null
+        },
+        $push:{'duration':  { $each: [{begin: time || new Date(), end: null}], $position: 0}}
     })
 }
 
-export function runTask(_id: string | Mongo.ObjectID) : Promise<Model.Task[]> {
+export function runTask(_id: string | Mongo.ObjectID, time: Date) : Promise<Model.Task[]> {
     var idToRun = toId(_id);
     return getRunning().then((tasks) => {
         var idsToPause: Mongo.ObjectID[] = [];
@@ -137,35 +197,40 @@ export function runTask(_id: string | Mongo.ObjectID) : Promise<Model.Task[]> {
             if (runningTask)
                 return [runningTask];
 
-            return startTask(_id).then((task) => [task]);
+            return startTask(_id, time).then((task) => [task]);
         }
-        return pauseRunningTasks(idsToPause, Model.State.PAUSED)
-            .then((tasks) => startTask(_id).then((task) => [task].concat(tasks)));
+        return pauseRunningTasks(idsToPause, Model.State.PAUSED, time)
+            .then((tasks) => startTask(_id, time).then((task) => [task].concat(tasks)));
     });
 }
 
-export function completeTask(_id: string | Mongo.ObjectID) : Promise<Model.Task> {
+export function completeTask(_id: string | Mongo.ObjectID, time: Date) : Promise<Model.Task> {
     return get(_id).then((task) => {
         switch(task.state) {
             case Model.State.COMPLETED:
                 return task;
 
             case Model.State.RUNNING:
-                return pauseRunningTasks([toId(_id)], Model.State.COMPLETED).then((tasks) => tasks[0]);
+                return pauseRunningTasks([toId(_id)], Model.State.COMPLETED, time).then((tasks) => tasks[0]);
         }
-        return update(_id, {$set: {state: Model.State.COMPLETED}});
+        return update(_id, {
+            $set: {
+                state: Model.State.COMPLETED,
+                completed_time: time
+            }
+        });
     });
 }
 
-export function changeState(_id: string | Mongo.ObjectID, newState: Model.State) : Promise<Model.Task[]> {
+export function changeState(_id: string | Mongo.ObjectID, newState: Model.State, time: Date) : Promise<Model.Task[]> {
     switch(newState) {
         case Model.State.PAUSED:
-            return pauseTask(_id)
+            return pauseTask(_id, time)
                 .then((task)=>[task]);
         case Model.State.RUNNING:
-            return runTask(_id);
+            return runTask(_id, time);
         case Model.State.COMPLETED:
-            return completeTask(_id)
+            return completeTask(_id, time)
                 .then((task)=>[task]);
     }
     return new Promise<Model.Task[]>((resolve, reject) => {

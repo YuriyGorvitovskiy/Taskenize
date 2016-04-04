@@ -5,6 +5,7 @@ import * as Model from '../model/user';
 export enum PageId {
     REVIEW,
     EXECUTION,
+    COMPLETED,
     REPORT
 }
 
@@ -25,6 +26,7 @@ export class NavigationInfo {
     constructor() {
         this.addPage(PageId.REVIEW,     "Review")
             .addPage(PageId.EXECUTION,  "Execution")
+            .addPage(PageId.COMPLETED,  "Completed")
             .addPage(PageId.REPORT,     "Report")
         ;
     }

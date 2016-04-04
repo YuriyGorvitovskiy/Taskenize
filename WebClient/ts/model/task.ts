@@ -1,5 +1,8 @@
 import * as $ from 'jquery';
 import * as Moment from 'moment';
+import * as Report from './report';
+
+import * as Text from '../util/text';
 
 export enum State {
     PAUSED,
@@ -51,25 +54,40 @@ export interface Period {
 }
 
 export interface Task {
-    _id?:       string;
-    state:      State;
-    title:      string;
-    subject:    string;
-    context:    string;
-    category:   string;
-    project:    string;
-    story:      string;
-    scheduled:  Date;
-    duration:   Period[];
-    collapsed:  boolean;
+    _id?:           string;
+    state:          State;
+    title:          string;
+    subject:        string;
+    context:        string;
+    category:       string;
+    project:        string;
+    story:          string;
+    scheduled:      Date;
+    duration:       Period[];
+    collapsed:      boolean;
+    created_time:   Date;
+    completed_time: Date;
 }
 
 export function get(id: string) {
     return $.getJSON('/rest/v1/tasks/' + id).then(parseTaskJson);
 }
 
-export function getAll() {
-    return $.getJSON('/rest/v1/tasks').then(parseTasksJson);
+export function getExecuting() {
+    var data = {
+        state: [State.PAUSED, State.RUNNING]
+    };
+    return $.getJSON('/rest/v1/tasks', data).then(parseTasksJson);
+}
+
+export function getCompleted(period: Period) {
+    var data = {
+        completed_begin: period.begin,
+        completed_end: period.end,
+        state: State.COMPLETED
+    };
+
+    return $.getJSON('/rest/v1/tasks', data).then(parseTasksJson);
 }
 
 export function postNew(task : Task) {
@@ -85,7 +103,10 @@ export function updateState(task: Task) {
     return $.ajax({
         method: "PUT",
         url: '/rest/v1/tasks/' + task._id,
-        data: {state: task.state},
+        data: {
+            state: task.state,
+            time: new Date()
+        },
         dataType: "json"
     }).then(parseTasksJson);
 }
@@ -191,15 +212,18 @@ function parseTaskJson(json: any) : Task {
     var task = {
         _id:        json._id,
         state:      json.state,
-        title:      json.title,
-        subject:    json.subject,
-        context:    json.context,
-        category:   json.category,
-        project:    json.project,
-        story:      json.story,
+        title:      json.title || "",
+        subject:    json.subject || "",
+        context:    json.context || "",
+        category:   json.category || "",
+        project:    json.project || "",
+        story:      json.story || "",
         scheduled:  json.scheduled ? new Date(json.scheduled) : null,
         duration:   [],
-        collapsed:  json.collapsed==='true'
+        collapsed:  json.collapsed==='true',
+        created_time:   json.created_time ? new Date(json.created_time) : null,
+        completed_time: json.completed_time ? new Date(json.completed_time) : null,
+
     }
     if ($.isArray(json.duration)) {
         json.duration.forEach((period) => {
@@ -248,4 +272,66 @@ export function executionComparator(a: Task, b: Task) : number {
     at = a.duration.length == 0 ? 0 : a.duration[0].end == null ? 0 : a.duration[0].end.getTime();
     bt = b.duration.length == 0 ? 0 : b.duration[0].end == null ? 0 : b.duration[0].end.getTime();
     return bt - at;
+}
+
+export function getComparator(property: Report.Property) : (a: Task, b: Task) => number {
+    var basic = (a: Task, b: Task) => {
+        var av = a.title == null ? "" : a.title;
+        var bv = b.title == null ? "" : b.title;
+        return (av < bv ? -1 : av > bv ? 1 : 0);
+    };
+    switch(property) {
+        case Report.Property.COMPLETED_TIME:
+            return (a: Task, b: Task) => {
+                var av = a.completed_time == null ? 0 : a.completed_time.getTime();
+                var bv = b.completed_time == null ? 0 : b.completed_time.getTime();
+                return av == bv ? basic(a,b) : bv - av;
+            }
+        case Report.Property.CONTEXT:
+            return (a: Task, b: Task) => {
+                var av = a.context || "";
+                var bv = b.context || "";
+                return av == bv ? basic(a,b) : av < bv ? -1 : 1;
+            }
+        case Report.Property.CATEGORY:
+            return (a: Task, b: Task) => {
+                var av = a.category || "";
+                var bv = b.category || "";
+                return av == bv ? basic(a,b) : av < bv ? -1 : 1;
+            }
+        case Report.Property.PROJECT:
+            return (a: Task, b: Task) => {
+                var av = a.project || "";
+                var bv = b.project || "";
+                return av == bv ? basic(a,b) : av < bv ? -1 : 1;
+            }
+        case Report.Property.STORY:
+            return (a: Task, b: Task) => {
+                var av = a.story || "";
+                var bv = b.story || "";
+                return av == bv ? basic(a,b) : av < bv ? -1 : 1;
+            }
+    }
+    return basic;
+}
+
+export function getGroupNamer(property: Report.Property) : (t: Task) => string {
+    switch(property) {
+        case Report.Property.COMPLETED_TIME:
+            return (t) => Text.formatGroupDay(t.completed_time, true);
+
+        case Report.Property.CONTEXT:
+            return (t) => t.context || "No Context";
+
+        case Report.Property.CATEGORY:
+            return (t) => t.category || "No Category";
+
+        case Report.Property.PROJECT:
+            return (t) => t.project || "No Project";
+
+        case Report.Property.STORY:
+            return (t) => t.story || "No Story";
+    }
+    return (t) => t.title || "No Title";
+
 }
