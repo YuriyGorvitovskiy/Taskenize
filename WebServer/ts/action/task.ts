@@ -9,36 +9,7 @@ export function connect(db : Mongo.Db) {
     _db = db;
     _cl = db.collection('tasks');
 
-    //Migration to add completed_time and created_time field
-    _cl.find({
-        state: Model.State.COMPLETED,
-        completed_time: null
-    }).forEach(
-        (task: Model.Task) => {
-            var completed_time = new Date();
-            _cl.updateOne(
-                {_id: task._id},
-                {
-                    $set : {
-                        completed_time: new Date()
-                    }
-                },
-                (error, result) => {
-                    if (result.matchedCount == 1) {
-                        console.log("Updating task: " +  task._id + ", completed_time: " + completed_time);
-                    }
-                    if (error) {
-                        console.log("Update error: " + JSON.stringify(error));
-                    }
-                }
-            );
-        },
-        (error) => {
-            if (error) {
-                console.log("Find error: " + JSON.stringify(error));
-            }
-        }
-    );
+    //Add Migration here 
 }
 
 function toId(_id: string | Mongo.ObjectID) : Mongo.ObjectID {
