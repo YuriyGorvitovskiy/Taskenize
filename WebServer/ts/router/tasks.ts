@@ -22,7 +22,17 @@ router.use(MethodOverride(function(req, res){
 }));
 
 router.get('/', function(req, res) {
-    Action.getAll(req.session['user']._id)
+    var query : Model.Query = {
+        user_id: req.session['user']._id,
+        state: req.query.state,
+    }
+    if (req.query.completed_begin) {
+        query.completed_period = {
+            begin: new Date(req.query.completed_begin),
+            end: req.query.completed_end ? new Date(req.query.completed_end) : new Date()
+        }
+    }
+    Action.getAll(query)
         .then(Util.jsonResponse(res))
         .catch(Util.errorResponse(res, 'get all tasks'));
 });
@@ -38,7 +48,9 @@ router.post('/', function(req, res) {
                   req.body.project,
                   req.body.story,
                   req.body.scheduled,
-                  req.body.collapsed)
+                  req.body.collapsed,
+                  req.body.created_time
+              )
         .then(Util.logJson('New task created: '))
         .then(Util.jsonResponse(res))
         .catch(Util.errorResponse(res, 'insert new task'));
@@ -65,7 +77,7 @@ router.put('/:id', function(req, res) {
     var cl = db.collection('tasks');
 
     if (req.body.state !== undefined) {
-        Action.changeState(req.body._id, parseInt(req.body.state))
+        Action.changeState(req.body._id, parseInt(req.body.state), new Date(req.body.time))
             .then(Util.jsonResponse(res))
             .catch(Util.errorResponse(res, 'update task by id'));
         return;

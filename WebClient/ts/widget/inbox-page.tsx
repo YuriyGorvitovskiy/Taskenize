@@ -13,7 +13,7 @@ export class InboxPage extends React.Component<{},InboxPageState> {
             tasks: []
         };
 
-        ModelTask.getAll().done(((tasks) => {
+        ModelTask.getExecuting().done(((tasks) => {
             this.state.tasks = tasks as ModelTask.Task[];
             this.forceUpdate();
         }).bind(this));

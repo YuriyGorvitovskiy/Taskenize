@@ -19,13 +19,13 @@ export class ExecutionPage extends React.Component<{},ExecutionPageState> {
             tasks: []
         };
 
-        Model.getAll().done(((serverTasks) => {
+        Model.getExecuting().done(((serverTasks) => {
             var tasks = serverTasks as Model.Task[];
             tasks.sort(Model.executionComparator);
             this.setState({tasks});
         }).bind(this));
     }
-    
+
     public render() {
         var env = StyleUtil.findBootstrapEnvironment();
         var full = (env == 'md' || env == 'lg');
@@ -79,7 +79,9 @@ export class ExecutionPage extends React.Component<{},ExecutionPageState> {
             scheduled: null,
             state: Model.State.PAUSED,
             duration: [],
-            collapsed: false
+            collapsed: false,
+            created_time: new Date(),
+            completed_time: null
         }).then((task: Model.Task) => {
             var tasks = [task].concat(this.state.tasks);
             this.setState({tasks});
