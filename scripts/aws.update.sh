@@ -1,5 +1,11 @@
 #!/bin/sh
 
+echo 'stop server'
+sudo service taskenize stop
+
+echo 'clean log'
+sudo rm /var/log/taskenize.log
+
 echo 'checkout from github'
 cd ~/Taskenize/
 git checkout origin/master
@@ -14,5 +20,5 @@ echo 'build WebServer'
 cd ~/Taskenize/WebServer/
 ./node_modules/.bin/tsc
 
-echo 'restart server'
-sudo service taskenize restart
+echo 'start server'
+sudo service taskenize start
