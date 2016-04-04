@@ -10,42 +10,35 @@ export function connect(db : Mongo.Db) {
     _cl = db.collection('tasks');
 
     //Migration to add completed_time and created_time field
-    _cl.find({}).limit(1).next()
-        .then((task: Model.Task) => {
-            if (task.created_time == null) {
-                _cl.find({}).forEach(
-                    (task: Model.Task) => {
-                        var created_time = task.duration.length > 0 ? task.duration[task.duration.length - 1].begin : new Date();
-                        var completed_time = null;
-                        if (task.state == Model.State.COMPLETED)
-                            completed_time = task.duration.length > 0 ? task.duration[0].end : new Date();
-
-                        _cl.updateOne(
-                            {_id: task._id},
-                            {
-                                $set : {
-                                    created_time:   created_time,
-                                    completed_time: completed_time
-                                }
-                            },
-                            (error, result) => {
-                                if (result.matchedCount == 1) {
-                                    console.log("Updating task: " +  task._id + ", created_time: " + task.created_time + ", completed_time: " + task.completed_time);
-                                }
-                                if (error) {
-                                    console.log("Update error: " + JSON.stringify(error));
-                                }
-                            }
-                        );
-                    },
-                    (error) => {
-                        if (error) {
-                            console.log("Find error: " + JSON.stringify(error));
-                        }
+    _cl.find({
+        state: Model.State.COMPLETED,
+        completed_time: null
+    }).forEach(
+        (task: Model.Task) => {
+            var completed_time = new Date();
+            _cl.updateOne(
+                {_id: task._id},
+                {
+                    $set : {
+                        completed_time: new Date()
                     }
-                );
+                },
+                (error, result) => {
+                    if (result.matchedCount == 1) {
+                        console.log("Updating task: " +  task._id + ", completed_time: " + completed_time);
+                    }
+                    if (error) {
+                        console.log("Update error: " + JSON.stringify(error));
+                    }
+                }
+            );
+        },
+        (error) => {
+            if (error) {
+                console.log("Find error: " + JSON.stringify(error));
             }
-        });
+        }
+    );
 }
 
 function toId(_id: string | Mongo.ObjectID) : Mongo.ObjectID {
@@ -151,7 +144,8 @@ function pauseRunningTasks(_ids: Mongo.ObjectID[], pauseState: Model.State, time
         _ids,
         {$set: {
             state:              pauseState,
-            'duration.0.end':   time || new Date()
+            'duration.0.end':   time || new Date(),
+            completed_time:     pauseState == Model.State.COMPLETED ? time || new Date() : null
         }}
     );
 }
