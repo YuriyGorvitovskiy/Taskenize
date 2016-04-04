@@ -47,9 +47,9 @@ router.post('/', function(req, res) {
                   req.body.context,
                   req.body.project,
                   req.body.story,
-                  req.body.scheduled,
+                  req.body.scheduled ? new Date(req.body.scheduled) : null,
                   req.body.collapsed,
-                  req.body.created_time
+                  req.body.created_time ? new Date(req.body.created_time) : null
               )
         .then(Util.logJson('New task created: '))
         .then(Util.jsonResponse(res))
