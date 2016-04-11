@@ -462,8 +462,8 @@
 }
 .task-narrow-expanded .duration-block input {
     margin-bottom: 5px;
-    /*width: 200px;*/
-    width: 70%;
+    width: 200px;
+    /*width: 55%;*/
     height: 25px;
     text-align: center;
 }
