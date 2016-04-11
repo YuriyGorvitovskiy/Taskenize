@@ -84,20 +84,30 @@ export class Component extends React.Component<Props, State> {
         );
     }
 
-    public onDurationBeginChange(index: number, text: string) {
+    public onDurationBeginChange(index: number, ev: React.SyntheticEvent) {
+        var text = ev.target["value"];
         if (TextUtil.formatDate(this.props.task.duration[index].begin, true) == text)
             return;
 
-        this.props.task.duration[index].begin = TextUtil.parseDate(text);
+        var time = TextUtil.parseDate(text)
+        if (time == null)
+            return;
+
+        this.props.task.duration[index].begin = time;
         this.forceUpdate();
         Model.updateDuration(this.props.task, index, 'begin');
     }
 
-    public onDurationEndChange(index: number, text: string) {
+    public onDurationEndChange(index: number, ev: React.SyntheticEvent) {
+        var text = ev.target["value"];
         if (TextUtil.formatDate(this.props.task.duration[index].end, true) == text)
             return;
 
-        this.props.task.duration[index].end = TextUtil.parseDate(text);
+        var time = TextUtil.parseDate(text)
+        if (time == null)
+            return;
+
+        this.props.task.duration[index].end = time;
         this.forceUpdate();
         Model.updateDuration(this.props.task, index, 'end');
     }
