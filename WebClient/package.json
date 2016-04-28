@@ -23,6 +23,7 @@
     "http-server": "^0.8.5",
     "jest": "^0.1.40",
     "minifyify": "^7.2.1",
+    "node-sass": "^3.6.0",
     "typescript": "^1.7.5",
     "typings": "^0.6.8"
   }
