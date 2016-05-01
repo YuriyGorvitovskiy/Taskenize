@@ -3,7 +3,8 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as Nav from './widget/navigation-bar';
 import {InboxPage} from './widget/inbox-page';
-import {ExecutionPage} from './widget/execution-page';
+//import {ExecutionPage} from './widget/execution-page';
+import * as ExecutionPage from './widget/execution-page-v2';
 import * as CompletedPage from './widget/completed-page';
 import * as ReportPage from './widget/report-page';
 
@@ -26,7 +27,7 @@ class IndexPage extends React.Component<{},IndexPageState> {
                 pageComponent = (<InboxPage />);
                 break;
             case Nav.PageId.EXECUTION:
-                pageComponent = (<ExecutionPage />);
+                pageComponent = (<ExecutionPage.Component />);
                 break;
             case Nav.PageId.COMPLETED:
                 pageComponent = (<CompletedPage.Component />);
@@ -38,7 +39,7 @@ class IndexPage extends React.Component<{},IndexPageState> {
         return (
             <div>
                 <Nav.NavigationBar active={this.state.pageId} onPage={this.onPageSelected.bind(this)}/>
-                <div style={{marginTop:"70px"}}>
+                <div>
                     {pageComponent}
                 </div>
             </div>

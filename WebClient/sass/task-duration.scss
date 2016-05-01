@@ -1,0 +1,100 @@
+.sidebar.task-duration > header  {
+    display:            flex;
+    justify-content:    space-between;
+}
+
+.sidebar.task-duration > section.period  {
+    border-style:       solid;
+    border-width:       1px;
+    border-radius:      7px;
+    border-color:       lightgrey;
+
+    margin-top:         8px;
+    margin-bottom:      8px;
+
+    padding:            5px;
+
+    display:            flex;
+    flex-direction:     row;
+    flex-wrap:          wrap;
+}
+
+.sidebar.task-duration section.period > input.to,
+.sidebar.task-duration section.period > input.from {
+    font-family:        Arial, Helvetica, sans-serif;   /* For Chrome to remove monospace */
+    font-size:          0.8em;
+    flex-basis:         73%;
+
+    padding-left:       3px;
+    padding-right:      3px;
+    padding-top:        0.6em;
+    padding-bottom:     0.6em;
+    margin:             0;
+    height:             2.5em;
+
+    border-style:       solid;
+    border-width:       1px;
+    border-radius:      3px;
+    border-color:       lightgrey;
+
+    display:            inline-block;                   /* For iOS to remove default drop down look */
+    -webkit-appearance: none;                           /* For iOS to remove default drop down look */
+}
+
+.sidebar.task-duration section.period > input.to {
+    order:              1;
+    margin-bottom:      5px;
+}
+
+.sidebar.task-duration section.period > input.from {
+    order:              3;
+}
+
+.sidebar.task-duration section.period > span.duration {
+    flex-basis:         26%;
+    order:              2;
+    margin-top:         0;
+    margin-bottom:      5px;
+    margin-left:        1%;
+    margin-right:       0;
+    padding:            3px;
+    text-align:         center;
+    display:            flex;
+    flex-direction:     column;
+    justify-content:    center;
+
+    border-style:       solid;
+    border-width:       1px;
+    border-radius:      3px;
+    border-color:       grey;
+}
+
+.sidebar.task-duration section.period > a.action.delete {
+    flex-basis:         16%;
+    order:              4;
+    margin-top:         0;
+    margin-bottom:      0;
+    margin-left:        6%;
+    margin-right:       5%;
+
+    font-family:        'Glyphicons Halflings';
+    text-align:         center;
+    text-decoration:    none;
+    padding:            0;
+    display:            flex;
+    flex-direction:     column;
+    justify-content:    center;
+
+
+    border-style:       solid;
+    border-width:       1px;
+    border-radius:      3px;
+    border-color:       grey;
+
+    color:              black;
+    background:         linear-gradient(to bottom, #e8e8e8, #999999);
+}
+
+.sidebar.task-duration section.period > a.action.delete:before {
+    content:            '\e020';
+}

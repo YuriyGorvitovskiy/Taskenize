@@ -1,0 +1,122 @@
+@font-face{
+    font-family:    'Glyphicons Halflings';
+    src:            url(../fonts/glyphicons-halflings-regular.eot);
+    src:            url(../fonts/glyphicons-halflings-regular.eot?#iefix) format('embedded-opentype'),
+                    url(../fonts/glyphicons-halflings-regular.woff2) format('woff2'),
+                    url(../fonts/glyphicons-halflings-regular.woff) format('woff'),
+                    url(../fonts/glyphicons-halflings-regular.ttf) format('truetype'),
+                    url(../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular) format('svg');
+}
+* {
+    box-sizing:             border-box;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ======================= Sidebar ======================= */
+
+.sidebar header {
+    font-size:          1.5em;
+    font-weight:        bold;
+    margin-bottom:      8px;
+}
+
+/* ======================= Input ======================= */
+input:focus,
+div.input:focus {
+    outline:        none;                  /* remove default blue outline */
+    box-shadow:     3px 3px 8px 0 #7db9e8; /* stand out focus input with shadow */
+}
+
+/* ======================= Input Float Label ======================= */
+div.input-group {
+    position:           relative;
+    margin-bottom:      8px;
+    width:              100%;
+}
+
+div.input-group > input,
+div.input-group > div.input
+{
+    width:              100%;
+    font-size:          1.2em;
+    font-weight:        normal;
+    margin:             0;     /* Safari puts default margin 2px at top and bottom of input */
+    padding-top:        1.2em; /* leave spave for condenced Label */
+    padding-bottom:     0.1em;
+    padding-left:       0.3em;
+    padding-right:      0.3em;
+    border-style:       solid;
+    border-width:       1px;
+    border-radius:      7px;
+    border-color:       lightgrey;
+    background-color:   white;
+
+    -webkit-appearance: none; /* to remove shade from the top */
+}
+
+div.input-group > input + label,
+div.input-group > .input + label {
+    position:           absolute;
+
+    /* Input is empty display label as placeholder */
+    top:                0.6em;
+    left:               0.3em;
+    font-size:          1.2em;
+    font-weight:        normal;
+    color:              lightgrey;
+    transition:         0.2s;
+}
+
+div.input-group > input:valid + label,
+div.input-group > .input:not(:empty) + label {
+    /* Input is not empty, remove label to the top */
+    top:            0.2em;
+    left:           0.6em;
+    font-size:      0.8em;
+    font-weight:    bold;
+}
+
+div.input-group > input:focus + label,
+div.input-group > .input:focus + label {
+    /* Input is in focus, remove label to the top and highlight */
+    top:                0.2em;
+    left:               0.6em;
+    font-size:          0.8em;
+    font-weight:        bold;
+    color:              #1e5799;
+}
+
+/* ======================= Input DateTime ======================= */
+/* For iOS to remove default drop down look */
+div.input-group > input[type="datetime-local"] {
+    font-family:        Arial, Helvetica, sans-serif;   /* For Chrome to remove monospace */
+    height:             2.6em;
+    display:            inline-block;                   /* For iOS to remove default drop down look */
+    -webkit-appearance: none;                           /* For iOS to remove default drop down look */
+}
+
+div.input-group > input[type="datetime-local"] + label {
+    top:            0.2em;
+    left:           0.6em;
+    font-size:      0.8em;
+    font-weight:    bold;
+}
+
+/* ======================= Input Multiline ======================= */
+div.input-group > div.input.multiline {
+    font-family:        "Times New Roman", Times, serif;
+    min-height:         5em;
+}
+
+div.input-group > div.input.multiline p,
+div.input-group > div.input.multiline div {
+  margin: 0;
+}
+
+/* ======================= Input Actions ======================= */
+div.input-group > a {
+    position:           absolute;
+    top:                0.2em;
+    font-size:          0.8em;
+    text-decoration:    none;
+}
