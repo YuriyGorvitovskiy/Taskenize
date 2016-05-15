@@ -8,19 +8,21 @@ import * as Model from '../model/task';
 
 class State {
     tasks: Model.Task[];
+    selected: Model.Task;
 }
 
 export class Component extends React.Component<{},State> {
     public constructor() {
         super();
         this.state = {
-            tasks: []
+            tasks: [],
+            selected: null
         };
 
         Model.getExecuting().done(((serverTasks) => {
             var tasks = serverTasks as Model.Task[];
             tasks.sort(Model.executionComparator);
-            this.setState({tasks});
+            this.setState({tasks, selected: tasks[0]});
         }).bind(this));
     }
 
@@ -38,19 +40,30 @@ export class Component extends React.Component<{},State> {
                 );
                 nextDate = nextDate.add(1, 'days');
             }
-            panels.push(<TaskPanel.Component key={index} task={task} />);
+            panels.push(<TaskPanel.Component
+                    key={index}
+                    task={task}
+                    selected={this.state.selected == task} 
+                    onClick={this.onTaskSelected.bind(this, task)} />);
         });
 
         return (
             <div>
                 <aside>
-                    <TaskProperty.Component task={null} />
-                    <TaskDuration.Component task={null} />
+                    <TaskProperty.Component task={this.state.selected} />
+                    <TaskDuration.Component task={this.state.selected} />
                 </aside>
                 <main className="tz-task-list" >
                     {panels}
                 </main>
             </div>
         );
+    }
+
+    public onTaskSelected(task: Model.Task) {
+        this.setState({
+            tasks: this.state.tasks,
+            selected: task
+        });
     }
 }

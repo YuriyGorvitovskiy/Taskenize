@@ -6,6 +6,8 @@ import * as TextUtil from '../util/text';
 
 class Props {
     task: Model.Task;
+    selected: boolean;
+    onClick: () => any;
 }
 
 export class Component extends React.Component<Props, {}> {
@@ -32,14 +34,14 @@ export class Component extends React.Component<Props, {}> {
                 break;
         }
         return (
-            <article className="tz-task">
-                <a className="tz-action-complete" href="#">
+            <article className={"tz-task" + (this.props.selected ? " tz-selected" : "")} onClick={this.props.onClick} >
+                <a className={this.props.task.state == Model.State.COMPLETED ? "tz-action-incomplete" : "tz-action-complete"} href="#">
                     <span className="tz-category-icon">{glyph}</span>
-                    <span className="tz-state tz-completed"></span>
+                    <span className="tz-state"></span>
                 </a>
-                <a className="tz-action-pause" href="#">
+                <a className={this.props.task.state == Model.State.RUNNING ? "tz-action-pause" : "tz-action-play"} href="#">
                     <span className="tz-duration">{TextUtil.formatDuration(Model.calculateDuration(this.props.task))}</span>
-                    <span className="tz-pause"></span>
+                    <span className="tz-state"></span>
                 </a>
                 <div className="tz-info">
                     <div className="tz-title">{this.props.task.title}</div>

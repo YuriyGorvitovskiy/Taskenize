@@ -69,6 +69,21 @@ export interface Task {
     completed_time: Date;
 }
 
+export var EMPTY_TASK : Task = {
+    state:          State.PAUSED,
+    title:          "",
+    subject:        "",
+    context:        "",
+    category:       "",
+    project:        "",
+    story:          "",
+    scheduled:      null,
+    duration:       [],
+    collapsed:      true,
+    created_time:   null,
+    completed_time: null
+}
+
 export function get(id: string) {
     return $.getJSON('/rest/v1/tasks/' + id).then(parseTaskJson);
 }

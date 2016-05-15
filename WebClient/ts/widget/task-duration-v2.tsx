@@ -10,26 +10,46 @@ class Props {
 
 export class Component extends React.Component<Props, {}> {
     public render() {
+        var task = this.props.task || Model.EMPTY_TASK;
+        var durations : Model.Period[] = task.duration;
+        var sections = [];
+        $.each(durations, (index: number, period: Model.Period) => {
+            var toPart;
+            if (period.end == null) {
+                toPart = <input
+                        className="tz-to"
+                        type="text"
+                        value="In progress..."
+                        readOnly/>;
+            } else {
+                toPart = <input
+                        className="tz-to"
+                        type="datetime-local"
+                        step="1"
+                        value={TextUtil.formatInputDateTimeLocal(period.end, true)}
+                        required/>
+            }
+            sections.push(
+                <section className="tz-period" key={index}>
+                    {toPart}
+                    <input  className="tz-from"
+                            type="datetime-local"
+                            step="1"
+                            value={TextUtil.formatInputDateTimeLocal(period.begin, true)}
+                            required/>
+                    <span className="tz-duration">{TextUtil.formatPeriod(period.begin, period.end)}</span>
+                    <br/>
+                    <a className="tz-action tz-delete" href="#"></a>
+                </section>
+            );
+        });
         return (
             <div className="tz-sidebar tz-task-duration">
                 <header>
                     <span className="tz-title">Duration</span>
-                    <span className="tz-duration">00:12:34</span>
+                    <span className="tz-duration">{TextUtil.formatDuration(Model.calculateDuration(task))}</span>
                 </header>
-                <section className="tz-period">
-                    <input className="tz-to" type="text" value="In progress..." readOnly/>
-                    <input className="tz-from" type="datetime-local" step="1" value="2015-04-24T12:34:56" required/>
-                    <span className="tz-duration">00:12:34</span>
-                    <br/>
-                    <a className="tz-action tz-delete" href="#"></a>
-                </section>
-                <section className="tz-period">
-                    <input className="tz-to" type="datetime-local" step="1" value="2015-04-24T12:34:56" required/>
-                    <input className="tz-from" type="datetime-local" step="1" value="2015-04-24T11:22:33" required/>
-                    <span className="tz-duration">01:12:23</span>
-                    <br/>
-                    <a className="tz-action tz-delete" href="#"></a>
-                </section>
+                {sections}
             </div>
         );
     }
