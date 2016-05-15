@@ -23,8 +23,7 @@ article.tz-task.tz-selected {
     height:             106px;
 }
 
-article.tz-task a.tz-action-complete,
-article.tz-task a.tz-action-incomplete {
+article.tz-task a.tz-action-complete {
     position:           relative;
     flex-shrink:        0;
     display:            block;
@@ -34,8 +33,7 @@ article.tz-task a.tz-action-incomplete {
     order:              1;
 }
 
-article.tz-task a.tz-action-complete span.tz-category-icon,
-article.tz-task a.tz-action-incomplete span.tz-category-icon {
+article.tz-task a.tz-action-complete span.tz-category-icon {
     position:       absolute;
     top:            30px;
     left:           30px;
@@ -47,8 +45,7 @@ article.tz-task a.tz-action-incomplete span.tz-category-icon {
     color:          lightgrey;
 }
 
-article.tz-task a.tz-action-complete span.tz-state,
-article.tz-task a.tz-action-incomplete span.tz-state {
+article.tz-task a.tz-action-complete span.tz-state {
     position:               absolute;
     top:                    0;
     left:                   0;
@@ -56,19 +53,14 @@ article.tz-task a.tz-action-incomplete span.tz-state {
     height:                 100%;
     background-repeat:      no-repeat;
     background-position:    center center;
-}
-
-article.tz-task a.tz-action-complete span.tz-state {
     background-image:       url("../images/incomplete.png");
 }
 
-article.tz-task a.tz-action-incomplete span.tz-state {
+article.tz-task.tz-state-completed a.tz-action-complete span.tz-state {
     background-image:       url("../images/completed.png");
 }
 
-
-article.tz-task a.tz-action-play,
-article.tz-task a.tz-action-pause {
+article.tz-task a.tz-action-play {
     position:           relative;
     flex-shrink:        0;
     display:            flex;
@@ -85,34 +77,31 @@ article.tz-task a.tz-action-pause {
     border-radius:      3px;
     border-color:       grey;
     margin:             0;
-}
 
-article.tz-task a.tz-action-play {
     color:              black;
     background:         linear-gradient(to bottom, #e8e8e8, #999999);
 }
 
-article.tz-task a.tz-action-pause {
+article.tz-task.tz-state-running a.tz-action-play {
     color:              white;
     background:         linear-gradient(to bottom, #7db9e8, #1e5799);
 }
 
-article.tz-task a.tz-action-play span.tz-duration,
-article.tz-task a.tz-action-pause span.tz-duration {
+article.tz-task a.tz-action-play span.tz-duration {
     font-size:          1.5em;
     font-weight:        normal;
 }
-article.tz-task a.tz-action-play span.tz-state,
-article.tz-task a.tz-action-pause span.tz-state {
+article.tz-task a.tz-action-play span.tz-state {
     font-family:                'Glyphicons Halflings';
     font-size:                  2.0em;
     font-weight:                normal;
 }
+
 article.tz-task a.tz-action-play span.tz-state:before {
     content:            '\e072';
 }
 
-article.tz-task a.tz-action-pause span.tz-state:before {
+article.tz-task.tz-state-running a.tz-action-play span.tz-state:before {
     content:            '\e073';
 }
 
@@ -193,20 +182,19 @@ article.tz-task div.tz-info div.tz-extra div.tz-classification span.tz-value {
         font-size:      24px;
     }
 
-    article.tz-task a.tz-action-incomplete span.tz-state {
-        background-image:       url("../images/completed-sm.png");
-    }
-
     article.tz-task a.tz-action-complete span.tz-state {
         background-image:       url("../images/incomplete-sm.png");
+    }
+
+    article.tz-task.tz-state-completed a.tz-action-complete span.tz-state {
+        background-image:       url("../images/completed-sm.png");
     }
 
     article.tz-task div.tz-info div.tz-extra {
         display: none;
     }
 
-    article.tz-task a.tz-action-play,
-    article.tz-task a.tz-action-pause {
+    article.tz-task a.tz-action-play {
         width:              7em;
         height:             64px;
     }

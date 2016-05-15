@@ -33,13 +33,22 @@ export class Component extends React.Component<Props, {}> {
                 glyph = "\ue059";
                 break;
         }
+        var task = this.props.task;
+        var cssSelected = (this.props.selected ? " tz-selected" : "");
+        var cssState = "";
+        switch(task.state) {
+            case Model.State.PAUSED: cssState = " tz-state-paused"; break;
+            case Model.State.RUNNING: cssState = " tz-state-running"; break;
+            case Model.State.COMPLETED: cssState = " tz-state-completed"; break;
+        }
+
         return (
-            <article className={"tz-task" + (this.props.selected ? " tz-selected" : "")} onClick={this.props.onClick} >
-                <a className={this.props.task.state == Model.State.COMPLETED ? "tz-action-incomplete" : "tz-action-complete"} href="#">
+            <article className={"tz-task" + cssSelected + cssState} onClick={this.props.onClick} >
+                <a className="tz-action-complete" href="#">
                     <span className="tz-category-icon">{glyph}</span>
                     <span className="tz-state"></span>
                 </a>
-                <a className={this.props.task.state == Model.State.RUNNING ? "tz-action-pause" : "tz-action-play"} href="#">
+                <a className="tz-action-play" href="#">
                     <span className="tz-duration">{TextUtil.formatDuration(Model.calculateDuration(this.props.task))}</span>
                     <span className="tz-state"></span>
                 </a>
