@@ -1,9 +1,9 @@
-.sidebar.task-duration > header  {
+.tz-sidebar.tz-task-duration > header  {
     display:            flex;
     justify-content:    space-between;
 }
 
-.sidebar.task-duration > section.period  {
+.tz-sidebar.tz-task-duration > section.tz-period  {
     border-style:       solid;
     border-width:       1px;
     border-radius:      7px;
@@ -19,8 +19,8 @@
     flex-wrap:          wrap;
 }
 
-.sidebar.task-duration section.period > input.to,
-.sidebar.task-duration section.period > input.from {
+.tz-sidebar.tz-task-duration section.tz-period > input.tz-to,
+.tz-sidebar.tz-task-duration section.tz-period > input.tz-from {
     font-family:        Arial, Helvetica, sans-serif;   /* For Chrome to remove monospace */
     font-size:          0.8em;
     flex-basis:         73%;
@@ -41,16 +41,16 @@
     -webkit-appearance: none;                           /* For iOS to remove default drop down look */
 }
 
-.sidebar.task-duration section.period > input.to {
+.tz-sidebar.tz-task-duration section.tz-period > input.tz-to {
     order:              1;
     margin-bottom:      5px;
 }
 
-.sidebar.task-duration section.period > input.from {
+.tz-sidebar.tz-task-duration section.tz-period > input.tz-from {
     order:              3;
 }
 
-.sidebar.task-duration section.period > span.duration {
+.tz-sidebar.tz-task-duration section.tz-period > span.tz-duration {
     flex-basis:         26%;
     order:              2;
     margin-top:         0;
@@ -69,7 +69,7 @@
     border-color:       grey;
 }
 
-.sidebar.task-duration section.period > a.action.delete {
+.tz-sidebar.tz-task-duration section.tz-period > a.tz-action.tz-delete {
     flex-basis:         16%;
     order:              4;
     margin-top:         0;
@@ -95,6 +95,6 @@
     background:         linear-gradient(to bottom, #e8e8e8, #999999);
 }
 
-.sidebar.task-duration section.period > a.action.delete:before {
+.tz-sidebar.tz-task-duration section.tz-period > a.tz-action.tz-delete:before {
     content:            '\e020';
 }

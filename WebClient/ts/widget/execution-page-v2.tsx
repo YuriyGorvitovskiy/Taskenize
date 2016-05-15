@@ -4,7 +4,6 @@ import * as Moment from 'moment';
 import * as TaskPanel    from './task-panel-v2';
 import * as TaskProperty from './task-property-v2';
 import * as TaskDuration from './task-duration-v2';
-import * as TaskNarrow   from './task-narrow';
 import * as Model from '../model/task';
 
 class State {
@@ -34,7 +33,7 @@ export class Component extends React.Component<{},State> {
                 nextDate = Moment(task.scheduled).startOf('day');
                 panels.push(
                     <header key={"d"+index} >
-                        <span className="title">{tomorrow.isSame(nextDate) ? 'Tomorrow' : nextDate.format('ddd D MMMM')}</span>
+                        <span className="tz-title">{tomorrow.isSame(nextDate) ? 'Tomorrow' : nextDate.format('ddd D MMMM')}</span>
                     </header>
                 );
                 nextDate = nextDate.add(1, 'days');
@@ -48,7 +47,7 @@ export class Component extends React.Component<{},State> {
                     <TaskProperty.Component task={null} />
                     <TaskDuration.Component task={null} />
                 </aside>
-                <main className="task-list" >
+                <main className="tz-task-list" >
                     {panels}
                 </main>
             </div>

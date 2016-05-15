@@ -11,24 +11,24 @@ class Props {
 export class Component extends React.Component<Props, {}> {
     public render() {
         return (
-            <div className="sidebar task-duration">
+            <div className="tz-sidebar tz-task-duration">
                 <header>
-                    <span className="title">Duration</span>
-                    <span className="duration">00:12:34</span>
+                    <span className="tz-title">Duration</span>
+                    <span className="tz-duration">00:12:34</span>
                 </header>
-                <section className="period">
-                    <input className="to" type="text" value="In progress..." readOnly/>
-                    <input className="from" type="datetime-local" step="1" value="2015-04-24T12:34:56" required/>
-                    <span className="duration">00:12:34</span>
+                <section className="tz-period">
+                    <input className="tz-to" type="text" value="In progress..." readOnly/>
+                    <input className="tz-from" type="datetime-local" step="1" value="2015-04-24T12:34:56" required/>
+                    <span className="tz-duration">00:12:34</span>
                     <br/>
-                    <a className="action delete" href="#"></a>
+                    <a className="tz-action tz-delete" href="#"></a>
                 </section>
-                <section className="period">
-                    <input className="to" type="datetime-local" step="1" value="2015-04-24T12:34:56" required/>
-                    <input className="from" type="datetime-local" step="1" value="2015-04-24T11:22:33" required/>
-                    <span className="duration">01:12:23</span>
+                <section className="tz-period">
+                    <input className="tz-to" type="datetime-local" step="1" value="2015-04-24T12:34:56" required/>
+                    <input className="tz-from" type="datetime-local" step="1" value="2015-04-24T11:22:33" required/>
+                    <span className="tz-duration">01:12:23</span>
                     <br/>
-                    <a className="action delete" href="#"></a>
+                    <a className="tz-action tz-delete" href="#"></a>
                 </section>
             </div>
         );

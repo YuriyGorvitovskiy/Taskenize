@@ -37,7 +37,7 @@ main,
     bottom:             0;
 }
 
-aside > .sidebar,
+aside > .tz-sidebar,
 main {
     overflow-y:         scroll;
 
@@ -54,18 +54,18 @@ aside {
     right:              0;
 }
 
-aside > .sidebar {
+aside > .tz-sidebar {
     position:           absolute;
     top:                0;
     width:              25%;
     font-family:        Arial, Helvetica, sans-serif;
 }
 
-aside > .sidebar.task-properties {
+aside > .tz-sidebar.tz-task-properties {
     left:               0;
 }
 
-aside > .sidebar.task-duration {
+aside > .tz-sidebar.tz-task-duration {
     right:              0;
 }
 
@@ -86,7 +86,7 @@ main {
         left:           auto;
         width:          33%;
     }
-    aside > .sidebar {
+    aside > .tz-sidebar {
         display:        block;
         top:            0;
         bottom:         0;
@@ -117,11 +117,11 @@ main {
         width:                   100%;
     }
 
-    body.edit  main {
+    body.tz-edit  main {
         display:                 none;
     }
 
-    body.edit > aside {
+    body.tz-edit > aside {
         display:                 block;
     }
 }

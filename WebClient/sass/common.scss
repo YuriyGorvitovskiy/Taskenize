@@ -14,7 +14,7 @@
 
 /* ======================= Sidebar ======================= */
 
-.sidebar header {
+.tz-sidebar header {
     font-size:          1.5em;
     font-weight:        bold;
     margin-bottom:      8px;
@@ -22,20 +22,20 @@
 
 /* ======================= Input ======================= */
 input:focus,
-div.input:focus {
+div.tz-input:focus {
     outline:        none;                  /* remove default blue outline */
     box-shadow:     3px 3px 8px 0 #7db9e8; /* stand out focus input with shadow */
 }
 
 /* ======================= Input Float Label ======================= */
-div.input-group {
+div.tz-input-group {
     position:           relative;
     margin-bottom:      8px;
     width:              100%;
 }
 
-div.input-group > input,
-div.input-group > div.input
+div.tz-input-group > input,
+div.tz-input-group > div.tz-input
 {
     width:              100%;
     font-size:          1.2em;
@@ -54,8 +54,8 @@ div.input-group > div.input
     -webkit-appearance: none; /* to remove shade from the top */
 }
 
-div.input-group > input + label,
-div.input-group > .input + label {
+div.tz-input-group > input + label,
+div.tz-input-group > .tz-input + label {
     position:           absolute;
 
     /* Input is empty display label as placeholder */
@@ -67,8 +67,8 @@ div.input-group > .input + label {
     transition:         0.2s;
 }
 
-div.input-group > input:valid + label,
-div.input-group > .input:not(:empty) + label {
+div.tz-input-group > input:valid + label,
+div.tz-input-group > .tz-input:not(:empty) + label {
     /* Input is not empty, remove label to the top */
     top:            0.2em;
     left:           0.6em;
@@ -76,8 +76,8 @@ div.input-group > .input:not(:empty) + label {
     font-weight:    bold;
 }
 
-div.input-group > input:focus + label,
-div.input-group > .input:focus + label {
+div.tz-input-group > input:focus + label,
+div.tz-input-group > .tz-input:focus + label {
     /* Input is in focus, remove label to the top and highlight */
     top:                0.2em;
     left:               0.6em;
@@ -88,14 +88,14 @@ div.input-group > .input:focus + label {
 
 /* ======================= Input DateTime ======================= */
 /* For iOS to remove default drop down look */
-div.input-group > input[type="datetime-local"] {
+div.tz-input-group > input[type="datetime-local"] {
     font-family:        Arial, Helvetica, sans-serif;   /* For Chrome to remove monospace */
     height:             2.6em;
     display:            inline-block;                   /* For iOS to remove default drop down look */
     -webkit-appearance: none;                           /* For iOS to remove default drop down look */
 }
 
-div.input-group > input[type="datetime-local"] + label {
+div.tz-input-group > input[type="datetime-local"] + label {
     top:            0.2em;
     left:           0.6em;
     font-size:      0.8em;
@@ -103,18 +103,18 @@ div.input-group > input[type="datetime-local"] + label {
 }
 
 /* ======================= Input Multiline ======================= */
-div.input-group > div.input.multiline {
+div.tz-input-group > div.tz-input.tz-multiline {
     font-family:        "Times New Roman", Times, serif;
     min-height:         5em;
 }
 
-div.input-group > div.input.multiline p,
-div.input-group > div.input.multiline div {
+div.tz-input-group > div.tz-input.tz-multiline p,
+div.tz-input-group > div.tz-input.tz-multiline div {
   margin: 0;
 }
 
 /* ======================= Input Actions ======================= */
-div.input-group > a {
+div.tz-input-group > a {
     position:           absolute;
     top:                0.2em;
     font-size:          0.8em;

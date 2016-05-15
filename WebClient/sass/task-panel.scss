@@ -4,7 +4,7 @@ main > header {
     margin-bottom:      8px;
 }
 
-article.task {
+article.tz-task {
     font-family:        Arial, Helvetica, sans-serif;
 
     border-style:       solid;
@@ -16,14 +16,14 @@ article.task {
     display:            flex;
     height:             102px;
 }
-article.task.selected {
+article.tz-task.selected {
     border-width:       3px;
     border-color:       #1e5799;
     box-shadow:         3px 3px 8px 0 #7db9e8;
     height:             106px;
 }
 
-article.task a.action-complete {
+article.tz-task a.tz-action-complete {
     position:           relative;
     display:            block;
     width:              100px;
@@ -32,7 +32,7 @@ article.task a.action-complete {
     order:              1;
 }
 
-article.task a.action-complete span.category-icon {
+article.tz-task a.tz-action-complete span.tz-category-icon {
     position:       absolute;
     top:            30px;
     left:           30px;
@@ -44,7 +44,7 @@ article.task a.action-complete span.category-icon {
     color:          lightgrey;
 }
 
-article.task a.action-complete span.state {
+article.tz-task a.tz-action-complete span.tz-state {
     position:               absolute;
     top:                    0;
     left:                   0;
@@ -54,15 +54,15 @@ article.task a.action-complete span.state {
     background-position:    center center;
 }
 
-article.task a.action-complete span.state.completed {
+article.tz-task a.tz-action-complete span.tz-state.tz-completed {
     background-image:       url("../images/completed.png");
 }
 
-article.task a.action-complete span.state.incomplete {
+article.tz-task a.tz-action-complete span.tz-state.tz-incomplete {
     background-image:       url("../images/incomplete.png");
 }
 
-article.task a.action-play, article.task a.action-pause {
+article.tz-task a.tz-action-play, article.tz-task a.tz-action-pause {
     position:           relative;
     display:            flex;
     flex-direction:     column;
@@ -80,34 +80,36 @@ article.task a.action-play, article.task a.action-pause {
     margin:             0;
 }
 
-article.task a.action-play {
+article.tz-task a.tz-action-play {
     color:              black;
     background:         linear-gradient(to bottom, #e8e8e8, #999999);
 }
 
-article.task a.action-pause {
+article.tz-task a.tz-action-pause {
     color:              white;
     background:         linear-gradient(to bottom, #7db9e8, #1e5799);
 }
 
-article.task a.action-play span.duration, article.task a.action-pause span.duration {
+article.tz-task a.tz-action-play span.tz-duration,
+article.tz-task a.tz-action-pause span.tz-duration {
     font-size:          1.5em;
     font-weight:        normal;
 }
-article.task a.action-play span.play, article.task a.action-pause span.pause {
+article.tz-task a.tz-action-play span.tz-play,
+article.tz-task a.tz-action-pause span.tz-pause {
     font-family:                'Glyphicons Halflings';
     font-size:                  2.0em;
     font-weight:                normal;
 }
-article.task a.action-play span.play:before {
+article.tz-task a.tz-action-play span.tz-play:before {
     content:            '\e072';
 }
 
-article.task a.action-pause span.pause:before {
+article.tz-task a.tz-action-pause span.tz-pause:before {
     content:            '\e073';
 }
 
-article.task div.info {
+article.tz-task div.tz-info {
     flex-grow:          1;
     order:              2;
     display:            flex;
@@ -115,7 +117,7 @@ article.task div.info {
     justify-content:    space-between;
     height:             100px;
 }
-article.task div.info div.title {
+article.tz-task div.tz-info div.tz-title {
     font-size:          1.2em;
     font-weight:        bold;
     margin-top:         3px;
@@ -123,7 +125,7 @@ article.task div.info div.title {
     overflow:           scroll;
 }
 
-article.task div.info div.subject {
+article.tz-task div.tz-info div.tz-subject {
     flex:               1;
     font-family:        "Times New Roman", Times, serif;
     font-size:          1em;
@@ -132,30 +134,31 @@ article.task div.info div.subject {
     margin-bottom:      3px;
 }
 
-article.task div.info div.subject p, article.task div.info div.subject div{
+article.tz-task div.tz-info div.tz-subject p,
+article.tz-task div.tz-info div.tz-subject div{
   margin: 0;
 }
 
-article.task div.info div.extra {
+article.tz-task div.tz-info div.tz-extra {
     display:            flex;
     flex-direction:     row;
     font-size:          0.9em;
     margin-bottom:      3px;
 }
 
-article.task div.info div.extra div.classification{
+article.tz-task div.tz-info div.tz-extra div.tz-classification{
     display:            flex;
     flex-direction:     row;
     width: 25%;
     font-weight:        normal;
 }
 
-article.task div.info div.extra div.classification span.label {
+article.tz-task div.tz-info div.tz-extra div.tz-classification span.tz-label {
     color:              inherit;
     font-size:          inherit;
     font-weight:        bold;
 }
-article.task div.info div.extra div.classification span.value {
+article.tz-task div.tz-info div.tz-extra div.tz-classification span.tz-value {
     font-style:         oblique;
     overflow:           hidden;
 }
@@ -163,44 +166,45 @@ article.task div.info div.extra div.classification span.value {
 
 @media screen and (max-width: 640px) {
 
-    article.task {
+    article.tz-task {
         margin-bottom:      6px;
         height:             66px;
         font-size:          0.64em;
     }
-    article.task.selected {
+    article.tz-task.tz-selected {
         height:             70px;
     }
 
-    article.task a.action-complete {
+    article.tz-task a.tz-action-complete {
         width:              64px;
         height:             64px;
     }
 
-    article.task a.action-complete span.category-icon {
+    article.tz-task a.tz-action-complete span.tz-category-icon {
         top:            20px;
         left:           20px;
         font-size:      24px;
     }
 
-    article.task a.action-complete span.state.completed {
+    article.tz-task a.tz-action-complete span.tz-state.completed {
         background-image:       url("../images/completed-sm.png");
     }
 
-    article.task a.action-complete span.state.incomplete {
+    article.tz-task a.tz-action-complete span.tz-state.tz-incomplete {
         background-image:       url("../images/incomplete-sm.png");
     }
 
-    article.task div.info div.extra {
+    article.tz-task div.tz-info div.tz-extra {
         display: none;
     }
 
-    article.task a.action-play, article.task a.action-pause {
+    article.tz-task a.tz-action-play,
+    article.tz-task a.tz-action-pause {
         width:              7em;
         height:             64px;
     }
 
-    article.task div.info {
+    article.tz-task div.tz-info {
         height:             64px;
         font-size:          1.2em;
     }

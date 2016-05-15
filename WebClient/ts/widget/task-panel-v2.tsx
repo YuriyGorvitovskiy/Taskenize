@@ -32,34 +32,34 @@ export class Component extends React.Component<Props, {}> {
                 break;
         }
         return (
-            <article className="task">
-                <a className="action-complete" href="#">
-                    <span className="category-icon">{glyph}</span>
-                    <span className="state completed"></span>
+            <article className="tz-task">
+                <a className="tz-action-complete" href="#">
+                    <span className="tz-category-icon">{glyph}</span>
+                    <span className="tz-state tz-completed"></span>
                 </a>
-                <a className="action-pause" href="#">
-                    <span className="duration">{TextUtil.formatDuration(Model.calculateDuration(this.props.task))}</span>
-                    <span className="pause"></span>
+                <a className="tz-action-pause" href="#">
+                    <span className="tz-duration">{TextUtil.formatDuration(Model.calculateDuration(this.props.task))}</span>
+                    <span className="tz-pause"></span>
                 </a>
-                <div className="info">
-                    <div className="title">{this.props.task.title}</div>
-                    <div className="subject" dangerouslySetInnerHTML={{__html:this.props.task.subject}} ></div>
-                    <div className="extra">
-                        <div className="classification">
-                            <span className="label">x:</span>
-                            <span className="value">{this.props.task.context}</span>
+                <div className="tz-info">
+                    <div className="tz-title">{this.props.task.title}</div>
+                    <div className="tz-subject" dangerouslySetInnerHTML={{__html:this.props.task.subject}} ></div>
+                    <div className="tz-extra">
+                        <div className="tz-classification">
+                            <span className="tz-label">x:</span>
+                            <span className="tz-value">{this.props.task.context}</span>
                         </div>
-                        <div className="classification">
-                            <span className="label">c:</span>
-                            <span className="value">{this.props.task.category}</span>
+                        <div className="tz-classification">
+                            <span className="tz-label">c:</span>
+                            <span className="tz-value">{this.props.task.category}</span>
                         </div>
-                        <div className="classification">
-                            <span className="label">p:</span>
-                            <span className="value">{this.props.task.project}</span>
+                        <div className="tz-classification">
+                            <span className="tz-label">p:</span>
+                            <span className="tz-value">{this.props.task.project}</span>
                         </div>
-                        <div className="classification">
-                            <span className="label">s:</span>
-                            <span className="value">{this.props.task.story}</span>
+                        <div className="tz-classification">
+                            <span className="tz-label">s:</span>
+                            <span className="tz-value">{this.props.task.story}</span>
                         </div>
                     </div>
                 </div>
