@@ -1,6 +1,8 @@
 import * as React from 'react';
 import * as Moment from 'moment';
 
+import * as Timer from './timer-v2';
+
 import * as Model from '../model/task';
 import * as TextUtil from '../util/text';
 
@@ -8,6 +10,7 @@ class Props {
     task: Model.Task;
     selected: boolean;
     onClick: () => any;
+    onStateChange: (newState: Model.State) => any;
 }
 
 export class Component extends React.Component<Props, {}> {
@@ -41,15 +44,19 @@ export class Component extends React.Component<Props, {}> {
             case Model.State.RUNNING: cssState = " tz-state-running"; break;
             case Model.State.COMPLETED: cssState = " tz-state-completed"; break;
         }
-
+        var durationFrom = Model.getStartedMoment(task);
+        var durationPlus = Model.calculateCompletedDuration(task);
         return (
             <article className={"tz-task" + cssSelected + cssState} onClick={this.props.onClick} >
-                <a className="tz-action-complete" href="#">
+                <a className="tz-action-complete" href="#" onClick={this.onComplete.bind(this)}>
                     <span className="tz-category-icon">{glyph}</span>
                     <span className="tz-state"></span>
                 </a>
-                <a className="tz-action-play" href="#">
-                    <span className="tz-duration">{TextUtil.formatDuration(Model.calculateDuration(this.props.task))}</span>
+                <a className="tz-action-play" href="#" onClick={this.onPlay.bind(this)}>
+                    <Timer.Component
+                            className="tz-duration"
+                            from={durationFrom}
+                            plus={durationPlus} />
                     <span className="tz-state"></span>
                 </a>
                 <div className="tz-info">
@@ -76,5 +83,21 @@ export class Component extends React.Component<Props, {}> {
                 </div>
             </article>
         );
+    }
+
+    public onComplete(ev : React.MouseEvent) {
+        ev.preventDefault();
+        if (this.props.task.state == Model.State.COMPLETED)
+            this.props.onStateChange(Model.State.PAUSED);
+        else
+            this.props.onStateChange(Model.State.COMPLETED);
+    }
+
+    public onPlay(ev : React.MouseEvent) {
+        ev.preventDefault();
+        if (this.props.task.state == Model.State.RUNNING)
+            this.props.onStateChange(Model.State.PAUSED);
+        else
+            this.props.onStateChange(Model.State.RUNNING);
     }
 }

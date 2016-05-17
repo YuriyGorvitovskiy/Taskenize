@@ -114,12 +114,12 @@ export function postNew(task : Task) {
     }).then(parseTaskJson);
 }
 
-export function updateState(task: Task) {
+export function updateState(task: Task, state: State) {
     return $.ajax({
         method: "PUT",
         url: '/rest/v1/tasks/' + task._id,
         data: {
-            state: task.state,
+            state: state,
             time: new Date()
         },
         dataType: "json"
@@ -268,6 +268,14 @@ export function calculateDuration(task: Task) : Moment.Duration {
     }, Moment.duration(0));
 }
 
+export function getStartedMoment(task: Task) : Moment.Moment {
+    if (task.duration.length == 0)
+        return null;
+    if (task.duration[0].end != null)
+        return null;
+    return Moment(task.duration[0].begin);
+}
+
 export function calculateCompletedDuration(task: Task) : Moment.Duration {
     return task.duration.reduce((prev: Moment.Duration, curr: Period, index, array) : Moment.Duration => {
         if (curr.end == null)
@@ -276,6 +284,10 @@ export function calculateCompletedDuration(task: Task) : Moment.Duration {
         var period : Moment.Duration = Moment.duration(Moment(curr.end).diff(Moment(curr.begin)));
         return period.add(prev);
     }, Moment.duration(0));
+}
+export function calculatePeriodDuration(period: Period) : Moment.Duration {
+    var end : Moment.Moment = (period.end == null ? Moment() : Moment(period.end));
+    return Moment.duration(end.diff(Moment(period.begin)));
 }
 
 export function executionComparator(a: Task, b: Task) : number {

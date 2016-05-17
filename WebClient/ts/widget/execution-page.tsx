@@ -92,7 +92,7 @@ export class ExecutionPage extends React.Component<{},ExecutionPageState> {
 
     public onStateChange(task: Model.Task, newState: Model.State) {
         task.state = newState;
-        Model.updateState(task)
+        Model.updateState(task, newState)
             .then((changedTasks: Model.Task[]) => {
                 var tasks = [];
                 this.state.tasks.forEach((oldTask) => {

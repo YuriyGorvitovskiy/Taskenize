@@ -43,8 +43,9 @@ export class Component extends React.Component<{},State> {
             panels.push(<TaskPanel.Component
                     key={index}
                     task={task}
-                    selected={this.state.selected == task} 
-                    onClick={this.onTaskSelected.bind(this, task)} />);
+                    selected={this.state.selected == task}
+                    onClick={this.onTaskSelected.bind(this, task)}
+                    onStateChange={this.onTaskStateChange.bind(this, task)} />);
         });
 
         return (
@@ -61,6 +62,30 @@ export class Component extends React.Component<{},State> {
     }
 
     public onTaskSelected(task: Model.Task) {
+        this.setState({
+            tasks: this.state.tasks,
+            selected: task
+        });
+    }
+
+    public onTaskStateChange(task: Model.Task, state: Model.State) {
+        Model.updateState(task, state)
+            .then((changedTasks: Model.Task[]) => {
+                var tasks = [];
+                var selected = this.state.selected;
+                this.state.tasks.forEach((oldTask) => {
+                    var changedTask = changedTasks.filter((changedTask) => (oldTask._id==changedTask._id))[0];
+                    tasks.push(changedTask || oldTask);
+                    if (changedTask && selected && selected._id == changedTask._id)
+                        selected = changedTask;
+                })
+                tasks.sort(Model.executionComparator);
+                this.setState({
+                    tasks,
+                    selected
+                });
+            });
+
         this.setState({
             tasks: this.state.tasks,
             selected: task
