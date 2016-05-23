@@ -22,6 +22,7 @@ export class Component extends React.Component<Props, {}> {
         $.each(durations, (index: number, period: Model.Period) => {
             var toPart;
             var timer;
+            var deletePeriod;
             if (period.end == null) {
                 toPart = <input
                         className="tz-to"
@@ -37,18 +38,18 @@ export class Component extends React.Component<Props, {}> {
                         value={TextUtil.formatInputDateTimeLocal(period.end, true)}
                         required/>
                 timer = <Timer.Component className="tz-duration" plus={Model.calculatePeriodDuration(period)} />;
+                deletePeriod = <a className="tz-action tz-delete" href="#" onClick={this.onDeletePeriod.bind(this, index)}></a>;
             }
             sections.push(
                 <section className="tz-period" key={index}>
                     {toPart}
                     <input  className="tz-from"
                             type="datetime-local"
-                            step="1" 
+                            step="1"
                             value={TextUtil.formatInputDateTimeLocal(period.begin, true)}
                             required/>
                     {timer}
-                    <br/>
-                    <a className="tz-action tz-delete" href="#"></a>
+                    {deletePeriod}
                 </section>
             );
         });
@@ -65,4 +66,12 @@ export class Component extends React.Component<Props, {}> {
             </div>
         );
     }
+
+    public onDeletePeriod(index: number, ev: React.MouseEvent) {
+        ev.preventDefault();
+        this.props.task.duration.splice(index, 1);
+        this.forceUpdate();
+        Model.deleteDuration(this.props.task, index);
+    }
+
 }
