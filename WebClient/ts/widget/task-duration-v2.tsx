@@ -8,6 +8,7 @@ import * as TextUtil from '../util/text';
 
 class Props {
     task: Model.Task;
+    onDelete: () => any;
 }
 
 export class Component extends React.Component<Props, {}> {
@@ -38,7 +39,7 @@ export class Component extends React.Component<Props, {}> {
                         value={TextUtil.formatInputDateTimeLocal(period.end, true)}
                         required/>
                 timer = <Timer.Component className="tz-duration" plus={Model.calculatePeriodDuration(period)} />;
-                deletePeriod = <a className="tz-action tz-delete" href="#" onClick={this.onDeletePeriod.bind(this, index)}></a>;
+                deletePeriod = <a className="tz-action tz-delete-period" href="#" onClick={this.onDeletePeriod.bind(this, index)}></a>;
             }
             sections.push(
                 <section className="tz-period" key={index}>
@@ -63,6 +64,7 @@ export class Component extends React.Component<Props, {}> {
                             plus={durationPlus} />
                 </header>
                 {sections}
+                <a className="tz-action tz-delete-task" href="#" onClick={this.onDeleteTask.bind(this)}>Delete Task</a>
             </div>
         );
     }
@@ -72,6 +74,11 @@ export class Component extends React.Component<Props, {}> {
         this.props.task.duration.splice(index, 1);
         this.forceUpdate();
         Model.deleteDuration(this.props.task, index);
+    }
+
+    public onDeleteTask(ev: React.MouseEvent) {
+        ev.preventDefault();
+        this.props.onDelete();
     }
 
 }

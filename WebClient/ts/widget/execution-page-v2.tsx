@@ -52,7 +52,7 @@ export class Component extends React.Component<{},State> {
             <div>
                 <aside>
                     <TaskProperty.Component task={this.state.selected} />
-                    <TaskDuration.Component task={this.state.selected} />
+                    <TaskDuration.Component task={this.state.selected} onDelete={this.onTaskDelete.bind(this, this.state.selected)} />
                 </aside>
                 <main className="tz-task-list" >
                     {panels}
@@ -90,5 +90,29 @@ export class Component extends React.Component<{},State> {
             tasks: this.state.tasks,
             selected: task
         });
+    }
+    public onTaskDelete(task: Model.Task) {
+        if (task == null) {
+            return;
+        }
+        var selected = null;
+        var tasks = this.state.tasks;
+        var index = tasks.indexOf(task);
+        if (0 <= index  && index < tasks.length - 1) {
+            selected = tasks[index + 1];
+        } else if (0 < index  && index == tasks.length) {
+            selected = tasks[index - 1];
+        }
+
+        Model.del(task._id)
+            .then((task: Model.Task) => {
+                var tasks = this.state.tasks.filter((_task: Model.Task) => {
+                    return _task._id != task._id;
+                });
+                this.setState({
+                    tasks,
+                    selected
+                });
+            });
     }
 }
