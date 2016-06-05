@@ -1,11 +1,13 @@
 import * as React from 'react';
-import * as Moment from 'moment';
+
+import * as InputText from './input-text-v2';
 
 import * as Model from '../model/task';
 import * as TextUtil from '../util/text';
 
-class Props {
+export interface Props {
     task: Model.Task;
+    onChange: (serverTask: Model.Task) => any;
 }
 
 export class Component extends React.Component<Props, {}> {
@@ -17,30 +19,15 @@ export class Component extends React.Component<Props, {}> {
                 <header>
                     <span className="tz-title">Properties</span>
                 </header>
-                <div className="tz-input-group">
-                    <input id="title" type="text" value={task.title} required/>
-                    <label htmlFor="title">Title</label>
-                </div>
+                <InputText.Component id="title" label="Title" value={task.title} onSuccess={this.onTitleChange.bind(this)}/>
                 <div className="tz-input-group">
                     <div id="subject" className="tz-input tz-multiline" dangerouslySetInnerHTML={subjectInnerHtml} contentEditable></div>
                     <label htmlFor="subject">Subject</label>
                 </div>
-                <div className="tz-input-group">
-                    <input id="context" type="text" value={task.context} required/>
-                    <label htmlFor="context">Context</label>
-                </div>
-                <div className="tz-input-group">
-                    <input id="category" type="text" value={task.category} required/>
-                    <label htmlFor="category">Category</label>
-                </div>
-                <div className="tz-input-group">
-                    <input id="project" type="text" value={task.project} required/>
-                    <label htmlFor="project">Project</label>
-                </div>
-                <div className="tz-input-group">
-                    <input id="story" type="text" value={task.story} required/>
-                    <label htmlFor="story">Story</label>
-                </div>
+                <InputText.Component id="context" label="Context" value={task.context} onSuccess={this.onContextChange.bind(this)}/>
+                <InputText.Component id="category" label="Category" value={task.category} onSuccess={this.onCategoryChange.bind(this)}/>
+                <InputText.Component id="project" label="Project" value={task.project} onSuccess={this.onProjectChange.bind(this)}/>
+                <InputText.Component id="story" label="Story" value={task.story} onSuccess={this.onStoryChange.bind(this)}/>
                 <div className="tz-input-group">
                     <input id="defer" type="datetime-local" value={TextUtil.formatInputDateTimeLocal(task.scheduled, false)}/>
                     <label htmlFor="defer">Defer to</label>
@@ -50,5 +37,48 @@ export class Component extends React.Component<Props, {}> {
                 </div>
             </div>
         );
+    }
+
+    public onTitleChange(value: string) {
+        this.props.task.title = value;
+        this.forceUpdate();
+        Model.updateTitle(this.props.task)
+             .then((task)=>this.props.onChange(task));
+    }
+
+    public onSubjectChange(value: string) {
+        this.props.task.subject = value;
+        this.forceUpdate();
+        Model.updateSubject(this.props.task)
+             .then((task)=>this.props.onChange(task));
+    }
+
+    public onContextChange(value: string) {
+        this.props.task.context = value;
+        this.forceUpdate();
+        Model.updateContext(this.props.task)
+             .then((task)=>this.props.onChange(task));
+    }
+
+    public onCategoryChange(value: string) {
+        this.props.task.category = value;
+        this.forceUpdate();
+        Model.updateCategory(this.props.task)
+             .then((task)=>this.props.onChange(task));
+
+    }
+
+    public onProjectChange(value: string) {
+        this.props.task.project = value;
+        this.forceUpdate();
+        Model.updateProject(this.props.task)
+             .then((task)=>this.props.onChange(task));
+    }
+
+    public onStoryChange(value: string) {
+        this.props.task.story = value;
+        this.forceUpdate();
+        Model.updateStory(this.props.task)
+             .then((task)=>this.props.onChange(task));
     }
 }

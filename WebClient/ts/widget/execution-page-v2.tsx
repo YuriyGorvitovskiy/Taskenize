@@ -51,7 +51,7 @@ export class Component extends React.Component<{},State> {
         return (
             <div>
                 <aside>
-                    <TaskProperty.Component task={this.state.selected} />
+                    <TaskProperty.Component task={this.state.selected} onChange={this.onTaskChange.bind(this, this.state.selected)}/>
                     <TaskDuration.Component task={this.state.selected} onDelete={this.onTaskDelete.bind(this, this.state.selected)} />
                 </aside>
                 <main className="tz-task-list" >
@@ -91,6 +91,21 @@ export class Component extends React.Component<{},State> {
             selected: task
         });
     }
+
+    public onTaskChange(changedTask: Model.Task, serverTask: Model.Task) {
+        var tasks = [];
+        var selected = this.state.selected;
+        this.state.tasks.forEach((task) => {
+            if (task._id == changedTask._id)
+                task = serverTask;
+            tasks.push(task);
+        })
+        this.setState({
+            tasks,
+            selected: serverTask
+        });
+    }
+
     public onTaskDelete(task: Model.Task) {
         if (task == null) {
             return;
