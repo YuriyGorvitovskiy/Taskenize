@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import * as InputText from './input-text-v2';
+import * as InputHtml from './input-html-v2';
 
 import * as Model from '../model/task';
 import * as TextUtil from '../util/text';
@@ -20,10 +21,7 @@ export class Component extends React.Component<Props, {}> {
                     <span className="tz-title">Properties</span>
                 </header>
                 <InputText.Component id="title" label="Title" value={task.title} onSuccess={this.onTitleChange.bind(this)}/>
-                <div className="tz-input-group">
-                    <div id="subject" className="tz-input tz-multiline" dangerouslySetInnerHTML={subjectInnerHtml} contentEditable></div>
-                    <label htmlFor="subject">Subject</label>
-                </div>
+                <InputHtml.Component id="subject" label="Subject" value={task.subject} onSuccess={this.onSubjectChange.bind(this)}/>
                 <InputText.Component id="context" label="Context" value={task.context} onSuccess={this.onContextChange.bind(this)}/>
                 <InputText.Component id="category" label="Category" value={task.category} onSuccess={this.onCategoryChange.bind(this)}/>
                 <InputText.Component id="project" label="Project" value={task.project} onSuccess={this.onProjectChange.bind(this)}/>

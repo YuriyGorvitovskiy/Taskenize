@@ -96,13 +96,15 @@ export class Component extends React.Component<{},State> {
         var tasks = [];
         var selected = this.state.selected;
         this.state.tasks.forEach((task) => {
-            if (task._id == changedTask._id)
+            if (task._id == serverTask._id)
                 task = serverTask;
+            if (selected != null && selected._id == task._id)
+                selected = task;
             tasks.push(task);
-        })
+        });
         this.setState({
             tasks,
-            selected: serverTask
+            selected
         });
     }
 
