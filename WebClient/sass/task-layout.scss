@@ -35,6 +35,12 @@ main,
     position:           absolute;
     top:                0;
     bottom:             0;
+
+    border-top-style:   solid;
+    border-top-width:   50px;
+    border-top-color:   white;
+
+    border-bottom-style: none;
 }
 
 aside > .tz-sidebar,
@@ -48,12 +54,6 @@ main {
     padding-right:      8px;
 
     margin:             0;
-
-    border-top-style:   solid;
-    border-top-width:   50px;
-    border-top-color:   white;
-
-    border-bottom-style: none;
 }
 
 aside {
@@ -94,7 +94,7 @@ main {
         overflow-y:     scroll;
         left:           auto;
         width:          33%;
-        padding-top:    50px;
+        //padding-top:    50px;
     }
     aside > .tz-sidebar {
         display:        block;
