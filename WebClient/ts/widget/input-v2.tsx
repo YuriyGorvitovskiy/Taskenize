@@ -6,7 +6,7 @@ export interface Props<T> {
     id:         string;
     label:      string;
     value:      T;
-
+    className?: string;
     onSuccess:  (newValue: T) => any;
 }
 
@@ -34,6 +34,9 @@ export abstract class Component<T> extends React.Component<Props<T>, State<T>> {
     }
 
     public render() {
+        if (!this.props.label)
+            return this.renderInput();
+
         return (
             <div className="tz-input-group">
                 {this.renderInput()}
@@ -41,6 +44,14 @@ export abstract class Component<T> extends React.Component<Props<T>, State<T>> {
                 {this.renderSubAction()}
             </div>
         );
+    }
+
+    public getInputElement() {
+        var element = ReactDOM.findDOMNode(this)
+        if (!this.props.label)
+            return element;
+
+        return element.firstElementChild;
     }
 
     public onKeyDown(event: React.KeyboardEvent) {

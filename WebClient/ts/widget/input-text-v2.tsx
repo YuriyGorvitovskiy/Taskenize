@@ -9,6 +9,7 @@ export class Component extends Input.Component<string> {
         return (
             <input  id={this.props.id}
                     type="text"
+                    className={this.props.className}
                     onFocus={this.onFocus.bind(this)}
                     onBlur={this.onBlur.bind(this)}
                     onKeyDown={this.onKeyDown.bind(this)}

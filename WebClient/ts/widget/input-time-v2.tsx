@@ -3,19 +3,17 @@ import * as React from 'react';
 import * as Input from './input-v2';
 
 import * as TextUtil from '../util/text';
-import * as Moment from 'moment';
 
 export class Component extends Input.Component<Date> {
 
     public renderInput() {
         var value = this.state.inFocus ? this.state.newValue : this.props.value;
-        var text = TextUtil.formatInputDateTimeLocal(value, false);
-        var min = TextUtil.formatInputDateTimeLocal(new Date(), false);
+        var text = TextUtil.formatInputDateTimeLocal(value, true);
         return (
             <input  id={this.props.id}
                     className={this.props.className}
                     type="datetime-local"
-                    min={min}
+                    step="1"
                     onFocus={this.onFocus.bind(this)}
                     onBlur={this.onBlur.bind(this)}
                     onKeyDown={this.onKeyDown.bind(this)}
@@ -25,18 +23,8 @@ export class Component extends Input.Component<Date> {
         );
     }
 
-    public renderSubAction() {
-        var actions : JSX.Element[] = [];
-
-        actions.push(<a className="tz-action tz-plus" href="#" onClick={this.onNext.bind(this, {days:1})}>+1</a>);
-        actions.push(<a className="tz-action tz-plus" href="#" onClick={this.onNext.bind(this, {weeks:1})}>+7</a>);
-        actions.push(<a className="tz-action tz-plus" href="#" onClick={this.onNext.bind(this, {months:1})}>+30</a>);
-
-        return actions;
-    }
-
     public extractValue(domElement: EventTarget) : Date {
-        return TextUtil.parseDate(domElement['value']);
+        return TextUtil.parseDate(domElement['value']) || this.props.value;
     }
 
     public shouldComponentUpdate(nextProps: Input.Props<Date>, nextState: Input.State<Date>) {
@@ -51,20 +39,6 @@ export class Component extends Input.Component<Date> {
         var target = this.getInputElement();
 
         if (!value || value !== this.extractValue(target))
-            target['value'] = TextUtil.formatInputDateTimeLocal(value, false);
+            target['value'] = TextUtil.formatInputDateTimeLocal(value, true);
     }
-
-    public onNext(duration: Moment.Duration, event: React.MouseEvent) {
-        event.preventDefault();
-        event.stopPropagation();
-
-        var target = this.getInputElement();
-        var date = Moment(this.extractValue(target)  || new Date());
-
-        this.onSuccess(this.state.inFocus,
-                        Moment.max(date, Moment())
-                              .add(duration)
-                              .toDate());
-    }
-
 }

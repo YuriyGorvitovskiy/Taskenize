@@ -57,8 +57,11 @@ export class Component extends React.Component<{},State> {
         return (
             <div>
                 <aside>
-                    <TaskProperty.Component task={this.state.selected} onChange={this.onTaskChange.bind(this, this.state.selected)}/>
-                    <TaskDuration.Component task={this.state.selected} onDelete={this.onTaskDelete.bind(this, this.state.selected)} />
+                    <TaskProperty.Component task={this.state.selected}
+                            onChange={this.onTaskChange.bind(this, this.state.selected)} />
+                    <TaskDuration.Component task={this.state.selected}
+                            onChange={this.onTaskChange.bind(this, this.state.selected)}
+                            onDelete={this.onTaskDelete.bind(this, this.state.selected)} />
                 </aside>
                 <main className="tz-task-list" >
                     {panels}

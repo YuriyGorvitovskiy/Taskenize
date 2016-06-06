@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+
 import * as Input from './input-v2';
 
 const sanitizeHTML = require('sanitize-html');
@@ -11,7 +11,7 @@ export class Component extends Input.Component<string> {
 
         return (
             <div id={this.props.id}
-                 className="tz-input tz-multiline"
+                 className={"tz-input tz-multiline " + (this.props.className || "")}
                  onFocus={this.onFocus.bind(this)}
                  onBlur={this.onBlur.bind(this)}
                  onKeyDown={this.onKeyDown.bind(this)}
@@ -34,13 +34,14 @@ export class Component extends Input.Component<string> {
 
     public shouldComponentUpdate(nextProps: Input.Props<string>, nextState: Input.State<string>) {
         var html = nextState.inFocus ? nextState.newValue : nextProps.value;
-        var target = ReactDOM.findDOMNode(this).firstElementChild;
+        var target = this.getInputElement();
+
         return (html !== this.extractValue(target));
     }
 
     public componentDidUpdate() {
         var value = this.state.inFocus ? this.state.newValue : this.props.value;
-        var target = ReactDOM.findDOMNode(this).firstElementChild;
+        var target = this.getInputElement();
 
         if (value !== this.extractValue(target))
             this.updateValue(target, value);
