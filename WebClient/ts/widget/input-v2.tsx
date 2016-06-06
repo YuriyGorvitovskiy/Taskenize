@@ -29,10 +29,16 @@ export abstract class Component<T> extends React.Component<Props<T>, State<T>> {
     public abstract renderInput() : JSX.Element;
     public abstract extractValue(domElement: EventTarget) : T;
 
+    public renderSubAction() : JSX.Element[] {
+        return [];
+    }
+
     public render() {
         return (
-            <div className="tz-input-group">{this.renderInput()}
+            <div className="tz-input-group">
+                {this.renderInput()}
                 <label htmlFor={this.props.id}>{this.props.label}</label>
+                {this.renderSubAction()}
             </div>
         );
     }

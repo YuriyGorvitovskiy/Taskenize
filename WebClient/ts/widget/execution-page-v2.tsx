@@ -1,4 +1,6 @@
 import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+
 import * as Moment from 'moment';
 
 import * as TaskPanel    from './task-panel-v2';
@@ -12,8 +14,11 @@ class State {
 }
 
 export class Component extends React.Component<{},State> {
+    selected: TaskPanel.Component;
+
     public constructor() {
         super();
+        this.selected = null;
         this.state = {
             tasks: [],
             selected: null
@@ -44,6 +49,7 @@ export class Component extends React.Component<{},State> {
                     key={index}
                     task={task}
                     selected={this.state.selected == task}
+                    ref={this.state.selected == task ? (ref) => this.selected = ref : null}
                     onClick={this.onTaskSelected.bind(this, task)}
                     onStateChange={this.onTaskStateChange.bind(this, task)} />);
         });
@@ -59,6 +65,13 @@ export class Component extends React.Component<{},State> {
                 </main>
             </div>
         );
+    }
+
+    public componentDidUpdate() {
+        if (this.selected != null) {
+            var domNode = ReactDOM.findDOMNode(this.selected);
+            domNode['scrollIntoViewIfNeeded'](false);
+        }
     }
 
     public onTaskSelected(task: Model.Task) {
@@ -102,6 +115,7 @@ export class Component extends React.Component<{},State> {
                 selected = task;
             tasks.push(task);
         });
+        tasks.sort(Model.executionComparator);
         this.setState({
             tasks,
             selected

@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import * as InputText from './input-text-v2';
 import * as InputHtml from './input-html-v2';
+import * as InputDate from './input-date-v2';
 
 import * as Model from '../model/task';
 import * as TextUtil from '../util/text';
@@ -26,13 +27,7 @@ export class Component extends React.Component<Props, {}> {
                 <InputText.Component id="category" label="Category" value={task.category} onSuccess={this.onCategoryChange.bind(this)}/>
                 <InputText.Component id="project" label="Project" value={task.project} onSuccess={this.onProjectChange.bind(this)}/>
                 <InputText.Component id="story" label="Story" value={task.story} onSuccess={this.onStoryChange.bind(this)}/>
-                <div className="tz-input-group">
-                    <input id="defer" type="datetime-local" value={TextUtil.formatInputDateTimeLocal(task.scheduled, false)}/>
-                    <label htmlFor="defer">Defer to</label>
-                    <a className="tz-action tz-plus" href="#">+1</a>
-                    <a className="tz-action tz-plus" href="#">+7</a>
-                    <a className="tz-action tz-plus" href="#">+30</a>
-                </div>
+                <InputDate.Component id="defer" label="Defer to" value={task.scheduled} onSuccess={this.onScheduledChange.bind(this)}/>
             </div>
         );
     }
@@ -63,7 +58,6 @@ export class Component extends React.Component<Props, {}> {
         this.forceUpdate();
         Model.updateCategory(this.props.task)
              .then((task)=>this.props.onChange(task));
-
     }
 
     public onProjectChange(value: string) {
@@ -77,6 +71,13 @@ export class Component extends React.Component<Props, {}> {
         this.props.task.story = value;
         this.forceUpdate();
         Model.updateStory(this.props.task)
+             .then((task)=>this.props.onChange(task));
+    }
+
+    public onScheduledChange(value: Date) {
+        this.props.task.scheduled = value;
+        this.forceUpdate();
+        Model.updateScheduled(this.props.task)
              .then((task)=>this.props.onChange(task));
     }
 }

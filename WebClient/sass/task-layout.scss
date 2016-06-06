@@ -42,16 +42,18 @@ main {
     overflow-y:         scroll;
     height:             100%;
 
-    padding-top:        58px;
+    padding-top:        8px;
     padding-bottom:     8px;
     padding-left:       8px;
     padding-right:      8px;
 
     margin:             0;
 
-    border-style:       none;
-    border-width:       1px;
-    border-color:       lightgrey;
+    border-top-style:   solid;
+    border-top-width:   50px;
+    border-top-color:   white;
+
+    border-bottom-style: none;
 }
 
 aside {
@@ -79,11 +81,12 @@ main {
     left:               25%;
     right:              25%;
 
-    border-style:       none;
     border-left-style:  solid;
+    border-left-width:  1px;
+    border-left-color:  lightgrey;
     border-right-style: solid;
-    border-width:       1px;
-    border-color:       lightgrey;
+    border-right-width: 1px;
+    border-right-color: lightgrey;
 }
 
 @media screen and (max-width: 1280px) {
