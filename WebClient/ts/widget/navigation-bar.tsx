@@ -41,8 +41,10 @@ export class NavigationInfo {
 
 export interface INavigationBarProps extends React.Props<NavigationBar> {
     active : PageId;
+    edit : boolean;
 
     onPage : (pageId: PageId) => void;
+    onEdit : (edit: boolean) => void;
 }
 
 export interface INavigationBarState {
@@ -85,15 +87,24 @@ export class NavigationBar extends React.Component<INavigationBarProps,INavigati
                 <a href="/logout" >Logout</a>
             </li>
         );
+
+        var back = this.props.edit
+            ? <button type = "button" style = {{float:"left", margin:"8px"}} className = "hidden-lg btn btn-default" onClick={this.onBack.bind(this)}>
+                <span className = "glyphicon glyphicon-triangle-left"></span>
+                Back
+              </button>
+            : null;
+
         return (
             <nav className="navbar navbar-default navbar-fixed-top">
                 <div className="container-fluid">
                     <div className="navbar-header">
+                        {back}
                         <button type = "button" className = "navbar-toggle" data-toggle ="collapse" data-target = "#navbar-collapse" style={{padding:"5px"}}>
                             <span className = "sr-only">Toggle navigation</span>
                             <span className = "glyphicon glyphicon-menu-hamburger" style={{marginLeft:"3px", marginRight:"3px", fontSize:"large"}}></span>
                         </button>
-                        <span className="navbar-brand" >Taskenize</span>
+                        <span className="navbar-brand">Taskenize</span>
                     </div>
                     <div id="navbar-collapse" className="collapse navbar-collapse">
                       <ul className="nav navbar-nav navbar-right ">
@@ -109,5 +120,9 @@ export class NavigationBar extends React.Component<INavigationBarProps,INavigati
         ev.preventDefault();
         $("#navbar-collapse").collapse('hide');
         this.props.onPage(page.id);
+    }
+
+    onBack() {
+        this.props.onEdit(false);
     }
 }

@@ -87,6 +87,7 @@ export class Component extends React.Component<Props, {}> {
 
     public onComplete(ev : React.MouseEvent) {
         ev.preventDefault();
+        ev.stopPropagation();
         if (this.props.task.state == Model.State.COMPLETED)
             this.props.onStateChange(Model.State.PAUSED);
         else
@@ -95,6 +96,7 @@ export class Component extends React.Component<Props, {}> {
 
     public onPlay(ev : React.MouseEvent) {
         ev.preventDefault();
+        ev.stopPropagation();
         if (this.props.task.state == Model.State.RUNNING)
             this.props.onStateChange(Model.State.PAUSED);
         else

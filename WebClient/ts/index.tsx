@@ -10,13 +10,15 @@ import * as ReportPage from './widget/report-page';
 
 interface IndexPageState {
     pageId: Nav.PageId
+    edit: boolean;
 }
 
 class IndexPage extends React.Component<{},IndexPageState> {
     public constructor() {
         super();
         this.state={
-            pageId: Nav.PageId.EXECUTION
+            pageId: Nav.PageId.EXECUTION,
+            edit: false
         };
     }
 
@@ -27,7 +29,7 @@ class IndexPage extends React.Component<{},IndexPageState> {
                 pageComponent = (<InboxPage />);
                 break;
             case Nav.PageId.EXECUTION:
-                pageComponent = (<ExecutionPage.Component />);
+                pageComponent = (<ExecutionPage.Component onEdit={this.onEdit.bind(this)}/>);
                 break;
             case Nav.PageId.COMPLETED:
                 pageComponent = (<CompletedPage.Component />);
@@ -37,8 +39,12 @@ class IndexPage extends React.Component<{},IndexPageState> {
                 break;
         }
         return (
-            <div>
-                <Nav.NavigationBar active={this.state.pageId} onPage={this.onPageSelected.bind(this)}/>
+            <div className={this.state.edit ? "tz-edit" : ""}>
+                <Nav.NavigationBar
+                    active={this.state.pageId}
+                    edit={this.state.edit}
+                    onPage={this.onPageSelected.bind(this)}
+                    onEdit={this.onEdit.bind(this)}/>
                 <div>
                     {pageComponent}
                 </div>
@@ -47,8 +53,17 @@ class IndexPage extends React.Component<{},IndexPageState> {
     }
 
     public onPageSelected(pageId : Nav.PageId) {
-        this.state.pageId = pageId;
-        this.forceUpdate();
+        this.setState({
+            pageId: this.state.pageId,
+            edit: false
+        });
+    }
+
+    public onEdit(edit: boolean) {
+        this.setState({
+            pageId: this.state.pageId,
+            edit
+        });
     }
 }
 

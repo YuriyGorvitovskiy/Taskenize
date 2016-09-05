@@ -130,11 +130,11 @@ main {
         width:                   100%;
     }
 
-    body.tz-edit  main {
+    div.tz-edit  main {
         display:                 none;
     }
 
-    body.tz-edit > aside {
+    div.tz-edit aside {
         display:                 block;
     }
 }

@@ -13,7 +13,11 @@ class State {
     selected: Model.Task;
 }
 
-export class Component extends React.Component<{},State> {
+class Props {
+    onEdit: (edit: boolean) => any;
+}
+
+export class Component extends React.Component<Props,State> {
     selected: TaskPanel.Component;
 
     public constructor() {
@@ -21,7 +25,7 @@ export class Component extends React.Component<{},State> {
         this.selected = null;
         this.state = {
             tasks: [],
-            selected: null
+            selected: null,
         };
 
         Model.getExecuting().done(((serverTasks) => {
@@ -82,6 +86,7 @@ export class Component extends React.Component<{},State> {
             tasks: this.state.tasks,
             selected: task
         });
+        this.props.onEdit(true);
     }
 
     public onTaskStateChange(task: Model.Task, state: Model.State) {
