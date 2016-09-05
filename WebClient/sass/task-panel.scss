@@ -111,6 +111,7 @@ article.tz-task div.tz-info {
     display:            flex;
     flex-direction:     column;
     justify-content:    space-between;
+    overflow:           scroll;
     height:             100px;
 }
 article.tz-task div.tz-info div.tz-title {
@@ -118,7 +119,6 @@ article.tz-task div.tz-info div.tz-title {
     font-weight:        bold;
     margin-top:         3px;
     margin-bottom:      3px;
-    overflow:           scroll;
 }
 
 article.tz-task div.tz-info div.tz-subject {
@@ -126,7 +126,6 @@ article.tz-task div.tz-info div.tz-subject {
     font-family:        "Times New Roman", Times, serif;
     font-size:          1em;
     font-weight:        normal;
-    overflow:           scroll;
     margin-bottom:      3px;
 }
 
