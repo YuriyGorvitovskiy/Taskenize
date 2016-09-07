@@ -1,7 +1,7 @@
 import './bootstrap';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import * as Nav from './widget/navigation-bar';
+import * as Nav from './widget/navigation-bar-v2';
 import {InboxPage} from './widget/inbox-page';
 //import {ExecutionPage} from './widget/execution-page';
 import * as ExecutionPage from './widget/execution-page-v2';
@@ -10,15 +10,13 @@ import * as ReportPage from './widget/report-page';
 
 interface IndexPageState {
     pageId: Nav.PageId
-    edit: boolean;
 }
 
 class IndexPage extends React.Component<{},IndexPageState> {
     public constructor() {
         super();
         this.state={
-            pageId: Nav.PageId.EXECUTION,
-            edit: false
+            pageId: Nav.PageId.EXECUTION
         };
     }
 
@@ -29,7 +27,7 @@ class IndexPage extends React.Component<{},IndexPageState> {
                 pageComponent = (<InboxPage />);
                 break;
             case Nav.PageId.EXECUTION:
-                pageComponent = (<ExecutionPage.Component onEdit={this.onEdit.bind(this)}/>);
+                pageComponent = (<ExecutionPage.Component onPageSelected={this.onPageSelected.bind(this)}/>);
                 break;
             case Nav.PageId.COMPLETED:
                 pageComponent = (<CompletedPage.Component />);
@@ -38,38 +36,16 @@ class IndexPage extends React.Component<{},IndexPageState> {
                 pageComponent = (<ReportPage.Component />);
                 break;
         }
-        return (
-            <div className={this.state.edit ? "tz-edit" : ""}>
-                <Nav.NavigationBar
-                    active={this.state.pageId}
-                    edit={this.state.edit}
-                    onPage={this.onPageSelected.bind(this)}
-                    onEdit={this.onEdit.bind(this)}/>
-                <div>
-                    {pageComponent}
-                </div>
-            </div>
-        );
+        return pageComponent;
     }
 
     public onPageSelected(pageId : Nav.PageId) {
         this.setState({
-            pageId: this.state.pageId,
-            edit: false
-        });
-    }
-
-    public onEdit(edit: boolean) {
-        this.setState({
-            pageId: this.state.pageId,
-            edit
+            pageId
         });
     }
 }
 
-ReactDOM.render(
-    <div>
-        <IndexPage />
-    </div>,
+ReactDOM.render(<IndexPage />,
     document.getElementById("react-root")
 );

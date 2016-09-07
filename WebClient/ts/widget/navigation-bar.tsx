@@ -89,7 +89,7 @@ export class NavigationBar extends React.Component<INavigationBarProps,INavigati
         );
 
         var back = this.props.edit
-            ? <button type = "button" style = {{float:"left", margin:"8px"}} className = "hidden-lg btn btn-default" onClick={this.onBack.bind(this)}>
+            ? <button type = "button" style = {{float:"left", margin:"8px"}} className = "hidden-lgx btn btn-default" onClick={this.onBack.bind(this)}>
                 <span className = "glyphicon glyphicon-triangle-left"></span>
                 Back
               </button>

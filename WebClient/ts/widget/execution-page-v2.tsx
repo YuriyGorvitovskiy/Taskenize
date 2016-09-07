@@ -3,6 +3,7 @@ import * as ReactDOM from 'react-dom';
 
 import * as Moment from 'moment';
 
+import * as Nav from './navigation-bar-v2';
 import * as TaskPanel    from './task-panel-v2';
 import * as TaskProperty from './task-property-v2';
 import * as TaskDuration from './task-duration-v2';
@@ -11,10 +12,11 @@ import * as Model from '../model/task';
 class State {
     tasks: Model.Task[];
     selected: Model.Task;
+    edit: boolean;
 }
 
 class Props {
-    onEdit: (edit: boolean) => any;
+    onPageSelected : (pageId : Nav.PageId) => any
 }
 
 export class Component extends React.Component<Props,State> {
@@ -26,12 +28,13 @@ export class Component extends React.Component<Props,State> {
         this.state = {
             tasks: [],
             selected: null,
+            edit: false
         };
 
         Model.getExecuting().done(((serverTasks) => {
             var tasks = serverTasks as Model.Task[];
             tasks.sort(Model.executionComparator);
-            this.setState({tasks, selected: tasks[0]});
+            this.setState({tasks, selected: tasks[0], edit: false});
         }).bind(this));
     }
 
@@ -59,7 +62,12 @@ export class Component extends React.Component<Props,State> {
         });
 
         return (
-            <div>
+            <div className={"tz-page" + (this.state.edit ? " tz-edit" : "")}>
+                <Nav.Component
+                    active={Nav.PageId.EXECUTION}
+                    back={this.state.edit ? "Tasks" : null}
+                    onPage={this.onPageSelected.bind(this)}
+                    onBack={this.onBack.bind(this)}/>
                 <aside>
                     <TaskProperty.Component task={this.state.selected}
                             onChange={this.onTaskChange.bind(this, this.state.selected)} />
@@ -81,12 +89,24 @@ export class Component extends React.Component<Props,State> {
         }
     }
 
+    public onPageSelected(page: Nav.PageId) {
+        this.props.onPageSelected(page);
+    }
+
+    public onBack() {
+        this.setState({
+            tasks: this.state.tasks,
+            selected: this.state.selected,
+            edit: false
+        });
+    }
+
     public onTaskSelected(task: Model.Task) {
         this.setState({
             tasks: this.state.tasks,
-            selected: task
+            selected: task,
+            edit: true
         });
-        this.props.onEdit(true);
     }
 
     public onTaskStateChange(task: Model.Task, state: Model.State) {
@@ -103,13 +123,15 @@ export class Component extends React.Component<Props,State> {
                 tasks.sort(Model.executionComparator);
                 this.setState({
                     tasks,
-                    selected
+                    selected,
+                    edit: this.state.edit
                 });
             });
 
         this.setState({
             tasks: this.state.tasks,
-            selected: task
+            selected: task,
+            edit: this.state.edit
         });
     }
 
@@ -126,7 +148,8 @@ export class Component extends React.Component<Props,State> {
         tasks.sort(Model.executionComparator);
         this.setState({
             tasks,
-            selected
+            selected,
+            edit: this.state.edit
         });
     }
 
@@ -150,7 +173,8 @@ export class Component extends React.Component<Props,State> {
                 });
                 this.setState({
                     tasks,
-                    selected
+                    selected,
+                    edit: false
                 });
             });
     }

@@ -1,0 +1,108 @@
+div.tz-page > header {
+    display: flex;
+    align-items: center;
+    color: #505050;
+}
+
+div.tz-page > header > h1 {
+    font-size: 2em;
+    flex-grow: 1;
+    text-align: left;
+
+    margin: 0;
+    margin-left: 8px;
+}
+
+div.tz-page > header  nav {
+    display: inline-block;
+
+    flex-grow: 0;
+
+    margin: 0;
+
+    padding: 0.7em;
+    padding-left: 8px;
+    padding-right: 8px;
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.3em;
+
+    cursor: pointer;
+    cursor: hand;
+}
+
+div.tz-page > header  nav.tz-active {
+    background-color: #A0A0A0;
+}
+
+div.tz-page > header nav a,
+div.tz-page > header nav a:link,
+div.tz-page > header nav a:visited,
+div.tz-page > header nav a:hover,
+div.tz-page > header nav a:active {
+    text-decoration: none;
+    color: #505050;
+}
+
+div.tz-page > header span.tz-collapseable {
+    display: flex;
+    align-items: center;
+
+    flex-grow: 0;
+
+    margin: 0;
+    padding: 0;
+}
+
+div.tz-page > header span.tz-collapseable > section {
+    display: flex;
+    align-items: center;
+
+    margin: 0;
+    padding: 0;
+}
+
+div.tz-page > header nav.tz-collapse {
+    display: none;
+}
+
+@media screen and (max-width: 640px) {
+
+    div.tz-page > header > h1 {
+        text-align: center;
+    }
+
+    div.tz-page > header nav.tz-collapse {
+        display: inline-block;
+    }
+
+    div.tz-page > header span.tz-collapseable section {
+        display: none;
+    }
+
+    div.tz-page > header span.tz-collapseable:hover section {
+        display: block;
+        position: absolute;
+        top: 110%;
+        right: 5%;
+        width: 90%;
+        z-index: 1;
+
+        height: auto;
+        border-style: solid;
+        border-color: #303030;
+        border-width: 3px;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    div.tz-page > header span.tz-collapseable section > nav {
+        display: block;
+        padding: 12px 16px;
+        background-color: #e8e8e8;
+        border-top: solid 1px #303030;
+    }
+    div.tz-page > header span.tz-collapseable section > nav.tz-active {
+        background-color: #A0A0A0;
+    }
+}
