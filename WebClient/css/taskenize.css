@@ -22,6 +22,10 @@
     border: 0;
 }
 
+input[type=text] {
+    pointer-events: none; /* iphone's safary failes to grab the input for scrolling. This trick helps */
+}
+
 .btn-blank {
     padding: 0 17px;
 }
