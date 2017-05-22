@@ -1,0 +1,21 @@
+[Unit]
+Description=Node.js taskenize server
+#Requires=After=mongod.service       # Requires the mongod service to run first
+
+[Service]
+ExecStart=/usr/bin/node /home/ubuntu/Taskenize/WebServer/bin/app.js
+# Required on some systems
+WorkingDirectory=/home/ubuntu/Taskenize/WebServer
+# Restart service after 10 seconds if node service crashes
+Restart=always
+RestartSec=10
+# Output to syslog
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=taskenize
+#User=<alternate user>
+#Group=<alternate group>
+Environment=NODE_ENV=production PORT=80
+
+[Install]
+WantedBy=multi-user.target
