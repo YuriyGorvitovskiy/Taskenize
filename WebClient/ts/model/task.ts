@@ -32,20 +32,26 @@ export class Category {
         this.glyph = glyph;
         this.autorun = autorun;
     }
-
     public static ALL = [
-        new Category("House", "danger", "home", false),
-        new Category("Hobby", "default", "tower", false),
-        new Category("Recreation", "info", "tent", false),
-        new Category("Shop",  "warning", "shopping-cart", false),
+        new Category("House", "warning", "home", false),
+        new Category("Office", "danger", "briefcase", false),
         new Category("Education", "warning", "education", false),
+        new Category("Shop",  "info", "shopping-cart", false),
+        new Category("Hobby", "info", "tower", false),
+        new Category("Recreation", "success", "tent", false),
         new Category("Pleasure", "success", "facetime-video", false),
     ];
-
+    public static COMMON = [];
     public static MAP = {};
 };
 (() => {
     Category.ALL.map((a)=>{Category.MAP[a.name] = a});
+    Category.COMMON.push(Category.MAP["House"]);
+    Category.COMMON.push(Category.MAP["Office"]);
+    Category.COMMON.push(Category.MAP["Shop"]);
+    Category.COMMON.push(Category.MAP["Hobby"]);
+    Category.COMMON.push(Category.MAP["Recreation"]);
+    Category.COMMON.push(Category.MAP["Pleasure"]);
 })();
 
 export interface Period {

@@ -31,7 +31,7 @@ export class ExecutionPage extends React.Component<{},ExecutionPageState> {
         var full = (env == 'md' || env == 'lg');
 
         var actions = [];
-        $.each(Model.Category.ALL, (index: number, category: Model.Category) => {
+        $.each(Model.Category.COMMON, (index: number, category: Model.Category) => {
             actions.push(
                 <button key={index} type="button" className={"col-xs-2 btn btn-" + category.css} onClick={()=>this.onNewTask(category)}>
                     <span className={"glyphicon glyphicon-" + category.glyph}></span>{full ? " " + category.name : ""}
