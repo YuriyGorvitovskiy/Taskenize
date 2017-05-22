@@ -98,11 +98,11 @@ ubuntu 16.04> # look for 'node' PID
 ubuntu 16.04> kill PID
 
 Taskenize Demon:
-Status Taskenize  > systemctl status mongod
-Start Taskenize   > sudo systemctl start mongod
-Stop Taskenize    > sudo systemctl stop mongod
-Restart Taskenize > sudo systemctl restart mongod
-Log File          > cat /var/log/mongodb/mongod.log
+Status Taskenize  > systemctl status taskenize
+Start Taskenize   > sudo systemctl start taskenize
+Stop Taskenize    > sudo systemctl stop taskenize
+Restart Taskenize > sudo systemctl restart taskenize
+Log File          > cat /var/log/syslog
 
 sudo start taskenize
 sudo status taskenize
