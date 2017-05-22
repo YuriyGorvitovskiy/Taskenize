@@ -4,11 +4,14 @@ Description=Node.js taskenize server
 
 [Service]
 ExecStart=/usr/bin/node /home/ubuntu/Taskenize/WebServer/bin/app.js
-#WorkingDirectory=/home/ubuntu/Taskenize/WebServer   # Required on some systems
+# Required on some systems
+WorkingDirectory=/home/ubuntu/Taskenize/WebServer
+# Restart service after 10 seconds if node service crashes
 Restart=always
-RestartSec=10                                        # Restart service after 10 seconds if node service crashes
-StandardOutput=syslog                                # Output to syslog
-StandardError=syslog                                 # Output to syslog
+RestartSec=10
+# Output to syslog
+StandardOutput=syslog
+StandardError=syslog
 SyslogIdentifier=taskenize
 #User=<alternate user>
 #Group=<alternate group>

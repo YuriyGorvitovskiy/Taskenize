@@ -43,8 +43,10 @@ ubuntu 16.04> npm install
 ubuntu 16.04> ./node_modules/.bin/typings install
 
 ubuntu 16.04> cd ~/Taskenize
-ubuntu 16.04> sudo cp scripts/taskenize.conf /etc/init/
-ubuntu 16.04> sudo chmod 777 /var/log
+ubuntu 16.04> sudo cp scripts/taskenize.service /etc/systemd/system/
+ubuntu 16.04> systemctl list-unit-files --type=service
+# If 'taskenize.service' it is disabled or not in the list, enable it:
+ubuntu 16.04> sudo systemctl enable taskenize.service
 
 Rebuild Taskenize>
 mac> scp -i "~/.ssh/aws-2017-Taskenize.pem" ~/Development/Taskenize/OAuth/config.aws.secret.js ubuntu@ec2-54-70-8-133.us-west-2.compute.amazonaws.com:~/Taskenize/OAuth/config.secret.js
@@ -61,7 +63,7 @@ All together:
 ubuntu 16.04> ~/Taskenize/scripts/aws.update.sh
 
 Mongo DB:
-Status Mongo DB   > systemctl status mongod
+Status Mongo DB  > systemctl status mongod
 Start Mongo DB   > sudo systemctl start mongod
 Stop Mongo DB    > sudo systemctl stop mongod
 Restart Mongo DB > sudo systemctl restart mongod
@@ -96,6 +98,12 @@ ubuntu 16.04> # look for 'node' PID
 ubuntu 16.04> kill PID
 
 Taskenize Demon:
+Status Taskenize  > systemctl status mongod
+Start Taskenize   > sudo systemctl start mongod
+Stop Taskenize    > sudo systemctl stop mongod
+Restart Taskenize > sudo systemctl restart mongod
+Log File          > cat /var/log/mongodb/mongod.log
+
 sudo start taskenize
 sudo status taskenize
 sudo stop taskenize
