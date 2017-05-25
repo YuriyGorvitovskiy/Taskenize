@@ -3,10 +3,8 @@ import * as React from 'react';
 import * as Model from '../model/user';
 
 export enum PageId {
-    REVIEW,
     EXECUTION,
     COMPLETED,
-    REPORT
 }
 
 class Page {
@@ -24,10 +22,8 @@ export class NavigationInfo {
     pages:   Page[] = [];
 
     constructor() {
-        this.addPage(PageId.REVIEW,     "Review")
-            .addPage(PageId.EXECUTION,  "Execution")
+        this.addPage(PageId.EXECUTION,  "Execution")
             .addPage(PageId.COMPLETED,  "Completed")
-            .addPage(PageId.REPORT,     "Report")
         ;
     }
 
