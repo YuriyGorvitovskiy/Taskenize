@@ -13,11 +13,13 @@ git pull origin master
 
 echo 'build WebClient'
 cd ~/Taskenize/WebClient/
+rm -r -d ./js
 ./node_modules/.bin/tsc
 ./bin/browserify.js
 
 echo 'build WebServer'
 cd ~/Taskenize/WebServer/
+rm -r -d ./js
 ./node_modules/.bin/tsc
 
 echo 'start server'
