@@ -13,9 +13,9 @@ import * as TextUtil from '../util/text';
 
 
 const TOUCH_TOLERANCE = 64;
-const SLIDE_LEFT = 64;
+const SLIDE_LEFT = 192;
 const SLIDE_RIGHT = -128;
-const SLIDE_LEFT_MAX  = 72;
+const SLIDE_LEFT_MAX  = 200;
 const SLIDE_RIGHT_MIN  = -136;
 
 export class Component extends TaskCommon.Component {
@@ -45,11 +45,21 @@ export class Component extends TaskCommon.Component {
         if (collapsed) {
             return (
                 <div className="task-narrow">
-                    <button className="left-action btn btn-info"
-                            ref={(c) => this.leftActions = c}
-                            onClick={this.onScheduledNextDay.bind(this)}>
-                        <b>+1</b>
-                    </button>
+                    <div className="left-action-group"
+                        ref={(c) => this.leftActions = c}>
+                        <button className="left-action btn btn-info"
+                                onClick={this.onScheduledNextDay.bind(this)}>
+                            <b>+1</b>
+                        </button>
+                        <button className="left-action btn btn-info"
+                                onClick={this.onScheduledNextWeek.bind(this)}>
+                            <b>+7</b>
+                        </button>
+                        <button className="left-action btn btn-info"
+                                onClick={this.onScheduledNextMonth.bind(this)}>
+                            <b>+30</b>
+                        </button>
+                    </div>
                     <div className={"panel panel-" + (active ? "primary" : "default")}
                          onTouchStart={this.onTouchStart.bind(this)}
                          onTouchMove={this.onTouchMove.bind(this)}
@@ -201,6 +211,16 @@ export class Component extends TaskCommon.Component {
         this.animateSlidePos(0);
     }
 
+    public onScheduledNextWeek(ev) {
+        super.onScheduledNextWeek(ev);
+        this.animateSlidePos(0);
+    }
+
+    public onScheduledNextMonth(ev) {
+        super.onScheduledNextMonth(ev);
+        this.animateSlidePos(0);
+    }
+
     public onScheduledChange(ev) {
         super.onScheduledChange(ev.target.value);
     }
@@ -246,9 +266,9 @@ export class Component extends TaskCommon.Component {
             return true;
 
         var slide = this.lastTouch.pageX - this.initialTouch.pageX;
-        if (slide > SLIDE_LEFT_MAX*2/3)
+        if (slide > SLIDE_LEFT_MAX*1/2)
             this.animateSlidePos(SLIDE_LEFT);
-        else if (slide < SLIDE_RIGHT_MIN*2/3)
+        else if (slide < SLIDE_RIGHT_MIN*1/3)
             this.animateSlidePos(SLIDE_RIGHT);
         else
             this.animateSlidePos(0);
