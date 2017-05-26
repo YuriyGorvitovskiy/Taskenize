@@ -8,12 +8,14 @@ import * as Play from './timer-button-narrow';
 import * as Timer from './timer';
 import * as HtmlEditor from './html-editor';
 import * as TextUtil from '../util/text';
+import * as TaskNarrow from './task-narrow';
 
 export interface Props extends React.Props<Component> {
     task: Model.Task;
     onStateChange: (task: Model.Task, newState: Model.State) => any
     onDuplicate: (task: Model.Task) => any
     onDelete: (task: Model.Task) => any
+    onSlide: (taskPanel: TaskNarrow.Component, sleded: boolean) => any
 };
 
 interface State {

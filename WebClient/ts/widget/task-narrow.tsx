@@ -12,11 +12,19 @@ import * as TaskCommon from './task-common';
 import * as TextUtil from '../util/text';
 
 
-const TOUCH_TOLERANCE = 64;
+const TOUCH_TOLERANCE = 30;
+const TOUCH_TIME_TOLARENCE = 500;
+
 const SLIDE_LEFT = 192;
 const SLIDE_RIGHT = -128;
 const SLIDE_LEFT_MAX  = 200;
 const SLIDE_RIGHT_MIN  = -136;
+
+enum TouchIntention {
+    UNKNOWN,
+    SLIDE,
+    DONT_CARE
+};
 
 export class Component extends TaskCommon.Component {
     leftActions : any;
@@ -24,7 +32,10 @@ export class Component extends TaskCommon.Component {
     rightActions : any;
 
     initialTouch : React.Touch;
+    initialTouchTime : Date;
     lastTouch : React.Touch;
+    touchIntention: TouchIntention = TouchIntention.UNKNOWN;
+
 
     public constructor() {
         super();
@@ -241,11 +252,16 @@ export class Component extends TaskCommon.Component {
     }
 
     public onTouchStart(ev: React.TouchEvent) {
+        this.props.onSlide(this,false);
         //console.log("onTouchStart – SY: " + ev.touches[0].screenY + ", PY: " + ev.touches[0].pageY + ", CY: " + ev.touches[0].clientY);
-        if (ev.touches.length != 1)
+        if (ev.touches.length != 1) {
+            this.touchIntention = TouchIntention.DONT_CARE;
             return true;
+        }
 
         this.initialTouch = this.lastTouch = $.extend({}, ev.touches[0]);
+        this.initialTouchTime = new Date();
+        this.touchIntention = TouchIntention.UNKNOWN;
         return true;
     }
     public onTouchMove(ev: React.TouchEvent) {
@@ -266,12 +282,15 @@ export class Component extends TaskCommon.Component {
             return true;
 
         var slide = this.lastTouch.pageX - this.initialTouch.pageX;
-        if (slide > SLIDE_LEFT_MAX*1/2)
+        if (slide > SLIDE_LEFT_MAX*1/2) {
             this.animateSlidePos(SLIDE_LEFT);
-        else if (slide < SLIDE_RIGHT_MIN*1/3)
+            this.props.onSlide(this, true);
+        } else if (slide < SLIDE_RIGHT_MIN*1/2) {
             this.animateSlidePos(SLIDE_RIGHT);
-        else
+            this.props.onSlide(this, true);
+        } else {
             this.animateSlidePos(0);
+        }
 
         this.resetTouch();
         return true;
@@ -286,25 +305,40 @@ export class Component extends TaskCommon.Component {
     }
 
     public checkTouch(ev: React.TouchEvent) {
-        if (this.initialTouch == null)
+        if (this.initialTouch == null || this.touchIntention == TouchIntention.DONT_CARE)
             return false;
+
         if (ev.touches.length != 1) {
+            this.touchIntention = TouchIntention.DONT_CARE;
             this.animateSlidePos(0);
             this.resetTouch();
             return false;
         }
+        if (this.touchIntention == TouchIntention.SLIDE)
+            return true;
+
         var touch = ev.touches[0];
-        if (Math.abs(touch.clientY - this.initialTouch.clientY) > TOUCH_TOLERANCE) {
-            this.animateSlidePos(0);
-            this.resetTouch();
+        var deltaY = Math.abs(touch.clientY - this.initialTouch.clientY);
+        var deltaX = Math.abs(touch.screenX - this.initialTouch.screenX);
+        if (deltaY < TOUCH_TOLERANCE && deltaX < TOUCH_TOLERANCE) {
+            if ((new Date().getTime() - this.initialTouchTime.getTime()) > TOUCH_TIME_TOLARENCE) {
+                this.touchIntention = TouchIntention.DONT_CARE;
+            }
             return false;
         }
+        if (deltaX < deltaY) {
+            this.touchIntention = TouchIntention.DONT_CARE;
+            return false;
+        }
+        this.touchIntention = TouchIntention.SLIDE;
         return true;
     }
 
     public resetTouch() {
         this.initialTouch = null;
+        this.initialTouchTime = null;
         this.lastTouch = null;
+        this.touchIntention = TouchIntention.UNKNOWN
     }
 
     public setSlidePos(pos :number) {

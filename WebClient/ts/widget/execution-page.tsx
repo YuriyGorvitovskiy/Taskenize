@@ -13,6 +13,8 @@ class ExecutionPageState {
 }
 
 export class ExecutionPage extends React.Component<{},ExecutionPageState> {
+    slidedTaskPanel: TaskNarrow.Component = null;
+
     public constructor() {
         super();
         this.state = {
@@ -48,13 +50,25 @@ export class ExecutionPage extends React.Component<{},ExecutionPageState> {
                 nextDate = nextDate.add(1, 'days');
             }
             if (full)
-                panels.push(<TaskWide.Component key={index} task={task} onStateChange={this.onStateChange.bind(this)} onDuplicate={this.onDuplicate.bind(this)} onDelete={this.onDelete.bind(this)}/>);
+                panels.push(<TaskWide.Component
+                    key={index}
+                    task={task}
+                    onStateChange={this.onStateChange.bind(this)}
+                    onDuplicate={this.onDuplicate.bind(this)}
+                    onDelete={this.onDelete.bind(this)}
+                    onSlide={this.onSlide.bind(this)}/>);
             else
-                panels.push(<TaskNarrow.Component key={index} task={task} onStateChange={this.onStateChange.bind(this)} onDuplicate={this.onDuplicate.bind(this)} onDelete={this.onDelete.bind(this)}/>);
+                panels.push(<TaskNarrow.Component
+                    key={index}
+                    task={task}
+                    onStateChange={this.onStateChange.bind(this)}
+                    onDuplicate={this.onDuplicate.bind(this)}
+                    onDelete={this.onDelete.bind(this)}
+                    onSlide={this.onSlide.bind(this)}/>);
         });
 
         return (
-            <div className="container">
+            <div className="container"  onTouchStart={this.onTouchStart.bind(this)}>
                 <div className="row">
                     {actions}
                 </div>
@@ -66,6 +80,11 @@ export class ExecutionPage extends React.Component<{},ExecutionPageState> {
                 </div>
             </div>
         );
+    }
+
+    public onTouchStart(ev: React.TouchEvent) {
+        this.onSlide(null, false);
+        return true;
     }
 
     public onNewTask(category: Model.Category) {
@@ -132,5 +151,12 @@ export class ExecutionPage extends React.Component<{},ExecutionPageState> {
                 });
                 this.setState({tasks});
             });
+    }
+
+    public onSlide(taskPanel: TaskNarrow.Component, slided: boolean) {
+        if (this.slidedTaskPanel != taskPanel && this.slidedTaskPanel != null) {
+            this.slidedTaskPanel.animateSlidePos(0);
+        }
+        this.slidedTaskPanel = slided ? taskPanel : null;
     }
 }

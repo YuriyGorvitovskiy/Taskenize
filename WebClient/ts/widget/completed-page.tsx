@@ -35,6 +35,8 @@ interface State {
 }
 
 export class Component extends React.Component<{},State> {
+    slidedTaskPanel: TaskNarrow.Component = null;
+
     public constructor() {
         super();
         this.requestTasks(Report.Ancor.NOW, Report.Range.WEEK, Report.Property.COMPLETED_TIME);
@@ -57,13 +59,25 @@ export class Component extends React.Component<{},State> {
                 prevGroupName = nextGroupName;
             }
             if (full)
-                panels.push(<TaskWide.Component key={index} task={task} onStateChange={this.onStateChange.bind(this)} onDuplicate={this.onDuplicate.bind(this)} onDelete={this.onDelete.bind(this)}/>);
+                panels.push(<TaskWide.Component
+                    key={index}
+                    task={task}
+                    onStateChange={this.onStateChange.bind(this)}
+                    onDuplicate={this.onDuplicate.bind(this)}
+                    onDelete={this.onDelete.bind(this)}
+                    onSlide={this.onSlide.bind(this)}/>);
             else
-                panels.push(<TaskNarrow.Component key={index} task={task} onStateChange={this.onStateChange.bind(this)} onDuplicate={this.onDuplicate.bind(this)} onDelete={this.onDelete.bind(this)}/>);
+                panels.push(<TaskNarrow.Component
+                    key={index}
+                    task={task}
+                    onStateChange={this.onStateChange.bind(this)}
+                    onDuplicate={this.onDuplicate.bind(this)}
+                    onDelete={this.onDelete.bind(this)}
+                    onSlide={this.onSlide.bind(this)}/>);
         });
 
         return (
-            <div className="container">
+            <div className="container" onTouchStart={this.onTouchStart.bind(this)}>
                 <div className="row">
                     <div className="col-xs-4 btn-group">
                         <div className="row">
@@ -169,6 +183,10 @@ export class Component extends React.Component<{},State> {
             });
     }
 
+    public onTouchStart(ev: React.TouchEvent) {
+        this.onSlide(null, false);
+        return true;
+    }
     public onDuplicate(task: Model.Task) {
         Model.postNew({
             title:   task.title,
@@ -207,6 +225,13 @@ export class Component extends React.Component<{},State> {
                     tasks: tasks
                 });
             });
+    }
+
+    public onSlide(taskPanel: TaskNarrow.Component, slided: boolean) {
+        if (this.slidedTaskPanel != taskPanel && this.slidedTaskPanel != null) {
+            this.slidedTaskPanel.animateSlidePos(0);
+        }
+        this.slidedTaskPanel = slided ? taskPanel : null;
     }
 
     public onAncorClick(ancor: Report.Ancor, ev: React.MouseEvent) {
