@@ -14,6 +14,7 @@ git pull origin master
 echo 'build WebClient'
 cd ~/Taskenize/WebClient/
 rm -r -d ./js
+npm update
 ./node_modules/.bin/tsc
 ./bin/browserify.js
 

@@ -14,9 +14,9 @@ import * as TextUtil from '../util/text';
 
 const TOUCH_TOLERANCE = 64;
 const SLIDE_LEFT = 64;
-const SLIDE_RIGHT = -64;
+const SLIDE_RIGHT = -128;
 const SLIDE_LEFT_MAX  = 72;
-const SLIDE_RIGHT_MIN  = -72;
+const SLIDE_RIGHT_MIN  = -136;
 
 export class Component extends TaskCommon.Component {
     leftActions : any;
@@ -45,7 +45,7 @@ export class Component extends TaskCommon.Component {
         if (collapsed) {
             return (
                 <div className="task-narrow">
-                    <button className="left-action btn btn-primary"
+                    <button className="left-action btn btn-info"
                             ref={(c) => this.leftActions = c}
                             onClick={this.onScheduledNextDay.bind(this)}>
                         <b>+1</b>
@@ -79,11 +79,17 @@ export class Component extends TaskCommon.Component {
                               />
                         </div>
                     </div>
-                    <button className="right-action  btn btn-danger"
-                            ref={(c) => this.rightActions = c}
-                            onClick={this.onDelete.bind(this)}>
-                        <span className="glyphicon glyphicon-trash"/>
-                    </button>
+                    <div className="right-action-group"
+                        ref={(c) => this.rightActions = c}>
+                        <button className="right-action btn btn-warning"
+                                onClick={this.onDuplicate.bind(this)}>
+                            <span className="glyphicon glyphicon-duplicate"/>
+                        </button>
+                        <button className="right-action btn btn-danger"
+                                onClick={this.onDelete.bind(this)}>
+                            <span className="glyphicon glyphicon-trash"/>
+                        </button>
+                    </div>
                 </div>
             );
         }
@@ -201,6 +207,10 @@ export class Component extends TaskCommon.Component {
     public onDelete(ev) {
         this.setSlidePos(0);
         super.onDelete(ev);
+    }
+    public onDuplicate(ev) {
+        this.setSlidePos(0);
+        super.onDuplicate(ev);
     }
     public onCollapse(ev: React.SyntheticEvent) {
         ev.preventDefault();

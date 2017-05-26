@@ -101,6 +101,9 @@ export class Component extends TaskCommon.Component {
                             <a href="#" onClick={this.onScheduledNextMonth.bind(this)} >+30</a>&nbsp;
                         </div>
                     </div>
+                    <a className="duplicate" href="#" onClick={this.onDuplicate.bind(this)} >
+                        <span className="glyphicon glyphicon-duplicate" />
+                    </a>
                     <a className="delete" href="#" onClick={this.onDelete.bind(this)} >
                         <span className="glyphicon glyphicon-trash" />
                     </a>
