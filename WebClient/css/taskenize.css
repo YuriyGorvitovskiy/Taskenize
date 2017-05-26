@@ -220,6 +220,14 @@
     position: relative;
     overflow: hidden;
 }
+
+.task-narrow .left-action-group {
+    width: 192px;
+    height: 66px;
+    position: absolute;
+    left: -192px;
+}
+
 .task-narrow .left-action {
     text-align: center;
     vertical-align: middle;
@@ -227,8 +235,7 @@
 
     width: 64px;
     height: 66px;
-    position: absolute;
-    left: -64px;
+    position: relative;
 }
 .task-narrow .panel {
     width: 100%;
@@ -238,10 +245,6 @@
 }
 
 .task-narrow .right-action-group {
-    text-align: center;
-    vertical-align: middle;
-    font-size: 25px;
-
     width: 128px;
     height: 66px;
     position: absolute;
