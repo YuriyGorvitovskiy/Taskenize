@@ -20,7 +20,7 @@ npm update
 
 echo 'build WebServer'
 cd ~/Taskenize/WebServer/
-rm -r -d ./js
+rm -r -d ./bin
 ./node_modules/.bin/tsc
 
 echo 'start server'
