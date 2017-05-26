@@ -341,3 +341,20 @@ export function getGroupNamer(property: Report.Property) : (t: Task) => string {
     return (t) => t.title || "No Title";
 
 }
+
+export function findTaskIndex(tasks: Task[], taskToFind: Task) : number {
+    for(let index = 0; index < tasks.length; ++index) {
+        if (taskToFind._id == tasks[index]._id) {
+            return index;
+        }
+    }
+    return -1;
+}
+
+export function insertAfterTask(tasks: Task[], taskToFind: Task, taskToInsert) : Task[] {
+    let index = findTaskIndex(tasks, taskToFind);
+    if (index < 0)
+        return [taskToInsert].concat(tasks);
+        
+    return tasks.slice(0, index + 1).concat(taskToInsert).concat(tasks.slice(index + 1));
+}

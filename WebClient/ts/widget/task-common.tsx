@@ -12,6 +12,7 @@ import * as TextUtil from '../util/text';
 export interface Props extends React.Props<Component> {
     task: Model.Task;
     onStateChange: (task: Model.Task, newState: Model.State) => any
+    onDuplicate: (task: Model.Task) => any
     onDelete: (task: Model.Task) => any
 };
 
@@ -42,6 +43,11 @@ export class Component extends React.Component<Props, State> {
     public onDelete(ev) {
         ev.preventDefault();
         this.props.onDelete(this.props.task);
+    }
+
+    public onDuplicate(ev) {
+        ev.preventDefault();
+        this.props.onDuplicate(this.props.task);
     }
 
     public onTitleChange(htmlNew: string) {

@@ -57,9 +57,9 @@ export class Component extends React.Component<{},State> {
                 prevGroupName = nextGroupName;
             }
             if (full)
-                panels.push(<TaskWide.Component key={index} task={task} onStateChange={this.onStateChange.bind(this)} onDelete={this.onDelete.bind(this)}/>);
+                panels.push(<TaskWide.Component key={index} task={task} onStateChange={this.onStateChange.bind(this)} onDuplicate={this.onDuplicate.bind(this)} onDelete={this.onDelete.bind(this)}/>);
             else
-                panels.push(<TaskNarrow.Component key={index} task={task} onStateChange={this.onStateChange.bind(this)} onDelete={this.onDelete.bind(this)}/>);
+                panels.push(<TaskNarrow.Component key={index} task={task} onStateChange={this.onStateChange.bind(this)} onDuplicate={this.onDuplicate.bind(this)} onDelete={this.onDelete.bind(this)}/>);
         });
 
         return (
@@ -169,6 +169,30 @@ export class Component extends React.Component<{},State> {
             });
     }
 
+    public onDuplicate(task: Model.Task) {
+        Model.postNew({
+            title:   task.title,
+            subject: task.subject,
+            context: task.context,
+            category: task.category,
+            project: task.project,
+            story: task.story,
+            scheduled: null,
+            state: Model.State.PAUSED,
+            duration: [],
+            collapsed: true,
+            created_time: new Date(),
+            completed_time: null
+        }).then((newTask: Model.Task) => {
+            const tasks = Model.insertAfterTask(this.state.tasks, task, newTask);
+            this.setState({
+                ancor: this.state.ancor,
+                range: this.state.range,
+                order_by: this.state.order_by,
+                tasks: tasks
+            });
+        });
+    }
 
     public onDelete(task: Model.Task) {
         Model.del(task._id)
