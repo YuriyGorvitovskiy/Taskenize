@@ -30,10 +30,10 @@
     "mongoose": "^4.10.3",
     "monk": "^5.0.2",
     "passport": "^0.3.2",
-    "passport-google-oauth": "^1.0.0",
-    "typescript": "^2.3.3"
+    "passport-google-oauth": "^1.0.0"
   },
   "devDependencies": {
-    "@types/node": "^7.0.22"
+    "@types/node": "^7.0.22",
+    "typescript": "^2.3.3"
   }
 }
