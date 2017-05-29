@@ -243,7 +243,7 @@ export class Component extends TaskCommon.Component {
         this.setSlidePos(0);
         super.onDuplicate(ev);
     }
-    public onCollapse(ev: React.SyntheticEvent) {
+    public onCollapse(ev: React.SyntheticEvent<any>) {
         ev.preventDefault();
         console.log("onCollapse");
         this.setState({
@@ -251,7 +251,7 @@ export class Component extends TaskCommon.Component {
         });
     }
 
-    public onTouchStart(ev: React.TouchEvent) {
+    public onTouchStart(ev: React.TouchEvent<any>) {
         this.props.onSlide(this,false);
         //console.log("onTouchStart – SY: " + ev.touches[0].screenY + ", PY: " + ev.touches[0].pageY + ", CY: " + ev.touches[0].clientY);
         if (ev.touches.length != 1) {
@@ -264,7 +264,7 @@ export class Component extends TaskCommon.Component {
         this.touchIntention = TouchIntention.UNKNOWN;
         return true;
     }
-    public onTouchMove(ev: React.TouchEvent) {
+    public onTouchMove(ev: React.TouchEvent<any>) {
         //console.log("onTouchMove – SY: " + ev.touches[0].screenY + ", PY: " + ev.touches[0].pageY + ", CY: " + ev.touches[0].clientY);
         if (!this.checkTouch(ev))
             return true;
@@ -276,7 +276,7 @@ export class Component extends TaskCommon.Component {
 
         return true;
     }
-    public onTouchEnd(ev: React.TouchEvent) {
+    public onTouchEnd(ev: React.TouchEvent<any>) {
         //console.log("onTouchEnd – SY: " + ev.touches[0].screenY + ", PY: " + ev.touches[0].pageY + ", CY: " + ev.touches[0].clientY);
         if (this.initialTouch == null)
             return true;
@@ -295,7 +295,7 @@ export class Component extends TaskCommon.Component {
         this.resetTouch();
         return true;
     }
-    public onTouchCancel(ev: React.TouchEvent) {
+    public onTouchCancel(ev: React.TouchEvent<any>) {
         if (this.initialTouch == null)
             return true;
 
@@ -304,7 +304,7 @@ export class Component extends TaskCommon.Component {
         return true;
     }
 
-    public checkTouch(ev: React.TouchEvent) {
+    public checkTouch(ev: React.TouchEvent<any>) {
         if (this.initialTouch == null || this.touchIntention == TouchIntention.DONT_CARE)
             return false;
 

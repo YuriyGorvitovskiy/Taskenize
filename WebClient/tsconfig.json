@@ -8,9 +8,6 @@
         "rootDir": "./ts",
         "sourceMap": true
     },
-    "atom": {
-        "rewriteTsconfig": true
-    },
     "buildOnSave": true,
     "exclude": [
         "node_modules",
