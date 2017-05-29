@@ -9,7 +9,7 @@ export function connect(db : Mongo.Db) {
     _db = db;
     _cl = db.collection('tasks');
 
-    //Add Migration here 
+    //Add Migration here
 }
 
 function toId(_id: string | Mongo.ObjectID) : Mongo.ObjectID {
@@ -25,11 +25,11 @@ function toIds(_ids: (string | Mongo.ObjectID)[]) : Mongo.ObjectID[] {
 }
 
 export function get(_id: string | Mongo.ObjectID) : Promise<Model.Task> {
-    return _cl.find({_id: toId(_id)}).next();
+    return _cl.find({_id: toId(_id)}).next() as Promise<Model.Task>;
 }
 
 export function getMany(_ids: (string | Mongo.ObjectID)[]) : Promise<Model.Task[]> {
-    return _cl.find({_id: {$in: toIds(_ids)}}).toArray();
+    return _cl.find({_id: {$in: toIds(_ids)}}).toArray() as Promise<Model.Task[]>;
 }
 
 export function getAll(query: Model.Query) : Promise<Model.Task[]> {
@@ -51,11 +51,11 @@ export function getAll(query: Model.Query) : Promise<Model.Task[]> {
     return _cl.find(filter).sort({
         'scheduled': 1,
         'duration.0.end': -1
-    }).toArray();
+    }).toArray() as Promise<Model.Task[]>;
 }
 
 export function getRunning() : Promise<Model.Task[]> {
-    return _cl.find({state: Model.State.RUNNING}).toArray();
+    return _cl.find({state: Model.State.RUNNING}).toArray() as Promise<Model.Task[]>;
 }
 
 export function insert( user_id:    string,
@@ -84,16 +84,16 @@ export function insert( user_id:    string,
         completed_time: null
     };
     return _cl.insertOne(task)
-        .then(() => {return task});
+        .then(() => task) as Promise<Model.Task>;
 }
 
 export function update(_id: string | Mongo.ObjectID, update: any) : Promise<Model.Task> {
     return _cl.updateOne({_id: toId(_id)}, update)
-                .then(() => get(_id));
+                .then(() => get(_id))as Promise<Model.Task>;
 }
 
 export function updateMany(_ids: (string | Mongo.ObjectID)[], update: any) : Promise<Model.Task[]> {
-    return _cl.updateMany({_id:  {$in: toIds(_ids)}}, update).then(() => getMany(_ids));
+    return _cl.updateMany({_id:  {$in: toIds(_ids)}}, update).then(() => getMany(_ids)) as Promise<Model.Task[]>;
 }
 
 export function remove(_id: string | Mongo.ObjectID) : Promise<Model.Task> {
@@ -107,7 +107,7 @@ export function remove(_id: string | Mongo.ObjectID) : Promise<Model.Task> {
 export function removeDuration(_id: string | Mongo.ObjectID, index: number) : Promise<Model.Task> {
     return _cl.updateOne({_id: toId(_id)}, {$unset : {["duration." + index] : 1 }})
             .then(() => _cl.updateOne({_id: toId(_id)}, {$pull : {"duration" : null}}))
-            .then(() => get(_id));
+            .then(() => get(_id)) as Promise<Model.Task>;
 }
 
 function pauseRunningTasks(_ids: Mongo.ObjectID[], pauseState: Model.State, time: Date) : Promise<Model.Task[]> {

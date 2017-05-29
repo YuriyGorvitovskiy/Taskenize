@@ -82,7 +82,7 @@ export class ExecutionPage extends React.Component<{},ExecutionPageState> {
         );
     }
 
-    public onTouchStart(ev: React.TouchEvent) {
+    public onTouchStart(ev: React.TouchEvent<any>) {
         this.onSlide(null, false);
         return true;
     }

@@ -183,7 +183,7 @@ export class Component extends React.Component<{},State> {
             });
     }
 
-    public onTouchStart(ev: React.TouchEvent) {
+    public onTouchStart(ev: React.TouchEvent<any>) {
         this.onSlide(null, false);
         return true;
     }
@@ -234,17 +234,17 @@ export class Component extends React.Component<{},State> {
         this.slidedTaskPanel = slided ? taskPanel : null;
     }
 
-    public onAncorClick(ancor: Report.Ancor, ev: React.MouseEvent) {
+    public onAncorClick(ancor: Report.Ancor, ev: React.MouseEvent<any>) {
         ev.preventDefault();
         this.requestTasks(ancor, this.state.range, this.state.order_by);
     }
 
-    public onRangeClick(range: Report.Range, ev: React.MouseEvent) {
+    public onRangeClick(range: Report.Range, ev: React.MouseEvent<any>) {
         ev.preventDefault();
         this.requestTasks(this.state.ancor, range, this.state.order_by);
     }
 
-    public onPropertyClick(order_by: Report.Property, ev: React.MouseEvent) {
+    public onPropertyClick(order_by: Report.Property, ev: React.MouseEvent<any>) {
         ev.preventDefault();
         this.state.tasks.sort(Model.getComparator(order_by));
         this.setState({

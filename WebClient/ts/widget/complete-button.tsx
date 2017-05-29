@@ -30,7 +30,7 @@ abstract class Component extends React.Component<Props, {}> {
         );
     }
 
-    public onClick(ev : React.MouseEvent) {
+    public onClick(ev : React.MouseEvent<any>) {
         ev.preventDefault();
         if (this.props.task.state == Model.State.COMPLETED)
             this.props.onPause();

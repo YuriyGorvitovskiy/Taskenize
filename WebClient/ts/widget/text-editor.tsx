@@ -63,7 +63,7 @@ export class Component extends React.Component<Props, State> {
         });
     }
 
-    public onKeyPress(event: React.KeyboardEvent) {
+    public onKeyPress(event: React.KeyboardEvent<any>) {
         switch(event.keyCode) {
             case 13: //enter
                 this.onEnter(event);
@@ -73,7 +73,7 @@ export class Component extends React.Component<Props, State> {
                 break;
         }
     }
-    public onEnter(event: React.KeyboardEvent) {
+    public onEnter(event: React.KeyboardEvent<any>) {
         event.preventDefault();
         event.stopPropagation();
 
@@ -81,7 +81,7 @@ export class Component extends React.Component<Props, State> {
             this.props.onSuccess(this.state.text);
     }
 
-    public onEscape(event: React.KeyboardEvent) {
+    public onEscape(event: React.KeyboardEvent<any>) {
         event.preventDefault();
         event.stopPropagation();
 
@@ -91,7 +91,7 @@ export class Component extends React.Component<Props, State> {
         });
     }
 
-    public onChange(event: React.FormEvent) {
+    public onChange(event: React.FormEvent<any>) {
         var target = ReactDOM.findDOMNode(this);
         this.setState({
             inFocus: this.state.inFocus,

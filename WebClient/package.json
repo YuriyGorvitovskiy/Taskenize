@@ -9,21 +9,27 @@
   "author": "Yuriy Gorvitovskiy",
   "license": "ISC",
   "dependencies": {
-    "bootstrap": "^3.3.6",
-    "bootstrap-datepicker": "^1.6.0",
-    "jquery": "^2.2.0",
-    "moment": "^2.11.2",
-    "react": "^0.14.7",
-    "react-dom": "^0.14.7",
+    "@types/bootstrap": "^3.3.33",
+    "@types/bootstrap-datepicker": "0.0.6",
+    "@types/jquery": "^2.0.45",
+    "@types/moment": "^2.13.0",
+    "@types/react": "^15.0.25",
+    "@types/react-dom": "^15.5.0",
+    "@types/sanitize-html": "^1.13.31",
+    "bootstrap": "^3.3.7",
+    "bootstrap-datepicker": "^1.6.4",
+    "jquery": "^3.2.1",
+    "moment": "^2.18.1",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
     "react-wysiwyg": "^2.2.1",
-    "sanitize-html": "^1.11.3"
+    "sanitize-html": "^1.14.1"
   },
   "devDependencies": {
-    "browserify": "^13.0.0",
-    "http-server": "^0.8.5",
-    "jest": "^0.1.40",
-    "minifyify": "^7.2.1",
-    "typescript": "^1.7.5",
-    "typings": "^0.6.8"
+    "browserify": "^14.4.0",
+    "http-server": "^0.10.0",
+    "jest": "^20.0.4",
+    "minifyify": "^7.3.5",
+    "typescript": "^2.3.3"
   }
 }

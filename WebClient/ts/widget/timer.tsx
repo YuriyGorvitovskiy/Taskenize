@@ -7,7 +7,7 @@ export interface Props extends React.Props<Component> {
     active: boolean;
     from:   Moment.Moment;
     plus:   Moment.Duration;
-    onClick?: (ev: React.SyntheticEvent) => any;
+    onClick?: (ev: React.SyntheticEvent<any>) => any;
 };
 
 export interface State {

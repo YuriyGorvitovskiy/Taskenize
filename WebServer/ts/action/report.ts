@@ -24,7 +24,7 @@ function getTasks(user_id: string, request: Model.Request) : Promise<ModelTask.T
                 begin: {$lt: request.end}
             }
         }
-    }).toArray();
+    }).toArray() as Promise<ModelTask.Task[]>;
 }
 
 export function get(user_id: string, request: Model.Request) : Promise<Model.Report[]> {

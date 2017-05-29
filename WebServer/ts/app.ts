@@ -50,9 +50,9 @@ Passport.use(new Google.OAuth2Strategy(<Google.IOAuth2StrategyOption>{
         scope: ['https://www.googleapis.com/auth/plus.login']
     },
     function(accessToken, refreshToken, profile, done) {
-        if (profile.id == "103797599429081501264") {
-            accessTokens[profile.id] = accessToken;
-            console.log('Profile.ID: ' + profile.id);
+        if (profile["id"] == "103797599429081501264") {
+            accessTokens[profile["id"]] = accessToken;
+            console.log('Profile.ID: ' + profile["id"]);
             return done(null, profile);
         }
         console.log('Profile: ' + JSON.stringify(profile));

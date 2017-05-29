@@ -84,7 +84,7 @@ export class Component extends React.Component<Props, State> {
         );
     }
 
-    public onDurationBeginChange(index: number, ev: React.SyntheticEvent) {
+    public onDurationBeginChange(index: number, ev: React.SyntheticEvent<any>) {
         var text = ev.target["value"];
         if (TextUtil.formatDate(this.props.task.duration[index].begin, true) == text)
             return;
@@ -98,7 +98,7 @@ export class Component extends React.Component<Props, State> {
         Model.updateDuration(this.props.task, index, 'begin');
     }
 
-    public onDurationEndChange(index: number, ev: React.SyntheticEvent) {
+    public onDurationEndChange(index: number, ev: React.SyntheticEvent<any>) {
         var text = ev.target["value"];
         if (TextUtil.formatDate(this.props.task.duration[index].end, true) == text)
             return;

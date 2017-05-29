@@ -38,7 +38,7 @@ class IndexPage extends React.Component<{},IndexPageState> {
     }
 
     public onPageSelected(pageId : Nav.PageId) {
-        this.state.pageId = pageId;
+        this.setState({pageId});
         this.forceUpdate();
     }
 }

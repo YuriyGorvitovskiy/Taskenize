@@ -23,12 +23,12 @@ export enum Property {
     COMPLETED_TIME
 }
 
-const rangeToUnitOfTime : {[key:number]: string} = {};
-rangeToUnitOfTime[Range.DAY] = 'day';
-rangeToUnitOfTime[Range.WEEK] = 'week';
-rangeToUnitOfTime[Range.MONTH] = 'month';
+const rangeToUnitOfTime : {[key:number]: Moment.unitOfTime.DurationConstructor} = {};
+rangeToUnitOfTime[Range.DAY] = "day";
+rangeToUnitOfTime[Range.WEEK] = "week";
+rangeToUnitOfTime[Range.MONTH] = "month";
 
-const rangeToUnitsOfTime : {[key:number]: string} = {};
+const rangeToUnitsOfTime : {[key:number]: Moment.unitOfTime.DurationConstructor} = {};
 rangeToUnitsOfTime[Range.DAY] = 'days';
 rangeToUnitsOfTime[Range.WEEK] = 'weeks';
 rangeToUnitsOfTime[Range.MONTH] = 'months';
@@ -54,22 +54,22 @@ interface Request {
 
 export function calculatePeriod(ancor: Ancor, range: Range) : Task.Period {
     var now = Moment();
-    var unitOfTime: string = rangeToUnitOfTime[range];
-    var unitsOfTime: string = rangeToUnitsOfTime[range];
+    var unitOfTime: Moment.unitOfTime.DurationConstructor = rangeToUnitOfTime[range];
+    var unitsOfTime: Moment.unitOfTime.DurationConstructor = rangeToUnitsOfTime[range];
     switch(ancor) {
         case Ancor.NOW:
             return {
-                begin: Moment(now).subtract(1, unitsOfTime).toDate(),
+                begin: Moment(now).subtract(unitsOfTime, 1).toDate(),
                 end: now.toDate()
             };
         case Ancor.CURRENT:
             return {
                 begin: Moment(now).startOf(unitOfTime).toDate(),
-                end: Moment(now).add(1, unitsOfTime).startOf(unitOfTime).toDate()
+                end: Moment(now).add(unitsOfTime, 1).startOf(unitOfTime).toDate()
             };
         case Ancor.LAST:
             return {
-                begin: Moment(now).startOf(unitOfTime).subtract(1, unitsOfTime).toDate(),
+                begin: Moment(now).startOf(unitOfTime).subtract(unitsOfTime, 1).toDate(),
                 end: Moment(now).startOf(unitOfTime).toDate()
             };
     }
