@@ -1,7 +1,7 @@
 import * as $ from 'jquery';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-const sanitizeHTML = require('sanitize-html');
+import * as SanitizeHTML from 'sanitize-html';
 
 export interface Props extends React.Props<Component> {
     singleLine: boolean;
@@ -184,7 +184,7 @@ export class Component extends React.Component<Props, State> {
     }
 
     public sanitizeHTML(html: string) {
-        var options = $.extend(true, {}, sanitizeHTML['defaults'], {
+        var options = $.extend(true, {}, SanitizeHTML.defaults, {
             allowedTags :[
                 'img'
             ],
@@ -203,7 +203,7 @@ export class Component extends React.Component<Props, State> {
                 }
             }
         });
-        return sanitizeHTML(html,options);
+        return SanitizeHTML(html,options);
     }
 
 }
