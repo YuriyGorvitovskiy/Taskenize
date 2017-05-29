@@ -11,7 +11,7 @@ export function connect(db : Mongo.Db) {
 }
 
 export function get(_id: string) : Promise<Model.User> {
-    return _cl.find({_id: _id}).next();
+    return _cl.find({_id: _id}).next() as Promise<Model.User>;
 }
 
 export function getAll() : Promise<Model.User[]> {
@@ -19,19 +19,19 @@ export function getAll() : Promise<Model.User[]> {
         'familyName': 1,
         'givenName': 1,
         '_id': 1
-    }).toArray();
+    }).toArray() as Promise<Model.User[]>;
 }
 
 export function upsert(googleUser: any) : Promise<Model.User> {
     var user = Model.fromGoogle(googleUser);
     return _cl.updateOne({_id: user._id}, user, {upsert: true})
-                .then(() => get(user._id));
+                .then(() => get(user._id)) as Promise<Model.User>;
 }
 
 export function remove(_id: string) : Promise<Model.User> {
     return get(_id)
             .then((user) => {
                 return _cl.deleteOne({_id: _id})
-                    .then(()=>user);
+                    .then(() => user);
             });
 }
