@@ -9,9 +9,11 @@
         "sourceMap": true
     },
     "buildOnSave": true,
+    "include": [
+        "ts/**/*.ts",
+        "ts/**/*.tsx"        
+    ],
     "exclude": [
-        "node_modules",
-        "typings/main.d.ts",
-        "typings/main"
+        "node_modules"
     ]
 }
