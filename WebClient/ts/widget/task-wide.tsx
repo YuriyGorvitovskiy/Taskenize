@@ -9,6 +9,7 @@ import * as Play from './timer-button-wide';
 import * as HtmlEditor from './html-editor';
 import * as TaskCommon from './task-common';
 import * as TaskDuration from './task-wide-duration';
+import * as TaskRepeat from './task-behavior';
 import * as TextUtil from '../util/text';
 
 
@@ -24,9 +25,15 @@ export class Component extends TaskCommon.Component {
         var category = Model.Category.MAP[task.category];
         var plus = Model.calculateCompletedDuration(this.props.task);
         var from = active ? Moment(this.props.task.duration[0].begin) : null;
+        var repeat = null;
         var duration = null;
-        if (!collapsed && task.duration && task.duration.length > 0)
-            duration = (<TaskDuration.Component task={this.props.task} />);
+        if (!collapsed) {
+            repeat = (<TaskRepeat.Component />);
+            if(task.duration && task.duration.length > 0) {
+                duration = (<TaskDuration.Component task={this.props.task} />);
+            }
+        }
+
 
         return (
             <div className={"task-wide" + (collapsed ? " task-collapsed" : " task-expanded") + " panel panel-" + (active ? "primary" : "default")}>
@@ -47,6 +54,7 @@ export class Component extends TaskCommon.Component {
                         onSuccess={this.onSubjectChange.bind(this)}
                         onCancel={this.onSubjectChange.bind(this)}
                     />
+                    {repeat}
                     {duration}
                     <div className="footer">
                         <div className="info">
