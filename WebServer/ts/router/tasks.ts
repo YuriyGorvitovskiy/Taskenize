@@ -104,6 +104,19 @@ router.put('/:id', function(req, res) {
     for(var name in req.body) {
         if (Util.startWith(name, 'duration.'))
             update[name] = new Date(req.body[name]);
+        if (Util.startWith(name, 'automation.')) {
+            if (name == 'automation.behavior') {
+                update[name] = Model.Behavior[req.body[name]];
+            } else if (name == 'automation.timingKind') {
+                update[name] = Model.TimingKind[req.body[name]];
+            } else if (name == 'automation.timingDurationUnit') {
+                update[name] = Model.TimingDurationUnit[req.body[name]];
+            } else if (name == 'automation.timingAdjustmentKind') {
+                update[name] = Model.TimingAdjustmentKind[req.body[name]];
+            } else {
+                update[name] = req.body[name];
+            }
+        }
     }
 
     Action.update(req.body._id, {$set: update})
