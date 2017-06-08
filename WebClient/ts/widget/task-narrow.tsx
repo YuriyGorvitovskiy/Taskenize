@@ -7,8 +7,9 @@ import * as Complete from './complete-button';
 import * as Play from './timer-button-narrow';
 import * as Timer from './timer';
 import * as HtmlEditor from './html-editor';
-import * as TaskDuration from './task-narrow-duration';
+import * as TaskBehavior from './task-behavior';
 import * as TaskCommon from './task-common';
+import * as TaskDuration from './task-narrow-duration';
 import * as TextUtil from '../util/text';
 
 
@@ -137,7 +138,7 @@ export class Component extends TaskCommon.Component {
                             onSuccess={this.onTitleChange.bind(this)}
                             onCancel={this.onTitleChange.bind(this)}
                         />
-                        <label className="label-subject">Subject:</label>
+                        <label className="label-subject">Subject</label>
                         <HtmlEditor.Component
                              className="subject"
                              singleLine={false}
@@ -145,7 +146,7 @@ export class Component extends TaskCommon.Component {
                              onSuccess={this.onSubjectChange.bind(this)}
                              onCancel={this.onSubjectChange.bind(this)}
                         />
-                        <label className="label-category">Context:</label>
+                        <label className="label-category">Context</label>
                         <HtmlEditor.Component
                             className="category"
                             singleLine={true}
@@ -153,7 +154,7 @@ export class Component extends TaskCommon.Component {
                             onSuccess={this.onContextChange.bind(this)}
                             onCancel={this.onContextChange.bind(this)}
                         />
-                        <label className="label-category">Category:</label>
+                        <label className="label-category">Category</label>
                         <HtmlEditor.Component
                             className="category"
                             singleLine={true}
@@ -161,7 +162,7 @@ export class Component extends TaskCommon.Component {
                             onSuccess={this.onCategoryChange.bind(this)}
                             onCancel={this.onCategoryChange.bind(this)}
                         />
-                        <label className="label-category">Project:</label>
+                        <label className="label-category">Project</label>
                         <HtmlEditor.Component
                             className="category"
                             singleLine={true}
@@ -169,7 +170,7 @@ export class Component extends TaskCommon.Component {
                             onSuccess={this.onProjectChange.bind(this)}
                             onCancel={this.onProjectChange.bind(this)}
                         />
-                        <label className="label-category">Story:</label>
+                        <label className="label-category">Story</label>
                         <HtmlEditor.Component
                             className="category"
                             singleLine={true}
@@ -177,7 +178,7 @@ export class Component extends TaskCommon.Component {
                             onSuccess={this.onStoryChange.bind(this)}
                             onCancel={this.onStoryChange.bind(this)}
                         />
-                        <label className="label-category">Schedule:</label>
+                        <label className="label-category">Schedule</label>
                         <div className="input-group">
                             <span className="input-group-btn">
                                 <button className="btn btn-primary"
@@ -199,9 +200,10 @@ export class Component extends TaskCommon.Component {
                                     onChange={this.onScheduledChange.bind(this)}
                             />
                         </div>
+                        <TaskBehavior.Component task={task}/>
                         <div className="duration" >
                             <Timer.Component active={active} from={from} plus={plus} onClick={this.onCollapse.bind(this)}/>
-                            <label className="label-duration">Duration:</label>
+                            <label className="label-duration">Duration</label>
                             {duration}
                         </div>
                         <div className="delete">

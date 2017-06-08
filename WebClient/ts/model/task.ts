@@ -59,6 +59,44 @@ export interface Period {
     end?:       Date;
 }
 
+export enum Behavior {
+    NONE,
+    REPEAT,
+    FOLLOWED
+};
+
+export enum TimingKind {
+    IN,
+    AFTER
+};
+
+export enum TimingDurationUnit {
+    DAY,
+    WEEK,
+    MONTH
+}
+
+export enum TimingAdjustmentKind {
+    MONDAY,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
+    SATURDAY,
+    SUNDAY,
+    DAY_OF_THE_MONTH
+};
+
+export interface Automation {
+    behavior:               Behavior;
+    relatedTaskId?:         string;
+    timingKind?:            TimingKind;
+    timingDuration?:        number;
+    timingDurationUnit?:    TimingDurationUnit;
+    timingAdjustment?:      number;
+    timingAdjustmentKind?:  TimingAdjustmentKind;
+}
+
 export interface Task {
     _id?:           string;
     state:          State;
@@ -73,6 +111,7 @@ export interface Task {
     collapsed:      boolean;
     created_time:   Date;
     completed_time: Date;
+    automation?:    Automation;
 }
 
 export function get(id: string) {
@@ -189,6 +228,23 @@ export function updateScheduled(task : Task) {
     }).then(parseTaskJson);
 }
 
+export function updateAutomation(task : Task) {
+    return $.ajax({
+        method: "PUT",
+        url: '/rest/v1/tasks/' + task._id,
+        data: {
+            "automation.behavior":             task.automation.behavior,
+            "automation.relatedTaskId":        task.automation.relatedTaskId,
+            "automation.timingKind":           task.automation.timingKind,
+            "automation.timingDuration":       task.automation.timingDuration,
+            "automation.timingDurationUnit":   task.automation.timingDurationUnit,
+            "automation.timingAdjustment":     task.automation.timingAdjustment,
+            "automation.timingAdjustmentKind": task.automation.timingAdjustmentKind
+        },
+        dataType: "json"
+    }).then(parseTaskJson);
+}
+
 export function updateDuration(task : Task, index : number, field: string) {
     return $.ajax({
         method: "PUT",
@@ -229,7 +285,17 @@ function parseTaskJson(json: any) : Task {
         collapsed:  json.collapsed==='true',
         created_time:   json.created_time ? new Date(json.created_time) : null,
         completed_time: json.completed_time ? new Date(json.completed_time) : null,
-
+        automation: json.automation == null ?
+                        {behavior: Behavior.NONE} :
+                        {
+                            behavior:               json.automation.behavior,
+                            relatedTaskId:          json.automation.relatedTaskId,
+                            timingKind:             json.automation.timingKind,
+                            timingDuration:         json.automation.timingDuration,
+                            timingDurationUnit:     json.automation.timingDurationUnit,
+                            timingAdjustment:       json.automation.timingAdjustment,
+                            timingAdjustmentKind:   json.automation.timingAdjustmentKind
+                        }
     }
     if ($.isArray(json.duration)) {
         json.duration.forEach((period) => {
@@ -355,6 +421,6 @@ export function insertAfterTask(tasks: Task[], taskToFind: Task, taskToInsert) :
     let index = findTaskIndex(tasks, taskToFind);
     if (index < 0)
         return [taskToInsert].concat(tasks);
-        
+
     return tasks.slice(0, index + 1).concat(taskToInsert).concat(tasks.slice(index + 1));
 }
