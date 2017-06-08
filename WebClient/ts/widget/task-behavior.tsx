@@ -1,21 +1,12 @@
 import * as React from 'react';
+import * as Model from '../model/task';
 
 export interface Props extends React.Props<Component> {
+    task: Model.Task
 };
-
-type Behavior = 'none' | 'repeat' | 'followed';
-type TimingKind = 'in' | 'after';
-type TimingDurationUnit = 'day' | 'week' | 'month';
-type TimingAdjustmentKind = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday' | 'day-of-the-month';
 
 interface State  {
-    behavior : Behavior;
-    timingKind ?:TimingKind;
-    timingDuration ?: number;
-    timingDurationUnit ?: TimingDurationUnit;
-    timingAdjustment ?: number;
-    timingAdjustmentKind ?: TimingAdjustmentKind;
-};
+}
 
 export class Component extends React.Component<Props, State> {
     public constructor() {
@@ -32,10 +23,10 @@ export class Component extends React.Component<Props, State> {
 
     public render() {
         let sentence = [];
-        this.renderSentence(sentence);
+        this.renderSentence(this.props.task.automation, sentence);
         return (
-            <div className="form-group repeat">
-                <label className="control-label">Behavior</label>
+            <div className="behavior">
+                <label className="label-behavior">Behavior</label>
                 <div>
                     {sentence}
                 </div>
@@ -43,145 +34,140 @@ export class Component extends React.Component<Props, State> {
         );
     }
 
-    private renderSentence(sentence: JSX.Element[]) {
+    private renderSentence(automation: Model.Automation, sentence: JSX.Element[]) {
         sentence.push(
-            <select value={this.state.behavior} onChange={this.behaviorChange} key={sentence.length}>
-                <option value="none">None</option>
-                <option value="repeat">Repeat</option>
-                <option value="followed">Followed</option>
+            <select value={automation.behavior} onChange={this.behaviorChange} key={sentence.length}>
+                <option value={Model.Behavior.NONE}>None</option>
+                <option value={Model.Behavior.REPEAT}>Repeat</option>
             </select>
         );
-        if (this.state.behavior == 'repeat') {
+        if (automation.behavior == Model.Behavior.REPEAT) {
             sentence.push(<span key={sentence.length}>&nbsp;task&nbsp;</span>);
-            this.renderTimingSentence(sentence);
-        } else if (this.state.behavior == 'followed') {
+            this.renderTimingSentence(automation, sentence);
+        } else if (automation.behavior == Model.Behavior.FOLLOWED) {
             sentence.push(<span key={sentence.length}>&nbsp;by 'Education' task&nbsp;</span>);
-            this.renderTimingSentence(sentence);
+            this.renderTimingSentence(automation, sentence);
         }
         sentence.push(<span key={sentence.length}>.</span>);
     }
-    private renderTimingSentence(sentence: JSX.Element[]) {
+    private renderTimingSentence(automation: Model.Automation, sentence: JSX.Element[]) {
         sentence.push(
-            <select value={this.state.timingKind} onChange={this.timingKindChange} key={sentence.length}>
-                <option value="in">in</option>
-                <option value="after">after</option>
+            <select value={automation.timingKind} onChange={this.timingKindChange} key={sentence.length}>
+                <option value={Model.TimingKind.IN}>in</option>
+                <option value={Model.TimingKind.AFTER}>after</option>
             </select>
         );
         sentence.push(<span key={sentence.length}>&nbsp;</span>);
-        sentence.push(<input type="number" name="after" value={this.state.timingDuration} min="0" onChange={this.timingDurationChange} key={sentence.length}/>);
+        sentence.push(<input type="number" name="after" value={automation.timingDuration} min="0" onChange={this.timingDurationChange} key={sentence.length}/>);
         sentence.push(<span key={sentence.length}>&nbsp;</span>);
         sentence.push(
-            <select value={this.state.timingDurationUnit} onChange={this.timingDurationUnitChange} key={sentence.length}>
-                <option value="day">day(s)</option>
-                <option value="week">week(s)</option>
-                <option value="month">month(s)</option>
+            <select value={automation.timingDurationUnit} onChange={this.timingDurationUnitChange} key={sentence.length}>
+                <option value={Model.TimingDurationUnit.DAY}>day(s)</option>
+                <option value={Model.TimingDurationUnit.WEEK}>week(s)</option>
+                <option value={Model.TimingDurationUnit.MONTH}>month(s)</option>
             </select>
         );
-        if (this.state.timingKind == 'after') {
-            this.renderAfterSentence(sentence);
+        if (automation.timingKind == Model.TimingKind.AFTER) {
+            this.renderAfterSentence(automation, sentence);
         }
     }
 
-    private renderAfterSentence(sentence: JSX.Element[]) {
-        if (this.state.timingAdjustmentKind == 'day-of-the-month') {
+    private renderAfterSentence(automation: Model.Automation, sentence: JSX.Element[]) {
+        if (automation.timingAdjustmentKind == Model.TimingAdjustmentKind.DAY_OF_THE_MONTH) {
             sentence.push(<span key={sentence.length}>&nbsp;on the&nbsp;</span>);
-            sentence.push(<input type="number" name="onday" value={this.state.timingAdjustment} min="1" max="31" onChange={this.timingAdjustmentChange} key={sentence.length}/>);
+            sentence.push(<input type="number" name="onday" value={automation.timingAdjustment} min="1" max="31" onChange={this.timingAdjustmentChange} key={sentence.length}/>);
             sentence.push(<span key={sentence.length}>&nbsp;</span>);
         } else {
             sentence.push(<span key={sentence.length}>&nbsp;on&nbsp;</span>);
         }
         sentence.push(
-            <select value={this.state.timingAdjustmentKind} onChange={this.timingAdjustmentKindChange} key={sentence.length}>
-                <option value="monday">Monday</option>
-                <option value="tuesday">Tuesday</option>
-                <option value="wednesday">Wednesday</option>
-                <option value="thursday">Thursday</option>
-                <option value="friday">Friday</option>
-                <option value="saturday">Saturday</option>
-                <option value="sunday">Sunday</option>
-                <option value="day-of-the-month">day of the month</option>
+            <select value={automation.timingAdjustmentKind} onChange={this.timingAdjustmentKindChange} key={sentence.length}>
+                <option value={Model.TimingAdjustmentKind.MONDAY}>Monday</option>
+                <option value={Model.TimingAdjustmentKind.TUESDAY}>Tuesday</option>
+                <option value={Model.TimingAdjustmentKind.WEDNESDAY}>Wednesday</option>
+                <option value={Model.TimingAdjustmentKind.THURSDAY}>Thursday</option>
+                <option value={Model.TimingAdjustmentKind.FRIDAY}>Friday</option>
+                <option value={Model.TimingAdjustmentKind.SATURDAY}>Saturday</option>
+                <option value={Model.TimingAdjustmentKind.SUNDAY}>Sunday</option>
+                <option value={Model.TimingAdjustmentKind.DAY_OF_THE_MONTH}>day of the month</option>
             </select>
         );
     }
 
     private behaviorChange(event) {
-        this.copyTheRestAndSetState({
-            behavior: event.target.value
-        });
-    }
+        const automation = this.props.task.automation;
+        if (automation.behavior == event.target.value)
+            return;
 
+        if (automation.behavior == Model.Behavior.NONE) {
+            if (automation.timingKind == null) {
+                automation.timingKind = Model.TimingKind.IN;
+            }
+            if (automation.timingDuration == null) {
+                automation.timingDuration = 1;
+            }
+            if (automation.timingDurationUnit == null) {
+                automation.timingDurationUnit = Model.TimingDurationUnit.WEEK;
+            }
+        }
+        this.props.task.automation.behavior = event.target.value;
+        this.forceUpdate();
+        Model.updateAutomation(this.props.task);
+    }
     private timingKindChange(event) {
-        this.copyTheRestAndSetState({
-            behavior: this.state.behavior,
-            timingKind: event.target.value
-        });
+        const automation = this.props.task.automation;
+        if (automation.timingKind == event.target.value)
+            return;
+
+        if (automation.timingKind == Model.TimingKind.IN) {
+            if (automation.timingAdjustmentKind == null) {
+                automation.timingAdjustmentKind = Model.TimingAdjustmentKind.MONDAY;
+            }
+        }
+        automation.timingKind = event.target.value;
+        this.forceUpdate();
+        Model.updateAutomation(this.props.task);
     }
     private timingDurationChange(event) {
-        this.copyTheRestAndSetState({
-            behavior: this.state.behavior,
-            timingDuration: parseInt(event.target.value)
-        });
+        const automation = this.props.task.automation;
+        if (automation.timingDuration == parseInt(event.target.value))
+            return;
+
+        automation.timingDuration = parseInt(event.target.value);
+        this.forceUpdate();
+        Model.updateAutomation(this.props.task);
     }
     private timingDurationUnitChange(event) {
-        this.copyTheRestAndSetState({
-            behavior: this.state.behavior,
-            timingDurationUnit: event.target.value
-        });
+        const automation = this.props.task.automation;
+        if (automation.timingDurationUnit == event.target.value)
+            return;
+
+        automation.timingDurationUnit = event.target.value;
+        this.forceUpdate();
+        Model.updateAutomation(this.props.task);
     }
     private timingAdjustmentChange(event) {
-        this.copyTheRestAndSetState({
-            behavior: this.state.behavior,
-            timingAdjustment: parseInt(event.target.value)
-        });
+        const automation = this.props.task.automation;
+        if (automation.timingAdjustment == parseInt(event.target.value))
+            return;
+
+        automation.timingAdjustment = parseInt(event.target.value);
+        this.forceUpdate();
+        Model.updateAutomation(this.props.task);
     }
     private timingAdjustmentKindChange(event) {
-        this.copyTheRestAndSetState({
-            behavior: this.state.behavior,
-            timingAdjustmentKind: event.target.value
-        });
-    }
+        const automation = this.props.task.automation;
+        if (automation.timingAdjustmentKind == event.target.value)
+            return;
 
-    private copyTheRestAndSetState(newState: State) {
-        if (newState.timingKind == null) {
-            if (this.state.timingKind != null) {
-                newState.timingKind = this.state.timingKind;
-            } else if (newState.behavior != 'none') {
-                newState.timingKind = 'in';
+        if (event.target.value == Model.TimingAdjustmentKind.DAY_OF_THE_MONTH) {
+            if (automation.timingAdjustment == null) {
+                automation.timingAdjustment = 1;
             }
         }
 
-        if (newState.timingDuration == null) {
-            if (this.state.timingDuration != null) {
-                newState.timingDuration = this.state.timingDuration;
-            } else if (newState.behavior != 'none') {
-                newState.timingDuration = 1;
-            }
-        }
-
-        if (newState.timingDurationUnit == null) {
-            if (this.state.timingDurationUnit != null) {
-                newState.timingDurationUnit = this.state.timingDurationUnit;
-            } else if (newState.behavior != 'none') {
-                newState.timingDurationUnit = 'week';
-            }
-        }
-
-        if (newState.timingAdjustmentKind == null) {
-            if (this.state.timingAdjustmentKind != null) {
-                newState.timingAdjustmentKind = this.state.timingAdjustmentKind;
-            } else if (newState.timingKind == 'after') {
-                newState.timingAdjustmentKind = 'monday';
-            }
-        }
-
-        if (newState.timingAdjustment == null) {
-            if (this.state.timingAdjustment != null) {
-                newState.timingAdjustment = this.state.timingAdjustment;
-            } else if (newState.timingAdjustmentKind == 'day-of-the-month') {
-                newState.timingAdjustment = 1;
-            }
-        }
-
-        this.setState(newState);
+        automation.timingAdjustmentKind = event.target.value;
+        this.forceUpdate();
+        Model.updateAutomation(this.props.task);
     }
 }

@@ -130,7 +130,7 @@
     height: 45px;
 }
 
-.task-wide div.repeat {
+.task-wide div.behavior {
     margin-left: 105px;
     margin-right: 125px;
     margin-top: 5px;
@@ -139,16 +139,21 @@
     vertical-align: middle;
 }
 
-.task-wide .repeat input {
+.task-wide .behavior input {
     display: inline-block;
     text-align: right;
     width: 40px;
-    border: solid 1px black;
+    height: 25px;
+    border: solid 1px grey;
+    border-radius: 5px;
     background: none;
 }
 
-.task-wide .repeat select {
+.task-wide .behavior select {
     display: inline-block;
+    height: 25px;
+    border: solid 1px grey;
+    border-radius: 5px;
     background: none;
 }
 
@@ -469,6 +474,12 @@
     display: block;
 }
 
+.task-narrow-expanded .label-behavior {
+    clear: left;
+    margin: 5px;
+    display: block;
+}
+
 .task-narrow-expanded .duration .timer {
     padding: 0 5px;
     background-color: white;
@@ -481,6 +492,24 @@
     font-weight: bold;
     margin: 0 5px 5px 5px;
     float: right;
+}
+
+.task-narrow-expanded .behavior input {
+    display: inline-block;
+    text-align: right;
+    width: 40px;
+    height: 25px;
+    border: solid 1px grey;
+    border-radius: 5px;
+    background: none;
+}
+
+.task-narrow-expanded .behavior select {
+    display: inline-block;
+    height: 25px;
+    border: solid 1px grey;
+    border-radius: 5px;
+    background: none;
 }
 
 .task-narrow-expanded .label-duration {

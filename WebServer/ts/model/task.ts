@@ -44,7 +44,7 @@ export interface Automation {
     relatedTaskId?:         string;
     timingKind?:            TimingKind;
     timingDuration?:        number;
-    timingDurationUnit?:    Moment.unitOfTime.Base;
+    timingDurationUnit?:    TimingDurationUnit;
     timingAdjustment?:      number;
     timingAdjustmentKind?:  TimingAdjustmentKind;
 }

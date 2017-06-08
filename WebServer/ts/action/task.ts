@@ -116,11 +116,12 @@ export function copy( task: Model.Task, scheduled: Date) : Promise<Model.Task> {
         completed_time: null,
         automation: copyAutomation
     };
-    return _cl.insertOne(task)
+    return _cl.insertOne(copyTask)
         .then(() => task) as Promise<Model.Task>;
 }
 
 export function update(_id: string | Mongo.ObjectID, update: any) : Promise<Model.Task> {
+    //console.log("Update: " + JSON.stringify(update));
     return _cl.updateOne({_id: toId(_id)}, update)
                 .then(() => get(_id))
                 .then((task) => triggerAutomation(task, update));
@@ -262,7 +263,12 @@ export function triggerAutomation(task: Model.Task, updateScript: any) : Promise
 }
 
 export function triggerRepeatAutomation(task: Model.Task) : Promise<Model.Task> {
-    return copy(task, calculateTiming(task.automation, task.completed_time))
+    //console.log("Trigger repeat automation for '" + task.title + "'");
+    let from = task.completed_time;
+    if (task.automation.timingKind == Model.TimingKind.IN && task.scheduled != null)
+        from = task.scheduled;
+
+    return copy(task, calculateTiming(task.automation, from))
                 .then(() => update(task._id, {
                         $set:{"automation.behavior": Model.Behavior.NONE}
                     }));
@@ -279,7 +285,13 @@ export function triggerFollowedAutomation(task: Model.Task, fromDate: Date) : Pr
 export function calculateTiming(automation: Model.Automation, fromDate: Date) : Date {
     let timing: Moment.Moment = Moment(fromDate);
     if (automation.timingDuration != null && automation.timingDuration > 0 && automation.timingDurationUnit != null) {
-        timing = timing.add(automation.timingDuration, automation.timingDurationUnit)
+        let unit : Moment.unitOfTime.Base = 'week';
+        switch(automation.timingDurationUnit) {
+            case Model.TimingDurationUnit.DAY: unit = 'day'; break;
+            case Model.TimingDurationUnit.WEEK: unit = 'week'; break;
+            case Model.TimingDurationUnit.MONTH: unit = 'month'; break;
+        }
+        timing = timing.add(automation.timingDuration, unit);
     }
     if (automation.timingKind == Model.TimingKind.AFTER && automation.timingAdjustmentKind != null) {
         if (automation.timingAdjustmentKind == Model.TimingAdjustmentKind.DAY_OF_THE_MONTH && automation.timingAdjustment != null && automation.timingAdjustment > 0) {

@@ -9,7 +9,7 @@ import * as Play from './timer-button-wide';
 import * as HtmlEditor from './html-editor';
 import * as TaskCommon from './task-common';
 import * as TaskDuration from './task-wide-duration';
-import * as TaskRepeat from './task-behavior';
+import * as TaskBehavior from './task-behavior';
 import * as TextUtil from '../util/text';
 
 
@@ -28,12 +28,11 @@ export class Component extends TaskCommon.Component {
         var repeat = null;
         var duration = null;
         if (!collapsed) {
-            repeat = (<TaskRepeat.Component />);
+            repeat = (<TaskBehavior.Component task={task}/>);
             if(task.duration && task.duration.length > 0) {
                 duration = (<TaskDuration.Component task={this.props.task} />);
             }
         }
-
 
         return (
             <div className={"task-wide" + (collapsed ? " task-collapsed" : " task-expanded") + " panel panel-" + (active ? "primary" : "default")}>
