@@ -32,6 +32,7 @@ interface State {
     range: Report.Range;
     order_by: Report.Property;
     tasks: Model.Task[];
+    uncomplettedTasks: Model.Task[];
 }
 
 export class Component extends React.Component<{},State> {
@@ -62,6 +63,7 @@ export class Component extends React.Component<{},State> {
                 panels.push(<TaskWide.Component
                     key={index}
                     task={task}
+                    requestUncompletedTasks={this.requestUncompletedTasks.bind(this)}
                     onStateChange={this.onStateChange.bind(this)}
                     onDuplicate={this.onDuplicate.bind(this)}
                     onDelete={this.onDelete.bind(this)}
@@ -70,6 +72,7 @@ export class Component extends React.Component<{},State> {
                 panels.push(<TaskNarrow.Component
                     key={index}
                     task={task}
+                    requestUncompletedTasks={this.requestUncompletedTasks.bind(this)}
                     onStateChange={this.onStateChange.bind(this)}
                     onDuplicate={this.onDuplicate.bind(this)}
                     onDelete={this.onDelete.bind(this)}
@@ -262,7 +265,8 @@ export class Component extends React.Component<{},State> {
             ancor: ancor,
             range: range,
             order_by: order_by,
-            tasks: []
+            tasks: [],
+            uncomplettedTasks: null
         };
         if (this.state == null)
             this.state = newState;
@@ -281,4 +285,16 @@ export class Component extends React.Component<{},State> {
         }).bind(this));
     }
 
+    public requestUncompletedTasks(callback: (uncompletedTasks: Model.Task[])=>any) {
+        if (this.state.uncomplettedTasks != null) {
+            callback(this.state.uncomplettedTasks);
+            return;
+        }
+        Model.getExecuting().done(((serverTasks) => {
+            var tasks = serverTasks as Model.Task[];
+            tasks.sort(Model.executionComparator);
+            this.setState({uncomplettedTasks:tasks});
+            callback(tasks);
+        }).bind(this));
+    }
 }
