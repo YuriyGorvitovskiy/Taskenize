@@ -12,10 +12,11 @@ import * as TaskNarrow from './task-narrow';
 
 export interface Props extends React.Props<Component> {
     task: Model.Task;
-    onStateChange: (task: Model.Task, newState: Model.State) => any
-    onDuplicate: (task: Model.Task) => any
-    onDelete: (task: Model.Task) => any
-    onSlide: (taskPanel: TaskNarrow.Component, sleded: boolean) => any
+    onStateChange: (task: Model.Task, newState: Model.State) => any;
+    onDuplicate: (task: Model.Task) => any;
+    onDelete: (task: Model.Task) => any;
+    onSlide: (taskPanel: TaskNarrow.Component, sleded: boolean) => any;
+    requestUncompletedTasks: (callback: (uncompletedTasks: Model.Task[])=>any) => any;
 };
 
 interface State {

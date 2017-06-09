@@ -25,10 +25,10 @@ export class Component extends TaskCommon.Component {
         var category = Model.Category.MAP[task.category];
         var plus = Model.calculateCompletedDuration(this.props.task);
         var from = active ? Moment(this.props.task.duration[0].begin) : null;
-        var repeat = null;
+        var behavior = null;
         var duration = null;
         if (!collapsed) {
-            repeat = (<TaskBehavior.Component task={task}/>);
+            behavior = (<TaskBehavior.Component task={task} requestUncompletedTasks={this.props.requestUncompletedTasks}/>);
             if(task.duration && task.duration.length > 0) {
                 duration = (<TaskDuration.Component task={this.props.task} />);
             }
@@ -53,7 +53,7 @@ export class Component extends TaskCommon.Component {
                         onSuccess={this.onSubjectChange.bind(this)}
                         onCancel={this.onSubjectChange.bind(this)}
                     />
-                    {repeat}
+                    {behavior}
                     {duration}
                     <div className="footer">
                         <div className="info">

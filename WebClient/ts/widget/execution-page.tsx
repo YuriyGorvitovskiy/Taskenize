@@ -53,6 +53,7 @@ export class ExecutionPage extends React.Component<{},ExecutionPageState> {
                 panels.push(<TaskWide.Component
                     key={index}
                     task={task}
+                    requestUncompletedTasks={(callback) => callback(this.state.tasks)}
                     onStateChange={this.onStateChange.bind(this)}
                     onDuplicate={this.onDuplicate.bind(this)}
                     onDelete={this.onDelete.bind(this)}
@@ -61,6 +62,7 @@ export class ExecutionPage extends React.Component<{},ExecutionPageState> {
                 panels.push(<TaskNarrow.Component
                     key={index}
                     task={task}
+                    requestUncompletedTasks={(callback) => callback(this.state.tasks)}
                     onStateChange={this.onStateChange.bind(this)}
                     onDuplicate={this.onDuplicate.bind(this)}
                     onDelete={this.onDelete.bind(this)}

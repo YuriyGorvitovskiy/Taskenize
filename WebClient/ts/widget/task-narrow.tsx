@@ -200,7 +200,7 @@ export class Component extends TaskCommon.Component {
                                     onChange={this.onScheduledChange.bind(this)}
                             />
                         </div>
-                        <TaskBehavior.Component task={task}/>
+                        <TaskBehavior.Component task={task} requestUncompletedTasks={this.props.requestUncompletedTasks}/>
                         <div className="duration" >
                             <Timer.Component active={active} from={from} plus={plus} onClick={this.onCollapse.bind(this)}/>
                             <label className="label-duration">Duration</label>

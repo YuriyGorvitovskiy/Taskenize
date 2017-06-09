@@ -2,23 +2,33 @@ import * as React from 'react';
 import * as Model from '../model/task';
 
 export interface Props extends React.Props<Component> {
-    task: Model.Task
+    task:                    Model.Task,
+    requestUncompletedTasks: (callback: (uncompletedTasks: Model.Task[])=>any) => any;
 };
 
 interface State  {
+    tasksToFollow: Model.Task[]
 }
 
 export class Component extends React.Component<Props, State> {
     public constructor() {
         super();
-        this.state = {behavior: 'none'};
+        this.state = {tasksToFollow: null};
 
         this.behaviorChange = this.behaviorChange.bind(this);
+        this.relatedTaskIdChange = this.relatedTaskIdChange.bind(this);
         this.timingKindChange = this.timingKindChange.bind(this);
         this.timingDurationChange = this.timingDurationChange.bind(this);
         this.timingDurationUnitChange = this.timingDurationUnitChange.bind(this);
         this.timingAdjustmentChange = this.timingAdjustmentChange.bind(this);
         this.timingAdjustmentKindChange = this.timingAdjustmentKindChange.bind(this);
+    }
+    componentDidMount?(): void {
+        if (this.state.tasksToFollow == null) {
+            this.props.requestUncompletedTasks((tasks)=>
+                this.setState({tasksToFollow: tasks})
+            );
+        }
     }
 
     public render() {
@@ -39,13 +49,28 @@ export class Component extends React.Component<Props, State> {
             <select value={automation.behavior} onChange={this.behaviorChange} key={sentence.length}>
                 <option value={Model.Behavior.NONE}>None</option>
                 <option value={Model.Behavior.REPEAT}>Repeat</option>
+                <option value={Model.Behavior.FOLLOWED}>Followed</option>
             </select>
         );
         if (automation.behavior == Model.Behavior.REPEAT) {
             sentence.push(<span key={sentence.length}>&nbsp;task&nbsp;</span>);
             this.renderTimingSentence(automation, sentence);
         } else if (automation.behavior == Model.Behavior.FOLLOWED) {
-            sentence.push(<span key={sentence.length}>&nbsp;by 'Education' task&nbsp;</span>);
+            let options = [];
+            if (this.state.tasksToFollow != null) {
+                for(const taskToFollow of this.state.tasksToFollow) {
+                    if (taskToFollow._id != this.props.task._id) {
+                        options.push(<option value={taskToFollow._id} key={options.length}>{taskToFollow.title}</option>);
+                    }
+                }
+            }
+            sentence.push(
+                <span key={sentence.length}>&nbsp;by&nbsp;
+                    <select value={automation.relatedTaskId} onChange={this.relatedTaskIdChange} key={sentence.length}>
+                        {options}
+                    </select>&nbsp;task&nbsp;
+                </span>
+            );
             this.renderTimingSentence(automation, sentence);
         }
         sentence.push(<span key={sentence.length}>.</span>);
@@ -114,6 +139,17 @@ export class Component extends React.Component<Props, State> {
         this.forceUpdate();
         Model.updateAutomation(this.props.task);
     }
+
+    private relatedTaskIdChange(event) {
+        const automation = this.props.task.automation;
+        if (automation.relatedTaskId == event.target.value)
+            return;
+
+        automation.relatedTaskId = event.target.value;
+        this.forceUpdate();
+        Model.updateAutomation(this.props.task);
+    }
+
     private timingKindChange(event) {
         const automation = this.props.task.automation;
         if (automation.timingKind == event.target.value)
