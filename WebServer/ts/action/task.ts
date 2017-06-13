@@ -290,8 +290,6 @@ export function triggerFollowedAutomation(task: Model.Task, fromDate: Date) : Pr
 
 export function calculateTiming(automation: Model.Automation, fromDate: Date) : Date {
     let timing: Moment.Moment = Moment(fromDate);
-    console.log("Automation: " + JSON.stringify(automation));
-    console.log("Before incriment: " + timing.toString());
     if (automation.timingDuration != null && automation.timingDuration > 0 && automation.timingDurationUnit != null) {
         let unit : Moment.unitOfTime.Base = 'week';
         switch(automation.timingDurationUnit) {
@@ -300,7 +298,6 @@ export function calculateTiming(automation: Model.Automation, fromDate: Date) : 
             case Model.TimingDurationUnit.MONTH: unit = 'month'; break;
         }
         timing = timing.add(automation.timingDuration, unit);
-        console.log("After increment: " + timing.toString());
     }
     if (automation.timingKind == Model.TimingKind.AFTER && automation.timingAdjustmentKind != null) {
         if (automation.timingAdjustmentKind == Model.TimingAdjustmentKind.DAY_OF_THE_MONTH && automation.timingAdjustment != null && automation.timingAdjustment > 0) {
@@ -315,7 +312,6 @@ export function calculateTiming(automation: Model.Automation, fromDate: Date) : 
             }
             timing = timing.isoWeekday(isoWeekday);
         }
-        console.log("After adjustment: " + timing.toString());
     }
     return timing.toDate();
 }
