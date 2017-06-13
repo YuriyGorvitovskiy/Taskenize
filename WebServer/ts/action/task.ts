@@ -93,12 +93,18 @@ export function copy( task: Model.Task, scheduled: Date) : Promise<Model.Task> {
     var copyAutomation : Model.Automation = {behavior: Model.Behavior.NONE};
     if (task.automation != null && task.automation.behavior == Model.Behavior.REPEAT) {
         copyAutomation.behavior = task.automation.behavior;
-        copyAutomation.relatedTaskId = task.automation.relatedTaskId || null;
-        copyAutomation.timingKind = task.automation.timingKind || null;
-        copyAutomation.timingDuration = task.automation.timingDuration || null;
-        copyAutomation.timingDurationUnit = task.automation.timingDurationUnit || null;
-        copyAutomation.timingAdjustment = task.automation.timingAdjustment || null;
-        copyAutomation.timingAdjustmentKind = task.automation.timingAdjustmentKind || null;
+        if (task.automation.relatedTaskId != null)
+            copyAutomation.relatedTaskId = task.automation.relatedTaskId;
+        if (task.automation.timingKind != null)
+            copyAutomation.timingKind = task.automation.timingKind;
+        if (task.automation.timingDuration != null)
+            copyAutomation.timingDuration = task.automation.timingDuration;
+        if (task.automation.timingDurationUnit != null)
+            copyAutomation.timingDurationUnit = task.automation.timingDurationUnit;
+        if (task.automation.timingAdjustment != null)
+        copyAutomation.timingAdjustment = task.automation.timingAdjustment;
+        if (task.automation.timingAdjustmentKind != null)
+        copyAutomation.timingAdjustmentKind = task.automation.timingAdjustmentKind;
     }
     let copyTask : Model.Task = {
         user_id:   task.user_id,
@@ -284,6 +290,8 @@ export function triggerFollowedAutomation(task: Model.Task, fromDate: Date) : Pr
 
 export function calculateTiming(automation: Model.Automation, fromDate: Date) : Date {
     let timing: Moment.Moment = Moment(fromDate);
+    console.log("Automation: " + JSON.stringify(automation));
+    console.log("Before incriment: " + timing.toString());
     if (automation.timingDuration != null && automation.timingDuration > 0 && automation.timingDurationUnit != null) {
         let unit : Moment.unitOfTime.Base = 'week';
         switch(automation.timingDurationUnit) {
@@ -292,6 +300,7 @@ export function calculateTiming(automation: Model.Automation, fromDate: Date) : 
             case Model.TimingDurationUnit.MONTH: unit = 'month'; break;
         }
         timing = timing.add(automation.timingDuration, unit);
+        console.log("After increment: " + timing.toString());
     }
     if (automation.timingKind == Model.TimingKind.AFTER && automation.timingAdjustmentKind != null) {
         if (automation.timingAdjustmentKind == Model.TimingAdjustmentKind.DAY_OF_THE_MONTH && automation.timingAdjustment != null && automation.timingAdjustment > 0) {
@@ -306,6 +315,7 @@ export function calculateTiming(automation: Model.Automation, fromDate: Date) : 
             }
             timing = timing.isoWeekday(isoWeekday);
         }
+        console.log("After adjustment: " + timing.toString());
     }
     return timing.toDate();
 }
