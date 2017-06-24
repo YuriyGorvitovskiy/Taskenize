@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as Moment from 'moment';
 import * as Model from '../model/task';
 
 export interface Props extends React.Props<Component> {
@@ -121,21 +122,39 @@ export class Component extends React.Component<Props, State> {
 
     private behaviorChange(event) {
         const automation = this.props.task.automation;
-        if (automation.behavior == event.target.value)
+        const newBehavior = event.target.value;
+        if (automation.behavior == newBehavior)
             return;
 
-        if (automation.behavior == Model.Behavior.NONE) {
+        if (newBehavior == Model.Behavior.REPEAT) {
+            if (automation.timingKind == null) {
+                automation.timingKind = Model.TimingKind.AFTER;
+            }
+            if (!automation.timingDuration) {
+                automation.timingDuration = 5;
+            }
+            if (automation.timingDurationUnit == null) {
+                automation.timingDurationUnit = Model.TimingDurationUnit.DAY;
+            }
+            if (automation.timingAdjustmentKind == null) {
+                automation.timingAdjustmentKind = Moment().isoWeekday() - 1 + Model.TimingAdjustmentKind.MONDAY;
+            }
+        }
+        if (newBehavior == Model.Behavior.FOLLOWED) {
             if (automation.timingKind == null) {
                 automation.timingKind = Model.TimingKind.IN;
             }
-            if (automation.timingDuration == null) {
+            if (!automation.timingDuration) {
                 automation.timingDuration = 1;
             }
             if (automation.timingDurationUnit == null) {
-                automation.timingDurationUnit = Model.TimingDurationUnit.WEEK;
+                automation.timingDurationUnit = Model.TimingDurationUnit.DAY;
+            }
+            if (automation.relatedTaskId == null) {
+                automation.relatedTaskId = this.getBestRelatedTask()._id;
             }
         }
-        this.props.task.automation.behavior = event.target.value;
+        this.props.task.automation.behavior = newBehavior;
         this.forceUpdate();
         Model.updateAutomation(this.props.task);
     }
@@ -157,7 +176,7 @@ export class Component extends React.Component<Props, State> {
 
         if (automation.timingKind == Model.TimingKind.IN) {
             if (automation.timingAdjustmentKind == null) {
-                automation.timingAdjustmentKind = Model.TimingAdjustmentKind.MONDAY;
+                automation.timingAdjustmentKind = Moment().isoWeekday() - 1 + Model.TimingAdjustmentKind.MONDAY;
             }
         }
         automation.timingKind = event.target.value;
@@ -205,5 +224,43 @@ export class Component extends React.Component<Props, State> {
         automation.timingAdjustmentKind = event.target.value;
         this.forceUpdate();
         Model.updateAutomation(this.props.task);
+    }
+
+    private getBestRelatedTask() : Model.Task {
+        let bestTask: Model.Task = null;
+        let howGood = 0;
+        for (let task of this.state.tasksToFollow) {
+            if (task == this.props.task)
+                continue;
+            if (bestTask == null) {
+                bestTask = task;
+                howGood = 1;
+            }
+            if (this.props.task.category == task.category) {
+                if (howGood < 2) {
+                    bestTask = task;
+                    howGood = 2;
+                }
+                if (this.props.task.project == task.project) {
+                    if (howGood < 3) {
+                        bestTask = task;
+                        howGood = 3;
+                    }
+                    if (this.props.task.story == task.story) {
+                        if (howGood < 4) {
+                            bestTask = task;
+                            howGood = 4;
+                        }
+                        if (this.props.task.context == task.context) {
+                            if (howGood < 5) {
+                                bestTask = task;
+                                howGood = 5;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return bestTask;
     }
 }
