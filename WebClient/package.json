@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+      "clean": "./bin/clean.sh",
+      "build": "./bin/build.sh"
   },
   "author": "Yuriy Gorvitovskiy",
   "license": "ISC",
