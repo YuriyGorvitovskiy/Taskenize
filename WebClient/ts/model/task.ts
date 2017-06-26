@@ -71,6 +71,8 @@ export enum TimingKind {
 };
 
 export enum TimingDurationUnit {
+    MINUTE,
+    HOUR,
     DAY,
     WEEK,
     MONTH
