@@ -293,6 +293,8 @@ export function calculateTiming(automation: Model.Automation, fromDate: Date) : 
     if (automation.timingDuration != null && automation.timingDuration > 0 && automation.timingDurationUnit != null) {
         let unit : Moment.unitOfTime.Base = 'week';
         switch(automation.timingDurationUnit) {
+            case Model.TimingDurationUnit.MINUTE: unit = 'minute'; break;
+            case Model.TimingDurationUnit.HOUR: unit = 'hour'; break;
             case Model.TimingDurationUnit.DAY: unit = 'day'; break;
             case Model.TimingDurationUnit.WEEK: unit = 'week'; break;
             case Model.TimingDurationUnit.MONTH: unit = 'month'; break;

@@ -88,6 +88,8 @@ export class Component extends React.Component<Props, State> {
         sentence.push(<span key={sentence.length}>&nbsp;</span>);
         sentence.push(
             <select value={automation.timingDurationUnit} onChange={this.timingDurationUnitChange} key={sentence.length}>
+                <option value={Model.TimingDurationUnit.MINUTE}>minute(s)</option>
+                <option value={Model.TimingDurationUnit.HOUR}>hour(s)</option>
                 <option value={Model.TimingDurationUnit.DAY}>day(s)</option>
                 <option value={Model.TimingDurationUnit.WEEK}>week(s)</option>
                 <option value={Model.TimingDurationUnit.MONTH}>month(s)</option>
