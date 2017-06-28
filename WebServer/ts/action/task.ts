@@ -102,9 +102,9 @@ export function copy( task: Model.Task, scheduled: Date) : Promise<Model.Task> {
         if (task.automation.timingDurationUnit != null)
             copyAutomation.timingDurationUnit = task.automation.timingDurationUnit;
         if (task.automation.timingAdjustment != null)
-        copyAutomation.timingAdjustment = task.automation.timingAdjustment;
+            copyAutomation.timingAdjustment = task.automation.timingAdjustment;
         if (task.automation.timingAdjustmentKind != null)
-        copyAutomation.timingAdjustmentKind = task.automation.timingAdjustmentKind;
+            copyAutomation.timingAdjustmentKind = task.automation.timingAdjustmentKind;
     }
     let copyTask : Model.Task = {
         user_id:   task.user_id,
@@ -189,7 +189,6 @@ function startTask(_id: string | Mongo.ObjectID, time: Date) : Promise<Model.Tas
     return update(_id, {
         $set: {
             state: Model.State.RUNNING,
-            scheduled: null,
             completed_time: null
         },
         $push:{'duration':  { $each: [{begin: time || new Date(), end: null}], $position: 0}}
