@@ -77,12 +77,16 @@ app.get('/auth/callback',
 );
 
 app.get('/logout', function(req, res) {
-    Https.get("https://accounts.google.com/o/oauth2/logout?token=" + req.session['access_token'],
-        (r) => {
-            req.session.destroy(()=>{
-                req.logout();
-                res.redirect('/');
-            });
+    Https.get({
+        protocol: "https",
+        host: "accounts.google.com",
+        method: "GET",
+        path: "/o/oauth2/logout?token=" + req.session['access_token']
+    },(r) => {
+        req.session.destroy(()=>{
+            req.logout();
+            res.redirect('/');
+        });
     });
 });
 
