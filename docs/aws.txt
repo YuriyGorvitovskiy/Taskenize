@@ -107,9 +107,6 @@ Stop Taskenize    > sudo systemctl stop taskenize
 Restart Taskenize > sudo systemctl restart taskenize
 Log File          > cat /var/log/syslog
 
-sudo start taskenize
-sudo status taskenize
-sudo stop taskenize
 
 sudo cat /var/log/taskenize.log
 sudo rm /var/log/taskenize.log
