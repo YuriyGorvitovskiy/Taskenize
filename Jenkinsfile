@@ -9,6 +9,9 @@ pipeline {
     stage('Build') {
       steps {
         echo 'echo \'TODO: Define Build Stage\''
+        sh '''cd ./WebServer
+pwd
+npm update'''
       }
     }
     stage('Create Docker Image') {
