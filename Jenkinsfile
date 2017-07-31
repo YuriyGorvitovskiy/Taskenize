@@ -11,6 +11,7 @@ pipeline {
         echo 'echo \'TODO: Define Build Stage\''
         sh '''cd ./WebServer
 pwd
+ls -al
 npm update'''
       }
     }
