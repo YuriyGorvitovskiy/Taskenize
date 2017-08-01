@@ -3,11 +3,11 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        echo 'Server Build
+        echo 'Server Build'
         sh 'cd ./WebServer'
         sh 'npm update'
         sh './node_modules/.bin/tsc'
-        echo 'Client Build
+        echo 'Client Build'
         sh 'cd ./WebClient'
         sh 'npm update'
         sh './node_modules/.bin/tsc'
