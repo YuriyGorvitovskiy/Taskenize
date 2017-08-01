@@ -1,263 +1,276 @@
-import * as Mongo from 'mongodb';
-import * as Moment from 'moment';
-import * as Model from '../model/task'
-import * as Util from '../router/util'
+import * as Moment from "moment";
+import * as Mongo from "mongodb";
 
-var  _db  : Mongo.Db          = null;
-var  _cl  : Mongo.Collection  = null;
+import * as Model from "../model/task";
+import * as Util from "../router/util";
 
-export function connect(db : Mongo.Db) {
-    _db = db;
-    _cl = db.collection('tasks');
+let  dbTasks: Mongo.Collection  = null;
 
-    //Add Migration here
+export function connect(db: Mongo.Db) {
+    dbTasks = db.collection("tasks");
+    // Add Migration here
 }
 
-function toId(_id: string | Mongo.ObjectID) : Mongo.ObjectID {
-    if (typeof _id === "string")
-        _id = new Mongo.ObjectID(<string>_id);
-    return <Mongo.ObjectID>_id;
+function toId(id: string | Mongo.ObjectID): Mongo.ObjectID {
+    if (typeof id === "string") {
+        id = new Mongo.ObjectID(id as string);
+    }
+    return id as Mongo.ObjectID;
 }
 
-function toIds(_ids: (string | Mongo.ObjectID)[]) : Mongo.ObjectID[] {
-    for(var i in _ids)
-        _ids[i] = toId(_ids[i]);
-    return <Mongo.ObjectID[]>_ids;
+function toIds(ids: Array<string | Mongo.ObjectID>): Mongo.ObjectID[] {
+    for (let i = 0; i < ids.length; ++i) {
+        ids[i] = toId(ids[i]);
+    }
+    return ids as Mongo.ObjectID[];
 }
 
-export function get(_id: string | Mongo.ObjectID) : Promise<Model.Task> {
-    return _cl.find({_id: toId(_id)}).next() as Promise<Model.Task>;
+export function get(id: string | Mongo.ObjectID): Promise<Model.Task> {
+    return dbTasks.find({_id: toId(id)}).next() as Promise<Model.Task>;
 }
 
-export function getMany(_ids: (string | Mongo.ObjectID)[]) : Promise<Model.Task[]> {
-    return _cl.find({_id: {$in: toIds(_ids)}}).toArray() as Promise<Model.Task[]>;
+export function getMany(ids: Array<string | Mongo.ObjectID>): Promise<Model.Task[]> {
+    return dbTasks.find({_id: {$in: toIds(ids)}}).toArray() as Promise<Model.Task[]>;
 }
 
-export function getAll(query: Model.Query) : Promise<Model.Task[]> {
-    var filter = {
-        user_id: query.user_id,
+export function getAll(query: Model.Query): Promise<Model.Task[]> {
+    const filter: any = {
+        userId: query.user_id,
     };
     if (query.state != null) {
-        var states = [];
-        [].concat(query.state).forEach((state) => states.push(parseInt(state)));
-        filter['state'] = {$in: states};
+        const states = [];
+        [].concat(query.state).forEach((state) => states.push(parseInt(state, 10)));
+        filter.state = {$in: states};
     }
     if (query.completed_period != null) {
-        filter['completed_time'] = {
+        filter.completed_time = {
             $gte: query.completed_period.begin,
-            $lt: query.completed_period.end
+            $lt: query.completed_period.end,
         };
     }
-    //console.log("Filter: " + JSON.stringify(filter));
-    return _cl.find(filter).sort({
-        'scheduled': 1,
-        'duration.0.end': -1
+    // console.log("Filter: " + JSON.stringify(filter));
+    return dbTasks.find(filter).sort({
+        "duration.0.end": -1,
+        "scheduled": 1,
     }).toArray() as Promise<Model.Task[]>;
 }
 
-export function getRunning() : Promise<Model.Task[]> {
-    return _cl.find({state: Model.State.RUNNING}).toArray() as Promise<Model.Task[]>;
+export function getRunning(): Promise<Model.Task[]> {
+    return dbTasks.find({state: Model.State.RUNNING}).toArray() as Promise<Model.Task[]>;
 }
 
-export function insert( user_id:        string,
-                        title:          string,
-                        subject:        string,
-                        category:       string,
-                        context:        string,
-                        project:        string,
-                        story:          string,
-                        scheduled:      Date,
-                        collapsed:      boolean,
-                        created_time:   Date) : Promise<Model.Task> {
-    var task : Model.Task = {
-        user_id:   user_id,
-        state:     Model.State.PAUSED,
-        title:     title || "",
-        subject:   subject || "",
-        category:  category || "",
-        context:   context || "",
-        project:   project || "",
-        story:     story || "",
-        scheduled: scheduled || null,
-        duration:  [],
-        collapsed: collapsed == null ? true : collapsed,
-        created_time: created_time || null,
+export function insert( userId: string,
+                        title: string,
+                        subject: string,
+                        category: string,
+                        context: string,
+                        project: string,
+                        story: string,
+                        scheduled: Date,
+                        collapsed: boolean,
+                        createdTime: Date): Promise<Model.Task> {
+    const task: Model.Task = {
+        automation:     {behavior: Model.Behavior.NONE},
+        category:       category || "",
+        collapsed:      collapsed == null ? true : collapsed,
         completed_time: null,
-        automation: {behavior: Model.Behavior.NONE}
+        context:        context || "",
+        created_time:   createdTime || null,
+        duration:       [],
+        project:        project || "",
+        scheduled:      scheduled || null,
+        state:          Model.State.PAUSED,
+        story:          story || "",
+        subject:        subject || "",
+        title:          title || "",
+        user_id:        userId,
     };
-    return _cl.insertOne(task)
+    return dbTasks.insertOne(task)
         .then(() => task) as Promise<Model.Task>;
 }
 
-export function copy( task: Model.Task, scheduled: Date) : Promise<Model.Task> {
-    var copyAutomation : Model.Automation = {behavior: Model.Behavior.NONE};
-    if (task.automation != null && task.automation.behavior == Model.Behavior.REPEAT) {
+export function copy( task: Model.Task, scheduled: Date): Promise<Model.Task> {
+    const copyAutomation: Model.Automation = {behavior: Model.Behavior.NONE};
+    if (task.automation != null && task.automation.behavior === Model.Behavior.REPEAT) {
         copyAutomation.behavior = task.automation.behavior;
-        if (task.automation.relatedTaskId != null)
+        if (task.automation.relatedTaskId != null) {
             copyAutomation.relatedTaskId = task.automation.relatedTaskId;
-        if (task.automation.timingKind != null)
+        }
+        if (task.automation.timingKind != null) {
             copyAutomation.timingKind = task.automation.timingKind;
-        if (task.automation.timingDuration != null)
+        }
+        if (task.automation.timingDuration != null) {
             copyAutomation.timingDuration = task.automation.timingDuration;
-        if (task.automation.timingDurationUnit != null)
+        }
+        if (task.automation.timingDurationUnit != null) {
             copyAutomation.timingDurationUnit = task.automation.timingDurationUnit;
-        if (task.automation.timingAdjustment != null)
+        }
+        if (task.automation.timingAdjustment != null) {
             copyAutomation.timingAdjustment = task.automation.timingAdjustment;
-        if (task.automation.timingAdjustmentKind != null)
+        }
+        if (task.automation.timingAdjustmentKind != null) {
             copyAutomation.timingAdjustmentKind = task.automation.timingAdjustmentKind;
+        }
     }
-    let copyTask : Model.Task = {
-        user_id:   task.user_id,
-        state:     Model.State.PAUSED,
-        title:     task.title || "",
-        subject:   task.subject || "",
-        category:  task.category || "",
-        context:   task.context || "",
-        project:   task.project || "",
-        story:     task.story || "",
-        scheduled: scheduled || null,
-        duration:  [],
-        collapsed: true,
-        created_time: new Date(),
+    const copyTask: Model.Task = {
+        automation:     copyAutomation,
+        category:       task.category || "",
+        collapsed:      true,
         completed_time: null,
-        automation: copyAutomation
+        context:        task.context || "",
+        created_time:   new Date(),
+        duration:       [],
+        project:        task.project || "",
+        scheduled:      scheduled || null,
+        state:          Model.State.PAUSED,
+        story:          task.story || "",
+        subject:        task.subject || "",
+        title:          task.title || "",
+        user_id:        task.user_id,
     };
-    return _cl.insertOne(copyTask)
+    return dbTasks.insertOne(copyTask)
         .then(() => task) as Promise<Model.Task>;
 }
 
-export function update(_id: string | Mongo.ObjectID, update: any) : Promise<Model.Task> {
-    //console.log("Update: " + JSON.stringify(update));
-    return _cl.updateOne({_id: toId(_id)}, update)
-                .then(() => get(_id))
-                .then((task) => triggerAutomation(task, update));
+export function update(id: string | Mongo.ObjectID, updateAction: any): Promise<Model.Task> {
+    // console.log("Update: " + JSON.stringify(updateAction));
+    return dbTasks.updateOne({_id: toId(id)}, updateAction)
+                .then(() => get(id))
+                .then((task) => triggerAutomation(task, updateAction));
 }
 
-export function updateMany(_ids: (string | Mongo.ObjectID)[], update: any) : Promise<Model.Task[]> {
-    return _cl.updateMany({_id:  {$in: toIds(_ids)}}, update)
-                .then(() => getMany(_ids))
+export function updateMany(ids: Array<string | Mongo.ObjectID>, updateAction: any): Promise<Model.Task[]> {
+    return dbTasks.updateMany({_id:  {$in: toIds(ids)}}, updateAction)
+                .then(() => getMany(ids))
                 .then((tasks) => {
-                    let triggers: Promise<Model.Task>[] = [];
+                    const triggers: Array<Promise<Model.Task>> = [];
                     for (const task of tasks) {
-                        triggers.push(triggerAutomation(task, update));
+                        triggers.push(triggerAutomation(task, updateAction));
                     }
-                    return Promise.all(triggers)
+                    return Promise.all(triggers);
                 });
 }
 
-export function remove(_id: string | Mongo.ObjectID) : Promise<Model.Task> {
-    return get(toId(_id))
+export function remove(id: string | Mongo.ObjectID): Promise<Model.Task> {
+    return get(toId(id))
             .then((task) => {
-                return _cl.deleteOne({_id: toId(_id)})
-                    .then(()=>task);
+                return dbTasks.deleteOne({_id: toId(id)})
+                    .then(() => task);
             });
 }
 
-export function removeDuration(_id: string | Mongo.ObjectID, index: number) : Promise<Model.Task> {
-    return _cl.updateOne({_id: toId(_id)}, {$unset : {["duration." + index] : 1 }})
-            .then(() => _cl.updateOne({_id: toId(_id)}, {$pull : {"duration" : null}}))
-            .then(() => get(_id)) as Promise<Model.Task>;
+export function removeDuration(id: string | Mongo.ObjectID, index: number): Promise<Model.Task> {
+    return dbTasks.updateOne({_id: toId(id)}, {$unset : {["duration." + index] : 1 }})
+            .then(() => dbTasks.updateOne({_id: toId(id)}, {$pull : {duration : null}}))
+            .then(() => get(id)) as Promise<Model.Task>;
 }
 
-function pauseRunningTasks(_ids: Mongo.ObjectID[], pauseState: Model.State, time: Date) : Promise<Model.Task[]> {
+function pauseRunningTasks(ids: Mongo.ObjectID[], pauseState: Model.State, time: Date): Promise<Model.Task[]> {
     return updateMany(
-        _ids,
+        ids,
         {$set: {
-            state:              pauseState,
-            'duration.0.end':   time || new Date(),
-            completed_time:     pauseState == Model.State.COMPLETED ? time || new Date() : null
-        }}
+            "completed_time":   pauseState === Model.State.COMPLETED ? time || new Date() : null,
+            "duration.0.end":   time || new Date(),
+            "state":            pauseState,
+        }},
     );
 }
-export function pauseTask(_id: string | Mongo.ObjectID, time: Date) : Promise<Model.Task> {
-    return get(_id).then((task) => {
-        switch(task.state) {
+export function pauseTask(id: string | Mongo.ObjectID, time: Date): Promise<Model.Task> {
+    return get(id).then((task) => {
+        switch (task.state) {
             case Model.State.PAUSED:
                 return task;
 
             case Model.State.RUNNING:
-                return pauseRunningTasks([toId(_id)], Model.State.PAUSED, time).then((tasks) => tasks[0]);
+                return pauseRunningTasks([toId(id)], Model.State.PAUSED, time).then((tasks) => tasks[0]);
         }
-        return update(_id, {$set: {
+        return update(id, {$set: {
+            completed_time: null,
             state: Model.State.PAUSED,
-            completed_time: null
         }});
     });
 }
 
-function startTask(_id: string | Mongo.ObjectID, time: Date) : Promise<Model.Task> {
-    return update(_id, {
-        $set: {
-            state: Model.State.RUNNING,
-            completed_time: null
+function startTask(id: string | Mongo.ObjectID, time: Date): Promise<Model.Task> {
+    return update(id, {
+        $push: {
+            duration:  {
+                $each: [{begin: time || new Date(), end: null}],
+                $position: 0,
+            },
         },
-        $push:{'duration':  { $each: [{begin: time || new Date(), end: null}], $position: 0}}
-    })
-}
-
-export function runTask(_id: string | Mongo.ObjectID, time: Date) : Promise<Model.Task[]> {
-    var idToRun = toId(_id);
-    return getRunning().then((tasks) => {
-        var idsToPause: Mongo.ObjectID[] = [];
-        var runningTask = null;
-        tasks.forEach((task) => {
-            if (idToRun.equals(toId(task._id)))
-                runningTask = task;
-            else
-                idsToPause.push(toId(task._id));
-        });
-        if (idsToPause.length == 0) {
-            if (runningTask)
-                return [runningTask];
-
-            return startTask(_id, time).then((task) => [task]);
-        }
-        return pauseRunningTasks(idsToPause, Model.State.PAUSED, time)
-            .then((tasks) => startTask(_id, time).then((task) => [task].concat(tasks)));
+        $set: {
+            completed_time: null,
+            state: Model.State.RUNNING,
+        },
     });
 }
 
-export function completeTask(_id: string | Mongo.ObjectID, time: Date) : Promise<Model.Task> {
-    return get(_id).then((task) => {
-        switch(task.state) {
+export function runTask(id: string | Mongo.ObjectID, time: Date): Promise<Model.Task[]> {
+    const idToRun = toId(id);
+    return getRunning().then((tasks) => {
+        const idsToPause: Mongo.ObjectID[] = [];
+        let runningTask = null;
+        tasks.forEach((task) => {
+            if (idToRun.equals(toId(task._id))) {
+                runningTask = task;
+            } else {
+                idsToPause.push(toId(task._id));
+            }
+        });
+        if (idsToPause.length === 0) {
+            if (runningTask) {
+                return [runningTask];
+            }
+
+            return startTask(id, time).then((task) => [task]);
+        }
+        return pauseRunningTasks(idsToPause, Model.State.PAUSED, time)
+            .then((tsks) => startTask(id, time).then((tsk) => [tsk].concat(tsks)));
+    });
+}
+
+export function completeTask(id: string | Mongo.ObjectID, time: Date): Promise<Model.Task> {
+    return get(id).then((task) => {
+        switch (task.state) {
             case Model.State.COMPLETED:
                 return task;
 
             case Model.State.RUNNING:
-                return pauseRunningTasks([toId(_id)], Model.State.COMPLETED, time).then((tasks) => tasks[0]);
+                return pauseRunningTasks([toId(id)], Model.State.COMPLETED, time).then((tasks) => tasks[0]);
         }
-        return update(_id, {
+        return update(id, {
             $set: {
+                completed_time: time,
                 state: Model.State.COMPLETED,
-                completed_time: time
-            }
+            },
         });
     });
 }
 
-export function changeState(_id: string | Mongo.ObjectID, newState: Model.State, time: Date) : Promise<Model.Task[]> {
-    switch(newState) {
+export function changeState(id: string | Mongo.ObjectID, newState: Model.State, time: Date): Promise<Model.Task[]> {
+    switch (newState) {
         case Model.State.PAUSED:
-            return pauseTask(_id, time)
-                .then((task)=>[task]);
+            return pauseTask(id, time)
+                .then((task) => [task]);
         case Model.State.RUNNING:
-            return runTask(_id, time);
+            return runTask(id, time);
         case Model.State.COMPLETED:
-            return completeTask(_id, time)
-                .then((task)=>[task]);
+            return completeTask(id, time)
+                .then((task) => [task]);
     }
     return new Promise<Model.Task[]>((resolve, reject) => {
         reject("Unknown state: " + newState);
     });
 }
 
-export function triggerAutomation(task: Model.Task, updateScript: any) : Promise<Model.Task> {
-    if (task.automation == null || task.automation.behavior == Model.Behavior.NONE) {
+export function triggerAutomation(task: Model.Task, updateScript: any): Promise<Model.Task> {
+    if (task.automation == null || task.automation.behavior === Model.Behavior.NONE) {
         return Promise.resolve(task);
     }
-    if (task.automation.behavior == Model.Behavior.REPEAT && updateScript.$set.state === Model.State.COMPLETED) {
+    if (task.automation.behavior === Model.Behavior.REPEAT && updateScript.$set.state === Model.State.COMPLETED) {
         return triggerRepeatAutomation(task);
-    } else if (task.automation.behavior == Model.Behavior.FOLLOWED && task.automation.relatedTaskId != null) {
+    } else if (task.automation.behavior === Model.Behavior.FOLLOWED && task.automation.relatedTaskId != null) {
         if (updateScript.$set.completed_time != null) {
             return triggerFollowedAutomation(task, updateScript.$set.completed_time as Date);
         } else if (updateScript.$set.scheduled != null) {
@@ -267,49 +280,53 @@ export function triggerAutomation(task: Model.Task, updateScript: any) : Promise
     return Promise.resolve(task);
 }
 
-export function triggerRepeatAutomation(task: Model.Task) : Promise<Model.Task> {
-    //console.log("Trigger repeat automation for '" + task.title + "'");
+export function triggerRepeatAutomation(task: Model.Task): Promise<Model.Task> {
+    // console.log("Trigger repeat automation for "" + task.title + """);
     let from = task.completed_time;
-    if (task.automation.timingKind == Model.TimingKind.IN && task.scheduled != null)
+    if (task.automation.timingKind === Model.TimingKind.IN && task.scheduled != null) {
         from = task.scheduled;
+    }
 
     return copy(task, calculateTiming(task.automation, from))
                 .then(() => update(task._id, {
-                        $set:{"automation.behavior": Model.Behavior.NONE}
+                        $set: {"automation.behavior": Model.Behavior.NONE},
                     }));
 }
 
-export function triggerFollowedAutomation(task: Model.Task, fromDate: Date) : Promise<Model.Task> {
+export function triggerFollowedAutomation(task: Model.Task, fromDate: Date): Promise<Model.Task> {
     return update(task.automation.relatedTaskId, {
         $set: {
-            scheduled: calculateTiming(task.automation, fromDate)
-        }
+            scheduled: calculateTiming(task.automation, fromDate),
+        },
     }).then(() => task);
 }
 
-export function calculateTiming(automation: Model.Automation, fromDate: Date) : Date {
+export function calculateTiming(automation: Model.Automation, fromDate: Date): Date {
     let timing: Moment.Moment = Moment(fromDate);
     if (automation.timingDuration != null && automation.timingDuration > 0 && automation.timingDurationUnit != null) {
-        let unit : Moment.unitOfTime.Base = 'week';
-        switch(automation.timingDurationUnit) {
-            case Model.TimingDurationUnit.MINUTE: unit = 'minute'; break;
-            case Model.TimingDurationUnit.HOUR: unit = 'hour'; break;
-            case Model.TimingDurationUnit.DAY: unit = 'day'; break;
-            case Model.TimingDurationUnit.WEEK: unit = 'week'; break;
-            case Model.TimingDurationUnit.MONTH: unit = 'month'; break;
+        let unit: Moment.unitOfTime.Base = "week";
+        switch (automation.timingDurationUnit) {
+            case Model.TimingDurationUnit.MINUTE: unit = "minute"; break;
+            case Model.TimingDurationUnit.HOUR: unit = "hour"; break;
+            case Model.TimingDurationUnit.DAY: unit = "day"; break;
+            case Model.TimingDurationUnit.WEEK: unit = "week"; break;
+            case Model.TimingDurationUnit.MONTH: unit = "month"; break;
         }
         timing = timing.add(automation.timingDuration, unit);
     }
-    if (automation.timingKind == Model.TimingKind.AFTER && automation.timingAdjustmentKind != null) {
-        if (automation.timingAdjustmentKind == Model.TimingAdjustmentKind.DAY_OF_THE_MONTH && automation.timingAdjustment != null && automation.timingAdjustment > 0) {
+    if (automation.timingKind === Model.TimingKind.AFTER && automation.timingAdjustmentKind != null) {
+        if (automation.timingAdjustmentKind === Model.TimingAdjustmentKind.DAY_OF_THE_MONTH &&
+            automation.timingAdjustment != null &&
+            automation.timingAdjustment > 0
+        ) {
             if (timing.date() > automation.timingAdjustment) {
-                timing = timing.add(1, 'month');
+                timing = timing.add(1, "month");
             }
             timing = timing.date(automation.timingAdjustment);
         } else {
-            let isoWeekday = 1 + automation.timingAdjustmentKind - Model.TimingAdjustmentKind.MONDAY;
+            const isoWeekday = 1 + automation.timingAdjustmentKind - Model.TimingAdjustmentKind.MONDAY;
             if (timing.isoWeekday() > isoWeekday) {
-                timing = timing.add(1, 'week');
+                timing = timing.add(1, "week");
             }
             timing = timing.isoWeekday(isoWeekday);
         }
