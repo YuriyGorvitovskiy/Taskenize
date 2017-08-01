@@ -4,16 +4,11 @@ pipeline {
     stage('Build') {
       steps {
         echo 'Server Build'
-        sh 'pwd'
-        sh 'cd ./WebServer'
-        sh 'pwd'
-        sh 'ls'
-        sh 'npm update'
-        sh './node_modules/.bin/tsc'
+        sh 'cd ./WebServer && npm update'
+        sh 'cd ./WebServer && ./node_modules/.bin/tsc'
         echo 'Client Build'
-        sh 'cd ./WebClient'
-        sh 'npm update'
-        sh './node_modules/.bin/tsc'
+        sh 'cd ./WebClient && npm update'
+        sh 'cd ./WebClient && ./node_modules/.bin/tsc'
       }
     }
     stage('Create Docker Image') {
