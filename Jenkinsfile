@@ -9,7 +9,7 @@ pipeline {
     stage('Build') {
       steps {
         echo 'echo \'TODO: Define Build Stage\''
-        withNPM(npmrcConfig: 'MyNpmrcConfig') {
+        withNPM(npmrcConfig: 'e1008126-3506-49e0-9ad1-8ace2b8e338f') {
           sh '''cd ./WebServer
 npm --version'''
         }
