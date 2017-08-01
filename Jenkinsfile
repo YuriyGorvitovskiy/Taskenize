@@ -3,7 +3,14 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        echo 'echo \'TODO: Define Build Stage\''
+        echo 'Server Build
+        sh 'cd ./WebServer'
+        sh 'npm update'
+        sh './node_modules/.bin/tsc'
+        echo 'Client Build
+        sh 'cd ./WebClient'
+        sh 'npm update'
+        sh './node_modules/.bin/tsc'
       }
     }
     stage('Create Docker Image') {
