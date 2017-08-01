@@ -1,0 +1,18 @@
+#
+# Docker Compose file to start separate Docker containers for Jenkins:
+#   It includes NodeJS installation
+#
+#
+version: '3'
+
+services:
+
+    # ExportDB DB backend
+    jenkins:
+        image: taskenize/jenkins
+
+        ports:
+            - 7070:8080
+
+        volumes:
+            - ~/Development/Taskenize/docker/.jenkins_home:/var/jenkins_home
