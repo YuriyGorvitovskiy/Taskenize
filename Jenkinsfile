@@ -4,7 +4,10 @@ pipeline {
     stage('Build') {
       steps {
         echo 'Server Build'
+        sh 'pwd'
         sh 'cd ./WebServer'
+        sh 'pwd'
+        sh 'ls'
         sh 'npm update'
         sh './node_modules/.bin/tsc'
         echo 'Client Build'
