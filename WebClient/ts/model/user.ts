@@ -27,7 +27,7 @@ function parseUserJson(json: any) : User {
         family_name:    json.family_name,
         given_name:     json.given_name,
         image:          json.image
-        gender:         json.gender,
+        gender:         json.gender
         provider:       json.provider,
         language:       json.language,
         objectType:     json.objectType,
