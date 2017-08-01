@@ -9,6 +9,7 @@ pipeline {
                 echo 'Server Build'
                 sh 'cd ./WebServer && npm update'
                 sh 'cd ./WebServer && ./node_modules/.bin/tsc'
+                sh 'cd ./WebServer && ./node_modules/.bin/tslint ./ts/**/* ./ts/*'
                 echo 'Client Build'
                 sh 'cd ./WebClient && npm update'
                 sh 'cd ./WebClient && ./node_modules/.bin/tsc'
