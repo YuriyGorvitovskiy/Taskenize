@@ -1,7 +1,7 @@
 pipeline {
     agent any
     options {
-        skipStagesAfterUnstable() 
+        skipStagesAfterUnstable()
     }
     stages {
         stage('Build') {
@@ -9,7 +9,6 @@ pipeline {
                 echo 'Server Build'
                 sh 'cd ./WebServer && npm update'
                 sh 'cd ./WebServer && ./node_modules/.bin/tsc'
-                sh 'cd ./WebServer && ./node_modules/.bin/tslint'
                 echo 'Client Build'
                 sh 'cd ./WebClient && npm update'
                 sh 'cd ./WebClient && ./node_modules/.bin/tsc'
