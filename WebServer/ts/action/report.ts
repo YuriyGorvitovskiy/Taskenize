@@ -1,60 +1,58 @@
-import * as Moment from 'moment';
-import * as Mongo from 'mongodb';
-import * as Model from '../model/report'
-import * as ModelTask from '../model/task'
-import * as Util from '../router/util'
+import * as Moment from "moment";
+import * as Mongo from "mongodb";
+import * as Model from "../model/report";
+import * as ModelTask from "../model/task";
+import * as Util from "../router/util";
 
-var  _db  : Mongo.Db          = null;
-var  _cl  : Mongo.Collection  = null;
+let  dbTasks: Mongo.Collection  = null;
 
-export function connect(db : Mongo.Db) {
-    _db = db;
-    _cl = db.collection('tasks');
+export function connect(db: Mongo.Db) {
+    dbTasks = db.collection("tasks");
 }
 
-function getTasks(user_id: string, request: Model.Request) : Promise<ModelTask.Task[]> {
-    return _cl.find({
-        user_id: user_id,
+function getTasks(userId: string, request: Model.Request): Promise<ModelTask.Task[]> {
+    return dbTasks.find({
         duration: {
             $elemMatch: {
                 $or: [
                     { end: {$gt: request.begin} },
-                    { end: null }
+                    { end: null },
                 ],
-                begin: {$lt: request.end}
-            }
-        }
+                begin: {$lt: request.end},
+            },
+        },
+        user_id: userId,
     }).toArray() as Promise<ModelTask.Task[]>;
 }
 
-export function get(user_id: string, request: Model.Request) : Promise<Model.Report[]> {
-    var now = new Date().getTime();
-    return getTasks(user_id, request)
+export function get(userId: string, request: Model.Request): Promise<Model.Report[]> {
+    const now = new Date().getTime();
+    return getTasks(userId, request)
         .then((tasks) => {
-            var grouped : {[key:string] : Model.Report}={};
-            var result : Model.Report[] = [];
-            for(var i in tasks) {
-                var task = tasks[i];
-                var duration = Moment.duration();
-                for (var i in task.duration) {
-                    var begin = Math.max(task.duration[i].begin.getTime(), request.begin.getTime());
-                    var end = Math.min(task.duration[i].end ? task.duration[i].end.getTime() : now, request.end.getTime());
-                    if (begin < end)
-                        duration.add(end-begin, 'ms');
+            const grouped: {[key: string]: Model.Report} = {};
+            const result: Model.Report[] = [];
+            for (const task of tasks) {
+                const duration = Moment.duration();
+                for (const dur of task.duration) {
+                    const begin = Math.max(dur.begin.getTime(), request.begin.getTime());
+                    const end = Math.min(dur.end ? dur.end.getTime() : now, request.end.getTime());
+                    if (begin < end) {
+                        duration.add(end - begin, "ms");
+                    }
                 }
                 if (duration.asMilliseconds() > 0) {
-                    var subReport : Model.Report = {
-                        title: task.title,
+                    const subReport: Model.Report = {
                         duration: duration.asMilliseconds(),
-                        reports: []
+                        reports: [],
+                        title: task.title,
                     };
-                    var key = task[request.group_by] ? task[request.group_by] : "" ;
+                    const key = task[request.group_by] ? task[request.group_by] : "" ;
                     if (grouped[key] == null) {
                         grouped[key] = {
-                            title: key,
                             duration: 0,
-                            reports: []
-                        }
+                            reports: [],
+                            title: key,
+                        };
                         result.push(grouped[key]);
                     }
                     grouped[key].duration += subReport.duration;
