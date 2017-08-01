@@ -1,6 +1,6 @@
 import * as Mongo from "mongodb";
 import * as Model from "../model/user";
-import * as Util from "../router/util";
+import * as Util from "../util/util";
 
 let  dbUsers: Mongo.Collection  = null;
 

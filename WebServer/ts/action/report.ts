@@ -1,8 +1,9 @@
 import * as Moment from "moment";
 import * as Mongo from "mongodb";
+
 import * as Model from "../model/report";
 import * as ModelTask from "../model/task";
-import * as Util from "../router/util";
+import * as Util from "../util/util";
 
 let  dbTasks: Mongo.Collection  = null;
 

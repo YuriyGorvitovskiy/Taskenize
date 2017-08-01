@@ -12,10 +12,11 @@ import * as ActionReport from './action/report';
 import * as RouterTasks from './router/tasks';
 import * as RouterUser from './router/user';
 import * as RouterReport from './router/report';
-import * as Util from './router/util';
+
+import * as Util from './util/util';
 
 var config = require('../../OAuth/config.secret.js').config;
-//console.log('Config: ' + JSON.stringify(config))
+// console.log('Config: ' + JSON.stringify(config))
 
 var db : Mongo.Db = null;
 
