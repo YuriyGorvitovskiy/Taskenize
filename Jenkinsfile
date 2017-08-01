@@ -1,9 +1,18 @@
 pipeline {
   agent any
   stages {
+    stage('Checkout') {
+      steps {
+        git(url: 'https://github.com/YuriyGorvitovskiy/Taskenize', changelog: true, poll: true, branch: 'master')
+      }
+    }
     stage('Build') {
       steps {
         echo 'echo \'TODO: Define Build Stage\''
+        sh '''cd ./WebServer
+pwd
+ls -al
+npm update'''
       }
     }
     stage('Create Docker Image') {
