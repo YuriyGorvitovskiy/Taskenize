@@ -50,7 +50,6 @@ export class Component extends React.Component<Props, {}> {
         return (
             <a  href="#"
                 id={this.schedule_btn_id}
-                type="button"
                 onClick={this.onClick.bind(this)}
                 data-container="body"
                 data-toggle="popover"
