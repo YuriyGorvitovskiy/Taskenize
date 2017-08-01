@@ -29,7 +29,6 @@
     "@types/bootstrap": "^3.3.33",
     "@types/bootstrap-datepicker": "0.0.6",
     "@types/jquery": "^2.0.45",
-    "@types/moment": "^2.13.0",
     "@types/react": "^15.0.25",
     "@types/react-dom": "^15.5.0",
     "@types/sanitize-html": "^1.13.31"
