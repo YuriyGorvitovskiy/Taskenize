@@ -2,14 +2,19 @@ pipeline {
   agent any
   stages {
     stage('Build') {
-      steps {
-        echo 'Server Build'
-        sh 'cd ./WebServer && npm update'
-        sh 'cd ./WebServer && ./node_modules/.bin/tsc'
-        echo 'Client Build'
-        sh 'cd ./WebClient && npm update'
-        sh 'cd ./WebClient && ./node_modules/.bin/tsc'
-      }
+        try {
+            steps {
+                echo 'Server Build'
+                sh 'cd ./WebServer && npm update'
+                sh 'cd ./WebServer && ./node_modules/.bin/tsc'
+                sh 'cd ./WebServer && ./node_modules/.bin/tslint'
+                echo 'Client Build'
+                sh 'cd ./WebClient && npm update'
+                sh 'cd ./WebClient && ./node_modules/.bin/tsc'
+            }
+        } finally {
+            echo '!!!BUILD FAILED!!!'
+        }
     }
     stage('Create Docker Image') {
       steps {
