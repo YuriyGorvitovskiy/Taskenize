@@ -10,7 +10,7 @@ export function connect(db: Mongo.Db) {
     dbTasks = db.collection("tasks");
 }
 
-function getTasks(userId: string, request: Model.Request): Promise<ModelTask.Task[]> {
+function getTasks(userId: string, request: Model.IRequest): Promise<ModelTask.ITask[]> {
     return dbTasks.find({
         duration: {
             $elemMatch: {
@@ -22,15 +22,15 @@ function getTasks(userId: string, request: Model.Request): Promise<ModelTask.Tas
             },
         },
         user_id: userId,
-    }).toArray() as Promise<ModelTask.Task[]>;
+    }).toArray() as Promise<ModelTask.ITask[]>;
 }
 
-export function get(userId: string, request: Model.Request): Promise<Model.Report[]> {
+export function get(userId: string, request: Model.IRequest): Promise<Model.IReport[]> {
     const now = new Date().getTime();
     return getTasks(userId, request)
         .then((tasks) => {
-            const grouped: {[key: string]: Model.Report} = {};
-            const result: Model.Report[] = [];
+            const grouped: {[key: string]: Model.IReport} = {};
+            const result: Model.IReport[] = [];
             for (const task of tasks) {
                 const duration = Moment.duration();
                 for (const dur of task.duration) {
@@ -41,7 +41,7 @@ export function get(userId: string, request: Model.Request): Promise<Model.Repor
                     }
                 }
                 if (duration.asMilliseconds() > 0) {
-                    const subReport: Model.Report = {
+                    const subReport: Model.IReport = {
                         duration: duration.asMilliseconds(),
                         reports: [],
                         title: task.title,

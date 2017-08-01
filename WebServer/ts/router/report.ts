@@ -23,7 +23,7 @@ router.use(MethodOverride(function(req, res){
 
 router.get('/', function(req, res) {
     //console.log("Request: " + JSON.stringify(req.query));
-    var request: Model.Request = {
+    var request: Model.IRequest = {
         begin: new Date(req.query.begin),
         end: new Date(req.query.end),
         group_by: req.query.group_by

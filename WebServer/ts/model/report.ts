@@ -1,13 +1,13 @@
-import * as Task from './task';
+import * as Task from "./task";
 
-export interface Request {
+export interface IRequest {
     begin: Date;
     end: Date;
-    group_by:  string;
+    group_by: string;
 }
 
-export interface Report {
-    title:      string;
-    duration:   number;
-    reports:    Report[];
-};
+export interface IReport {
+    title: string;
+    duration: number;
+    reports: IReport[];
+}

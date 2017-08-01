@@ -1,28 +1,28 @@
-import * as Moment from 'moment';
+import * as Moment from "moment";
 
 export enum State {
     PAUSED,
     RUNNING,
-    COMPLETED
-};
+    COMPLETED,
+}
 
 export enum Behavior {
     NONE,
     REPEAT,
-    FOLLOWED
-};
+    FOLLOWED,
+}
 
 export enum TimingKind {
     IN,
-    AFTER
-};
+    AFTER,
+}
 
 export enum TimingDurationUnit {
     MINUTE,
     HOUR,
     DAY,
     WEEK,
-    MONTH
+    MONTH,
 }
 
 export enum TimingAdjustmentKind {
@@ -33,44 +33,44 @@ export enum TimingAdjustmentKind {
     FRIDAY,
     SATURDAY,
     SUNDAY,
-    DAY_OF_THE_MONTH
-};
-
-export interface Period {
-    begin:      Date;
-    end?:       Date;
-};
-
-export interface Automation {
-    behavior:               Behavior;
-    relatedTaskId?:         string;
-    timingKind?:            TimingKind;
-    timingDuration?:        number;
-    timingDurationUnit?:    TimingDurationUnit;
-    timingAdjustment?:      number;
-    timingAdjustmentKind?:  TimingAdjustmentKind;
+    DAY_OF_THE_MONTH,
 }
 
-export interface Task {
-    _id?:           string;
-    user_id:        string;
-    state:          State;
-    title:          string;
-    subject:        string;
-    context:        string;
-    category:       string;
-    project:        string;
-    story:          string;
-    scheduled:      Date;
-    duration:       Period[];
-    collapsed:      boolean;
-    created_time:   Date;
-    completed_time: Date;
-    automation?:    Automation;
-};
+export interface IPeriod {
+    begin: Date;
+    end?: Date;
+}
 
-export interface Query {
+export interface IAutomation {
+    behavior: Behavior;
+    relatedTaskId?: string;
+    timingKind?: TimingKind;
+    timingDuration?: number;
+    timingDurationUnit?: TimingDurationUnit;
+    timingAdjustment?: number;
+    timingAdjustmentKind?: TimingAdjustmentKind;
+}
+
+export interface ITask {
+    _id?: string;
+    user_id: string;
+    state: State;
+    title: string;
+    subject: string;
+    context: string;
+    category: string;
+    project: string;
+    story: string;
+    scheduled: Date;
+    duration: IPeriod[];
+    collapsed: boolean;
+    created_time: Date;
+    completed_time: Date;
+    automation?: IAutomation;
+}
+
+export interface IQuery {
     user_id: string;
     state: State | State[];
-    completed_period?: Period;
+    completed_period?: IPeriod;
 }

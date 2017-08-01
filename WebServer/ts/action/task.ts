@@ -25,15 +25,15 @@ function toIds(ids: Array<string | Mongo.ObjectID>): Mongo.ObjectID[] {
     return ids as Mongo.ObjectID[];
 }
 
-export function get(id: string | Mongo.ObjectID): Promise<Model.Task> {
-    return dbTasks.find({_id: toId(id)}).next() as Promise<Model.Task>;
+export function get(id: string | Mongo.ObjectID): Promise<Model.ITask> {
+    return dbTasks.find({_id: toId(id)}).next() as Promise<Model.ITask>;
 }
 
-export function getMany(ids: Array<string | Mongo.ObjectID>): Promise<Model.Task[]> {
-    return dbTasks.find({_id: {$in: toIds(ids)}}).toArray() as Promise<Model.Task[]>;
+export function getMany(ids: Array<string | Mongo.ObjectID>): Promise<Model.ITask[]> {
+    return dbTasks.find({_id: {$in: toIds(ids)}}).toArray() as Promise<Model.ITask[]>;
 }
 
-export function getAll(query: Model.Query): Promise<Model.Task[]> {
+export function getAll(query: Model.IQuery): Promise<Model.ITask[]> {
     const filter: any = {
         userId: query.user_id,
     };
@@ -52,11 +52,11 @@ export function getAll(query: Model.Query): Promise<Model.Task[]> {
     return dbTasks.find(filter).sort({
         "duration.0.end": -1,
         "scheduled": 1,
-    }).toArray() as Promise<Model.Task[]>;
+    }).toArray() as Promise<Model.ITask[]>;
 }
 
-export function getRunning(): Promise<Model.Task[]> {
-    return dbTasks.find({state: Model.State.RUNNING}).toArray() as Promise<Model.Task[]>;
+export function getRunning(): Promise<Model.ITask[]> {
+    return dbTasks.find({state: Model.State.RUNNING}).toArray() as Promise<Model.ITask[]>;
 }
 
 export function insert( userId: string,
@@ -68,8 +68,8 @@ export function insert( userId: string,
                         story: string,
                         scheduled: Date,
                         collapsed: boolean,
-                        createdTime: Date): Promise<Model.Task> {
-    const task: Model.Task = {
+                        createdTime: Date): Promise<Model.ITask> {
+    const task: Model.ITask = {
         automation:     {behavior: Model.Behavior.NONE},
         category:       category || "",
         collapsed:      collapsed == null ? true : collapsed,
@@ -86,11 +86,11 @@ export function insert( userId: string,
         user_id:        userId,
     };
     return dbTasks.insertOne(task)
-        .then(() => task) as Promise<Model.Task>;
+        .then(() => task) as Promise<Model.ITask>;
 }
 
-export function copy( task: Model.Task, scheduled: Date): Promise<Model.Task> {
-    const copyAutomation: Model.Automation = {behavior: Model.Behavior.NONE};
+export function copy( task: Model.ITask, scheduled: Date): Promise<Model.ITask> {
+    const copyAutomation: Model.IAutomation = {behavior: Model.Behavior.NONE};
     if (task.automation != null && task.automation.behavior === Model.Behavior.REPEAT) {
         copyAutomation.behavior = task.automation.behavior;
         if (task.automation.relatedTaskId != null) {
@@ -112,7 +112,7 @@ export function copy( task: Model.Task, scheduled: Date): Promise<Model.Task> {
             copyAutomation.timingAdjustmentKind = task.automation.timingAdjustmentKind;
         }
     }
-    const copyTask: Model.Task = {
+    const copyTask: Model.ITask = {
         automation:     copyAutomation,
         category:       task.category || "",
         collapsed:      true,
@@ -129,21 +129,21 @@ export function copy( task: Model.Task, scheduled: Date): Promise<Model.Task> {
         user_id:        task.user_id,
     };
     return dbTasks.insertOne(copyTask)
-        .then(() => task) as Promise<Model.Task>;
+        .then(() => task) as Promise<Model.ITask>;
 }
 
-export function update(id: string | Mongo.ObjectID, updateAction: any): Promise<Model.Task> {
+export function update(id: string | Mongo.ObjectID, updateAction: any): Promise<Model.ITask> {
     // console.log("Update: " + JSON.stringify(updateAction));
     return dbTasks.updateOne({_id: toId(id)}, updateAction)
                 .then(() => get(id))
                 .then((task) => triggerAutomation(task, updateAction));
 }
 
-export function updateMany(ids: Array<string | Mongo.ObjectID>, updateAction: any): Promise<Model.Task[]> {
+export function updateMany(ids: Array<string | Mongo.ObjectID>, updateAction: any): Promise<Model.ITask[]> {
     return dbTasks.updateMany({_id:  {$in: toIds(ids)}}, updateAction)
                 .then(() => getMany(ids))
                 .then((tasks) => {
-                    const triggers: Array<Promise<Model.Task>> = [];
+                    const triggers: Array<Promise<Model.ITask>> = [];
                     for (const task of tasks) {
                         triggers.push(triggerAutomation(task, updateAction));
                     }
@@ -151,7 +151,7 @@ export function updateMany(ids: Array<string | Mongo.ObjectID>, updateAction: an
                 });
 }
 
-export function remove(id: string | Mongo.ObjectID): Promise<Model.Task> {
+export function remove(id: string | Mongo.ObjectID): Promise<Model.ITask> {
     return get(toId(id))
             .then((task) => {
                 return dbTasks.deleteOne({_id: toId(id)})
@@ -159,13 +159,13 @@ export function remove(id: string | Mongo.ObjectID): Promise<Model.Task> {
             });
 }
 
-export function removeDuration(id: string | Mongo.ObjectID, index: number): Promise<Model.Task> {
+export function removeDuration(id: string | Mongo.ObjectID, index: number): Promise<Model.ITask> {
     return dbTasks.updateOne({_id: toId(id)}, {$unset : {["duration." + index] : 1 }})
             .then(() => dbTasks.updateOne({_id: toId(id)}, {$pull : {duration : null}}))
-            .then(() => get(id)) as Promise<Model.Task>;
+            .then(() => get(id)) as Promise<Model.ITask>;
 }
 
-function pauseRunningTasks(ids: Mongo.ObjectID[], pauseState: Model.State, time: Date): Promise<Model.Task[]> {
+function pauseRunningTasks(ids: Mongo.ObjectID[], pauseState: Model.State, time: Date): Promise<Model.ITask[]> {
     return updateMany(
         ids,
         {$set: {
@@ -175,7 +175,7 @@ function pauseRunningTasks(ids: Mongo.ObjectID[], pauseState: Model.State, time:
         }},
     );
 }
-export function pauseTask(id: string | Mongo.ObjectID, time: Date): Promise<Model.Task> {
+export function pauseTask(id: string | Mongo.ObjectID, time: Date): Promise<Model.ITask> {
     return get(id).then((task) => {
         switch (task.state) {
             case Model.State.PAUSED:
@@ -191,7 +191,7 @@ export function pauseTask(id: string | Mongo.ObjectID, time: Date): Promise<Mode
     });
 }
 
-function startTask(id: string | Mongo.ObjectID, time: Date): Promise<Model.Task> {
+function startTask(id: string | Mongo.ObjectID, time: Date): Promise<Model.ITask> {
     return update(id, {
         $push: {
             duration:  {
@@ -206,7 +206,7 @@ function startTask(id: string | Mongo.ObjectID, time: Date): Promise<Model.Task>
     });
 }
 
-export function runTask(id: string | Mongo.ObjectID, time: Date): Promise<Model.Task[]> {
+export function runTask(id: string | Mongo.ObjectID, time: Date): Promise<Model.ITask[]> {
     const idToRun = toId(id);
     return getRunning().then((tasks) => {
         const idsToPause: Mongo.ObjectID[] = [];
@@ -230,7 +230,7 @@ export function runTask(id: string | Mongo.ObjectID, time: Date): Promise<Model.
     });
 }
 
-export function completeTask(id: string | Mongo.ObjectID, time: Date): Promise<Model.Task> {
+export function completeTask(id: string | Mongo.ObjectID, time: Date): Promise<Model.ITask> {
     return get(id).then((task) => {
         switch (task.state) {
             case Model.State.COMPLETED:
@@ -248,7 +248,7 @@ export function completeTask(id: string | Mongo.ObjectID, time: Date): Promise<M
     });
 }
 
-export function changeState(id: string | Mongo.ObjectID, newState: Model.State, time: Date): Promise<Model.Task[]> {
+export function changeState(id: string | Mongo.ObjectID, newState: Model.State, time: Date): Promise<Model.ITask[]> {
     switch (newState) {
         case Model.State.PAUSED:
             return pauseTask(id, time)
@@ -259,12 +259,12 @@ export function changeState(id: string | Mongo.ObjectID, newState: Model.State, 
             return completeTask(id, time)
                 .then((task) => [task]);
     }
-    return new Promise<Model.Task[]>((resolve, reject) => {
+    return new Promise<Model.ITask[]>((resolve, reject) => {
         reject("Unknown state: " + newState);
     });
 }
 
-export function triggerAutomation(task: Model.Task, updateScript: any): Promise<Model.Task> {
+export function triggerAutomation(task: Model.ITask, updateScript: any): Promise<Model.ITask> {
     if (task.automation == null || task.automation.behavior === Model.Behavior.NONE) {
         return Promise.resolve(task);
     }
@@ -280,7 +280,7 @@ export function triggerAutomation(task: Model.Task, updateScript: any): Promise<
     return Promise.resolve(task);
 }
 
-export function triggerRepeatAutomation(task: Model.Task): Promise<Model.Task> {
+export function triggerRepeatAutomation(task: Model.ITask): Promise<Model.ITask> {
     // console.log("Trigger repeat automation for "" + task.title + """);
     let from = task.completed_time;
     if (task.automation.timingKind === Model.TimingKind.IN && task.scheduled != null) {
@@ -293,7 +293,7 @@ export function triggerRepeatAutomation(task: Model.Task): Promise<Model.Task> {
                     }));
 }
 
-export function triggerFollowedAutomation(task: Model.Task, fromDate: Date): Promise<Model.Task> {
+export function triggerFollowedAutomation(task: Model.ITask, fromDate: Date): Promise<Model.ITask> {
     return update(task.automation.relatedTaskId, {
         $set: {
             scheduled: calculateTiming(task.automation, fromDate),
@@ -301,7 +301,7 @@ export function triggerFollowedAutomation(task: Model.Task, fromDate: Date): Pro
     }).then(() => task);
 }
 
-export function calculateTiming(automation: Model.Automation, fromDate: Date): Date {
+export function calculateTiming(automation: Model.IAutomation, fromDate: Date): Date {
     let timing: Moment.Moment = Moment(fromDate);
     if (automation.timingDuration != null && automation.timingDuration > 0 && automation.timingDurationUnit != null) {
         let unit: Moment.unitOfTime.Base = "week";

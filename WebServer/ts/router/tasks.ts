@@ -22,7 +22,7 @@ router.use(MethodOverride(function(req, res){
 }));
 
 router.get('/', function(req, res) {
-    var query : Model.Query = {
+    var query : Model.IQuery = {
         user_id: req.session['user']._id,
         state: req.query.state,
     }
