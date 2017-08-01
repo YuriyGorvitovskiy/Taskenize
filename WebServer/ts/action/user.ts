@@ -1,37 +1,35 @@
-import * as Mongo from 'mongodb';
-import * as Model from '../model/user'
-import * as Util from '../router/util'
+import * as Mongo from "mongodb";
+import * as Model from "../model/user";
+import * as Util from "../router/util";
 
-var  _db  : Mongo.Db          = null;
-var  _cl  : Mongo.Collection  = null;
+let  dbUsers: Mongo.Collection  = null;
 
-export function connect(db : Mongo.Db) {
-    _db = db;
-    _cl = db.collection('users');
+export function connect(db: Mongo.Db) {
+    dbUsers = db.collection("users");
 }
 
-export function get(_id: string) : Promise<Model.User> {
-    return _cl.find({_id: _id}).next() as Promise<Model.User>;
+export function get(id: string): Promise<Model.User> {
+    return dbUsers.find({_id: id}).next() as Promise<Model.User>;
 }
 
-export function getAll() : Promise<Model.User[]> {
-    return _cl.find({}).sort({
-        'familyName': 1,
-        'givenName': 1,
-        '_id': 1
+export function getAll(): Promise<Model.User[]> {
+    return dbUsers.find({}).sort({
+        _id: 1,
+        familyName: 1,
+        givenName: 1,
     }).toArray() as Promise<Model.User[]>;
 }
 
-export function upsert(googleUser: any) : Promise<Model.User> {
-    var user = Model.fromGoogle(googleUser);
-    return _cl.updateOne({_id: user._id}, user, {upsert: true})
+export function upsert(googleUser: any): Promise<Model.User> {
+    const user = Model.fromGoogle(googleUser);
+    return dbUsers.updateOne({_id: user._id}, user, {upsert: true})
                 .then(() => get(user._id)) as Promise<Model.User>;
 }
 
-export function remove(_id: string) : Promise<Model.User> {
-    return get(_id)
+export function remove(id: string): Promise<Model.User> {
+    return get(id)
             .then((user) => {
-                return _cl.deleteOne({_id: _id})
+                return dbUsers.deleteOne({_id: id})
                     .then(() => user);
             });
 }
