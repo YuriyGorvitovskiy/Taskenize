@@ -9,10 +9,11 @@ pipeline {
     stage('Build') {
       steps {
         echo 'echo \'TODO: Define Build Stage\''
-        sh '''cd ./WebServer
-pwd
-ls -al
-npm update'''
+        withNPM(npmrcConfig: 'TaskenizeNpmrcConfig') {
+          sh '''cd ./WebServer
+npm --version'''
+        }
+        
       }
     }
     stage('Create Docker Image') {
