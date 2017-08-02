@@ -17,7 +17,6 @@ pipeline {
         }
         stage('Build Client') {
             steps {
-                echo 'Client Build'
                 sh 'cd ./WebClient && npm update'
                 sh 'cd ./WebClient && ./node_modules/.bin/tsc'
                 sh 'cd ./WebClient && ./node_modules/.bin/snyk test'
