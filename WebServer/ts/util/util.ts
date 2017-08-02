@@ -32,7 +32,7 @@ function _logJson<T>(message: string, json: T): Promise<T> {
     });
 }
 
-export function logJson(message: string) {
+export function logJson(message: string): (obj) => Promise<any> {
     return _logJson.bind(null, message);
 }
 

@@ -6,7 +6,8 @@
   "scripts": {
     "clean": "./dev/clean.sh",
     "build": "./dev/build.sh",
-    "start": "./dev/start.sh"
+    "start": "./dev/start.sh",
+    "test": "./dev/test.sh"
   },
   "author": "Yuriy Gorvitovskiy",
   "license": "ISC",
@@ -28,10 +29,11 @@
     "istanbul": "^0.4.5",
     "mocha": "^3.5.0",
     "nsp": "^2.7.0",
+    "sinon": "^2.4.1",
+    "snyk": "^1.38.0",
     "tslint": "^5.5.0",
     "ts-node": "^3.3.0",
     "typescript": "^2.3.3",
-    "snyk": "^1.38.0",
     "@types/body-parser": "^1.16.3",
     "@types/chai": "^4.0.2",
     "@types/cookie-parser": "^1.3.30",
@@ -44,6 +46,7 @@
     "@types/monk": "^1.0.5",
     "@types/node": "^7.0.22",
     "@types/passport": "^0.3.3",
-    "@types/passport-google-oauth": "^1.0.34"
+    "@types/passport-google-oauth": "^1.0.34",
+    "@types/sinon": "^2.3.3"
   }
 }
