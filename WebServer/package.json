@@ -24,6 +24,7 @@
     "passport-google-oauth": "^1.0.0"
   },
   "devDependencies": {
+    "nsp": "^2.7.0",
     "tslint": "^5.5.0",
     "typescript": "^2.3.3",
     "snyk": "^1.38.0",
