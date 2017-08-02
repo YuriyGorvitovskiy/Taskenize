@@ -11,6 +11,8 @@ pipeline {
                 sh 'cd ./WebServer && ./node_modules/.bin/tslint ./ts/**/* ./ts/*'
                 sh 'cd ./WebServer && ./node_modules/.bin/snyk test'
                 sh 'cd ./WebServer && ./node_modules/.bin/nsp check'
+                sh 'cd ./WebServer && ./node_modules/.bin/mocha -r ts-node/register ts/test/**/*.ts'
+                sh 'cd ./WebServer && ./node_modules/.bin/istanbul cover node_modules/mocha/bin/_mocha bin/test/**/*.js'
             }
         }
         stage('Build Client') {
