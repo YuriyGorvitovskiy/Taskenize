@@ -15,6 +15,7 @@ import * as RouterUser from "./router/user";
 import * as Util from "./util/util";
 
 export let config: any = {};
+
 export class Application {
     public accessTokens: {[userId: string]: string} = {};
 
@@ -89,27 +90,15 @@ export class Application {
     }
 
     public initPassport(app: Express.Application): void {
+        app.use(Passport.initialize());
+
         this.initPassportSession(app);
         this.initPassportLogin(app);
         this.initPassportCallback(app);
         this.initPassportLogout(app);
     }
 
-    public initApplicationRest(app: Express.Application): void {
-        app.use("/rest/*", (req, res, next) => {
-            if (req.session.user) {
-                return next();
-            }
-            res.sendStatus(401);
-        });
-
-        app.use("/rest/v1/tasks", RouterTasks.router);
-        app.use("/rest/v1/user", RouterUser.router);
-        app.use("/rest/v1/report", RouterReport.router);
-    }
-
-    public initExpress(): void {
-        const app = Express();
+    public initSessionManagement(app: Express.Application): void {
         app.use(Cookie());
         const session = Session({
             resave: true,
@@ -118,14 +107,42 @@ export class Application {
         });
 
         app.use(session);
-        app.use(Passport.initialize());
-        this.initPassport(app);
-        this.initApplicationRest(app);
+    }
 
+    public initSessionFiltering(app: Express.Application): void {
+        app.use("/rest/*", (req, res, next) => {
+            if (req.session.user) {
+                return next();
+            }
+            res.sendStatus(401);
+        });
+    }
+
+    public initRestEndpoints(app: Express.Application): void {
+        app.use("/rest/v1/tasks", RouterTasks.router);
+        app.use("/rest/v1/user", RouterUser.router);
+        app.use("/rest/v1/report", RouterReport.router);
+    }
+
+    public initStaticContent(app: Express.Application): void {
         app.use(Express.static("../WebClient"));
+    }
 
+    public startServer(app: Express.Application): void {
         app.listen(config.server_port);
         console.log("Listening for port: " + config.server_port);
+    }
+
+    public initExpress(): void {
+        const app = Express();
+
+        this.initPassport(app);
+        this.initSessionManagement(app);
+        this.initSessionFiltering(app);
+        this.initRestEndpoints(app);
+        this.initStaticContent(app);
+
+        this.startServer(app);
     }
 }
 

@@ -1,8 +1,11 @@
 import * as Chai from "chai";
 import * as Mocha from "mocha";
+import * as Proxyquire from "proxyquire";
 import * as Sinon from "sinon";
 
+import * as Cookie from "cookie-parser";
 import * as Express from "express";
+import * as Session from "express-session";
 import * as Https from "https";
 import * as Mongo from "mongodb";
 import * as Passport from "passport";
@@ -324,21 +327,74 @@ describe("App", () => {
         it("check main flow", () => {
             const application = new App.Application();
             const app = Express();
+            const initResult: any = {
+                pay: "load",
+            };
+
+            const stubPassportInitialize = Sinon.stub(Passport, "initialize").returns(initResult);
+            const stubAppUse = Sinon.stub(app, "use");
             const stubInitPassportSession = Sinon.stub(application, "initPassportSession");
             const stubInitPassportLogin = Sinon.stub(application, "initPassportLogin");
             const stubInitPassportCallback = Sinon.stub(application, "initPassportCallback");
             const stubInitPassportLogout = Sinon.stub(application, "initPassportLogout");
             application.initPassport(app);
             Sinon.assert.callOrder(
+                stubPassportInitialize,
+                stubAppUse,
                 stubInitPassportSession,
                 stubInitPassportLogin,
                 stubInitPassportCallback,
                 stubInitPassportLogout,
             );
-            stubInitPassportSession.calledWithExactly(stubInitPassportSession, app);
-            stubInitPassportSession.calledWithExactly(stubInitPassportLogin, app);
-            stubInitPassportSession.calledWithExactly(stubInitPassportCallback, app);
-            stubInitPassportSession.calledWithExactly(stubInitPassportLogout, app);
+            Sinon.assert.calledWithExactly(stubPassportInitialize);
+            Sinon.assert.calledWithExactly(stubAppUse, initResult);
+            Sinon.assert.calledWithExactly(stubInitPassportSession, app);
+            Sinon.assert.calledWithExactly(stubInitPassportLogin, app);
+            Sinon.assert.calledWithExactly(stubInitPassportCallback, app);
+            Sinon.assert.calledWithExactly(stubInitPassportLogout, app);
+        });
+    });
+
+    describe("initSessionManagement(app)", () => {
+        it("check main flow", () => {
+            const cookieParser = {Cookie: "payload"};
+            const expressSession = {Session: "payload"};
+
+            const stubCookie = Sinon.stub().returns(cookieParser);
+            const stubSession = Sinon.stub().returns(expressSession);
+
+            const AppProxy = Proxyquire("../app", {
+                "cookie-parser": stubCookie,
+                "express-session": stubSession,
+            });
+
+            const application = new AppProxy.Application();
+            const app = Express();
+            const config = {
+                session: {
+                    secret: "Session Secret",
+                },
+            };
+            const stubConfig = Sinon.stub(AppProxy, "config").get(() => config);
+            const stubAppUse = Sinon.stub(app, "use");
+
+            application.initSessionManagement(app);
+            Sinon.assert.callOrder(
+                stubCookie,
+                stubAppUse,
+                stubSession,
+                stubAppUse,
+            );
+            Sinon.assert.calledWithExactly(stubCookie);
+            Sinon.assert.calledWithExactly(stubSession, {
+                resave: true,
+                saveUninitialized: false,
+                secret: config.session.secret,
+            });
+
+            Sinon.assert.callCount(stubAppUse, 2);
+            stubAppUse.args[0][0].should.be.deep.equal(cookieParser);
+            stubAppUse.args[1][0].should.be.deep.equals(expressSession);
         });
     });
 });
