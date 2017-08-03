@@ -549,18 +549,4 @@ describe("App", () => {
             );
         });
     });
-
-    /*
-    public initExpress(): void {
-        const app = Express();
-
-        this.initSessionManagement(app);
-        this.initPassport(app);
-        this.initSessionFiltering(app);
-        this.initRestEndpoints(app);
-        this.initStaticContent(app);
-
-        this.startServer(app);
-    }
-    */
 });

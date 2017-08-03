@@ -1,5 +1,7 @@
 import * as Moment from "moment";
 
+export const version = "0.0.1";
+
 export enum State {
     PAUSED,
     RUNNING,

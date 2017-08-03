@@ -1,4 +1,4 @@
-import * as Task from "./task";
+export const version = "0.0.1";
 
 export interface IRequest {
     begin: Date;
