@@ -14,11 +14,7 @@ import * as RouterTasks from "./router/tasks";
 import * as RouterUser from "./router/user";
 import * as Util from "./util/util";
 
-/* tslint:disable:no-var-requires */
-export const config = require("../../OAuth/config.secret.js").config;
-// console.log("Config: " + JSON.stringify(config))
-/* tslint:enable:no-var-requires */
-
+export let config: any = {};
 export class Application {
     public accessTokens: {[userId: string]: string} = {};
 
@@ -134,6 +130,11 @@ export class Application {
 }
 
 /* istanbul ignore next */
+/* tslint:disable:no-var-requires */
 if (require.main === module) {
+    config = require("../../OAuth/config.secret.js").config;
+    // console.log("Config: " + JSON.stringify(config))
+
     new Application().initExpress();
 }
+/* tslint:enable:no-var-requires */
