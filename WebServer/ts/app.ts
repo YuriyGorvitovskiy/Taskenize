@@ -136,8 +136,8 @@ export class Application {
     public initExpress(): void {
         const app = Express();
 
-        this.initPassport(app);
         this.initSessionManagement(app);
+        this.initPassport(app);
         this.initSessionFiltering(app);
         this.initRestEndpoints(app);
         this.initStaticContent(app);

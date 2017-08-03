@@ -15,6 +15,9 @@ import * as ActionReport from "../action/report";
 import * as ActionTask from "../action/task";
 import * as ActionUser from "../action/user";
 import * as ModelUser from "../model/user";
+import * as RouterReport from "../router/report";
+import * as RouterTasks from "../router/tasks";
+import * as RouterUser from "../router/user";
 
 import * as App from "../app";
 
@@ -317,6 +320,8 @@ describe("App", () => {
             });
 
             application.passportLogout(request, response);
+            stubHttpsGet.restore();
+
             Sinon.assert.calledOnce(request.session.destroy);
             Sinon.assert.calledOnce(request.logout);
             Sinon.assert.calledOnce(response.redirect);
@@ -338,6 +343,13 @@ describe("App", () => {
             const stubInitPassportCallback = Sinon.stub(application, "initPassportCallback");
             const stubInitPassportLogout = Sinon.stub(application, "initPassportLogout");
             application.initPassport(app);
+            stubPassportInitialize.restore();
+            stubAppUse.restore();
+            stubInitPassportSession.restore();
+            stubInitPassportLogin.restore();
+            stubInitPassportCallback.restore();
+            stubInitPassportLogout.restore();
+
             Sinon.assert.callOrder(
                 stubPassportInitialize,
                 stubAppUse,
@@ -379,6 +391,9 @@ describe("App", () => {
             const stubAppUse = Sinon.stub(app, "use");
 
             application.initSessionManagement(app);
+            stubConfig.restore();
+            stubAppUse.restore();
+
             Sinon.assert.callOrder(
                 stubCookie,
                 stubAppUse,
@@ -397,4 +412,155 @@ describe("App", () => {
             stubAppUse.args[1][0].should.be.deep.equals(expressSession);
         });
     });
+    describe("initSessionFiltering(app)", () => {
+        it("check main flow", () => {
+            const application = new App.Application();
+            const app = Express();
+
+            const stubAppUse = Sinon.stub(app, "use");
+            application.initSessionFiltering(app);
+            stubAppUse.restore();
+
+            Sinon.assert.calledOnce(stubAppUse);
+            Sinon.assert.calledWith(stubAppUse, "/rest/*");
+            const filter: (req, res, next) => any = stubAppUse.args[0][1];
+
+            const requestGood: any = {
+                session: {
+                    user: {
+                        User: "payload",
+                    },
+                },
+            };
+            const responseGood = {
+                sendStatus: Sinon.stub(),
+            };
+            const nextGood = Sinon.stub();
+
+            filter(requestGood, responseGood, nextGood);
+            Sinon.assert.calledOnce(nextGood);
+            Sinon.assert.calledWithExactly(nextGood);
+            Sinon.assert.notCalled(responseGood.sendStatus);
+
+            const requestBad: any = {
+                session: {},
+            };
+            const responseBad = {
+                sendStatus: Sinon.stub(),
+            };
+            const nextBad = Sinon.stub();
+            filter(requestBad, responseBad, nextBad);
+            Sinon.assert.calledOnce(responseBad.sendStatus);
+            Sinon.assert.calledWithExactly(responseBad.sendStatus, 401);
+            Sinon.assert.notCalled(nextBad);
+        });
+    });
+    describe("initRestEndpoints(app)", () => {
+        it("check main flow", () => {
+            const application = new App.Application();
+            const app = Express();
+
+            const stubAppUse = Sinon.stub(app, "use");
+            application.initRestEndpoints(app);
+            stubAppUse.restore();
+
+            Sinon.assert.callOrder(
+                stubAppUse.withArgs("/rest/v1/tasks", RouterTasks.router),
+                stubAppUse.withArgs("/rest/v1/user", RouterUser.router),
+                stubAppUse.withArgs("/rest/v1/report", RouterReport.router),
+            );
+        });
+    });
+    describe("initStaticContent(app)", () => {
+        it("check main flow", () => {
+            const application = new App.Application();
+            const app = Express();
+            const staticHandler = {
+                static: "payload",
+            };
+            const stubExpressStatic = Sinon.stub(Express, "static").returns(staticHandler);
+            const stubAppUse = Sinon.stub(app, "use");
+            application.initStaticContent(app);
+            stubExpressStatic.restore();
+            stubAppUse.restore();
+
+            Sinon.assert.callOrder(
+                stubExpressStatic.withArgs("../WebClient"),
+                stubAppUse.withArgs(staticHandler),
+            );
+        });
+    });
+
+    describe("startServer(app)", () => {
+        it("check main flow", () => {
+            const application = new App.Application();
+            const app = Express();
+            const config = {
+                server_port: 1234,
+            };
+
+            const stubConfig = Sinon.stub(App, "config").get(() => config);
+            const stubAppListen = Sinon.stub(app, "listen");
+            const stubConsoleLog = Sinon.stub(console, "log");
+            application.startServer(app);
+            stubConfig.restore();
+            stubAppListen.restore();
+            stubConsoleLog.restore();
+
+            Sinon.assert.callOrder(
+                stubAppListen.withArgs(config.server_port),
+                stubConsoleLog.withArgs("Listening for port: " + config.server_port),
+            );
+        });
+    });
+
+    describe("initExpress()", () => {
+        const express = {
+            express: "Payload",
+        };
+        it("check main flow", () => {
+            const AppProxy = Proxyquire("../app", {
+                express: Sinon.stub().returns(express),
+            });
+
+            const application = new AppProxy.Application();
+            const stubInitSessionManagement = Sinon.stub(application, "initSessionManagement");
+            const stubInitPassport = Sinon.stub(application, "initPassport");
+            const stubInitSessionFiltering = Sinon.stub(application, "initSessionFiltering");
+            const stubInitRestEndpoints = Sinon.stub(application, "initRestEndpoints");
+            const stubInitStaticContent = Sinon.stub(application, "initStaticContent");
+            const stubStartServer = Sinon.stub(application, "startServer");
+
+            application.initExpress();
+            stubInitSessionManagement.restore();
+            stubInitPassport.restore();
+            stubInitSessionFiltering.restore();
+            stubInitRestEndpoints.restore();
+            stubInitStaticContent.restore();
+            stubStartServer.restore();
+
+            Sinon.assert.callOrder(
+                stubInitSessionManagement.withArgs(express),
+                stubInitPassport.withArgs(express),
+                stubInitSessionFiltering.withArgs(express),
+                stubInitRestEndpoints.withArgs(express),
+                stubInitStaticContent.withArgs(express),
+                stubStartServer.withArgs(express),
+            );
+        });
+    });
+
+    /*
+    public initExpress(): void {
+        const app = Express();
+
+        this.initSessionManagement(app);
+        this.initPassport(app);
+        this.initSessionFiltering(app);
+        this.initRestEndpoints(app);
+        this.initStaticContent(app);
+
+        this.startServer(app);
+    }
+    */
 });
