@@ -1,0 +1,14 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:recommended",
+        "tslint-react"
+    ],
+    "jsRules": {},
+    "rules": {
+        "no-console": {
+            "severity": "off"
+        }
+    },
+    "rulesDirectory": []
+}

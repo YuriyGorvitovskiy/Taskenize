@@ -1,181 +1,190 @@
-import * as $ from 'jquery';
-import * as React from 'react';
-import * as Moment from 'moment';
+import * as $ from "jquery";
+import * as Moment from "moment";
+import * as React from "react";
 
-import * as Model from '../model/task';
-import * as Complete from './complete-button';
-import * as Play from './timer-button-narrow';
-import * as Timer from './timer';
-import * as HtmlEditor from './html-editor';
-import * as TextUtil from '../util/text';
-import * as TaskNarrow from './task-narrow';
+import * as Model from "../model/task";
+import * as TextUtil from "../util/text";
 
-export interface Props extends React.Props<Component> {
-    task: Model.Task;
-    onStateChange: (task: Model.Task, newState: Model.State) => any;
-    onDuplicate: (task: Model.Task) => any;
-    onDelete: (task: Model.Task) => any;
+import * as Complete from "./complete-button";
+import * as HtmlEditor from "./html-editor";
+import * as TaskNarrow from "./task-narrow";
+import * as Timer from "./timer";
+import * as Play from "./timer-button-narrow";
+
+export interface IProps extends React.Props<Component> {
+    task: Model.ITask;
+    onStateChange: (task: Model.ITask, newState: Model.State) => any;
+    onDuplicate: (task: Model.ITask) => any;
+    onDelete: (task: Model.ITask) => any;
     onSlide: (taskPanel: TaskNarrow.Component, sleded: boolean) => any;
-    requestUncompletedTasks: (callback: (uncompletedTasks: Model.Task[])=>any) => any;
-};
+    requestUncompletedTasks: (callback: (uncompletedTasks: Model.ITask[]) => any) => any;
+}
 
-interface State {
+export interface IState {
     collapsed: boolean;
 }
 
-export class Component extends React.Component<Props, State> {
+export class Component extends React.Component<IProps, IState> {
     public constructor() {
         super();
         this.state = {
-            collapsed: true
-        }
+            collapsed: true,
+        };
     }
 
-    public onComplete() {
+    protected onComplete = () => {
         this.props.onStateChange(this.props.task, Model.State.COMPLETED);
     }
 
-    public onPause() {
+    protected onPause = () => {
         this.props.onStateChange(this.props.task, Model.State.PAUSED);
     }
 
-    public onPlay() {
+    protected onPlay = () => {
         this.props.onStateChange(this.props.task, Model.State.RUNNING);
     }
 
-    public onDelete(ev) {
+    protected onDelete = (ev) => {
         ev.preventDefault();
         this.props.onDelete(this.props.task);
     }
 
-    public onDuplicate(ev) {
+    protected onDuplicate = (ev) => {
         ev.preventDefault();
         this.props.onDuplicate(this.props.task);
     }
 
-    public onTitleChange(htmlNew: string) {
-        if (this.props.task.title == htmlNew)
+    protected onTitleChange = (htmlNew: string) => {
+        if (this.props.task.title === htmlNew) {
             return;
+        }
 
         this.props.task.title = htmlNew;
         this.forceUpdate();
         Model.updateTitle(this.props.task);
     }
 
-    public onSubjectChange(htmlNew: string) {
-        if (this.props.task.subject == htmlNew)
+    protected onSubjectChange = (htmlNew: string) => {
+        if (this.props.task.subject === htmlNew) {
             return;
+        }
 
         this.props.task.subject = htmlNew;
         this.forceUpdate();
         Model.updateSubject(this.props.task);
     }
 
-    public onContextChange(text: string) {
-        if (this.props.task.context == text)
+    protected onContextChange = (text: string) => {
+        if (this.props.task.context === text) {
             return;
+        }
 
         this.props.task.context = text;
         this.forceUpdate();
         Model.updateContext(this.props.task);
     }
 
-    public onCategoryChange(text: string) {
-        if (this.props.task.category == text)
+    protected onCategoryChange = (text: string) => {
+        if (this.props.task.category === text) {
             return;
+        }
 
         this.props.task.category = text;
         this.forceUpdate();
         Model.updateCategory(this.props.task);
     }
 
-    public onProjectChange(text: string) {
-        if (this.props.task.project == text)
+    protected onProjectChange = (text: string) => {
+        if (this.props.task.project === text) {
             return;
+        }
 
         this.props.task.project = text;
         this.forceUpdate();
         Model.updateProject(this.props.task);
     }
 
-    public onStoryChange(text: string) {
-        if (this.props.task.story == text)
+    protected onStoryChange = (text: string) => {
+        if (this.props.task.story === text) {
             return;
+        }
 
         this.props.task.story = text;
         this.forceUpdate();
         Model.updateStory(this.props.task);
     }
 
-    public onDurationBeginChange(index: number, text: string) {
-        if (TextUtil.formatDate(this.props.task.duration[index].begin, true) == text)
+    protected onDurationBeginChange = (index: number, text: string) => {
+        if (TextUtil.formatDate(this.props.task.duration[index].begin, true) === text) {
             return;
+        }
 
         this.props.task.duration[index].begin = TextUtil.parseDate(text);
         this.forceUpdate();
-        Model.updateDuration(this.props.task, index, 'begin');
+        Model.updateDuration(this.props.task, index, "begin");
     }
 
-    public onDurationEndChange(index: number, text: string) {
-        if (TextUtil.formatDate(this.props.task.duration[index].end, true) == text)
+    protected onDurationEndChange = (index: number, text: string) => {
+        if (TextUtil.formatDate(this.props.task.duration[index].end, true) === text) {
             return;
+        }
 
         this.props.task.duration[index].end = TextUtil.parseDate(text);
         this.forceUpdate();
-        Model.updateDuration(this.props.task, index, 'end');
+        Model.updateDuration(this.props.task, index, "end");
     }
 
-    public onDeletePeriod(index: number) {
+    protected onDeletePeriod = (index: number) => {
         this.props.task.duration.splice(index, 1);
         this.forceUpdate();
         Model.deleteDuration(this.props.task, index);
     }
-    public onScheduledChange(text: string) {
-        if (TextUtil.formatDate(this.props.task.scheduled, false) == text)
+    protected onScheduledChange = (text: string) => {
+        if (TextUtil.formatDate(this.props.task.scheduled, false) === text) {
             return;
+        }
 
         this.props.task.scheduled = TextUtil.parseDate(text);
         this.forceUpdate();
         Model.updateScheduled(this.props.task);
     }
 
-    public onScheduledCalendarChange(date: Date) {
+    protected onScheduledCalendarChange = (date: Date) => {
         this.props.task.scheduled = date;
         this.forceUpdate();
         Model.updateScheduled(this.props.task);
     }
 
-    public onScheduledNextDay(ev) {
+    protected onScheduledNextDay = (ev) => {
         ev.preventDefault();
 
         this.props.task.scheduled = Moment(this.props.task.scheduled || new Date())
-            .add({days:1})
+            .add({days: 1})
             .toDate();
 
         this.forceUpdate();
         Model.updateScheduled(this.props.task);
     }
 
-    public onScheduledNextWeek(ev) {
+    protected onScheduledNextWeek = (ev) => {
         ev.preventDefault();
 
         this.props.task.scheduled = Moment(this.props.task.scheduled || new Date())
-            .add({days:7})
+            .add({days: 7})
             .toDate();
 
         this.forceUpdate();
         Model.updateScheduled(this.props.task);
     }
 
-    public onScheduledNextMonth(ev) {
+    protected onScheduledNextMonth = (ev) => {
         ev.preventDefault();
 
         this.props.task.scheduled = Moment(this.props.task.scheduled || new Date())
-            .add({months:1})
+            .add({months: 1})
             .toDate();
 
         this.forceUpdate();
         Model.updateScheduled(this.props.task);
     }
-
-};
+}

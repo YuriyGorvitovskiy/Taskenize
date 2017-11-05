@@ -1,3 +1,5 @@
+export const version = "0.0.1";
+
 export interface IUser {
     _id: string;
     display_name: string;

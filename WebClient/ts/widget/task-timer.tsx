@@ -1,27 +1,30 @@
-import * as React from 'react';
-import * as Model from '../model/task';
-import * as TextUtil from '../util/text';
+import * as React from "react";
 
-export interface Props extends React.Props<Component> {
-    task:   Model.Task;
-};
+import * as Model from "../model/task";
+import * as TextUtil from "../util/text";
 
-export class Component extends React.Component<Props, {}> {
+export interface IProps extends React.Props<Component> {
+    task: Model.ITask;
+}
 
-    timer: number = null;
+export class Component extends React.Component<IProps, {}> {
+
+    protected timer: number = null;
 
     public constructor() {
         super();
     }
 
     public componentDidMount() {
-        if (this.props.task.state == Model.State.RUNNING)
+        if (this.props.task.state === Model.State.RUNNING) {
             this.timer = setInterval(this.onTick.bind(this), 1000);
+        }
     }
 
     public componentWillUnmount() {
-        if (this.timer !== null)
+        if (this.timer !== null) {
             clearInterval(this.timer);
+        }
     }
 
     public onTick() {
@@ -29,6 +32,8 @@ export class Component extends React.Component<Props, {}> {
     }
 
     public render() {
-        return <span>{TextUtil.formatDuration(Model.calculateDuration(this.props.task))}</span>
+        return (
+            <span>{TextUtil.formatDuration(Model.calculateDuration(this.props.task))}</span>
+        );
     }
 }

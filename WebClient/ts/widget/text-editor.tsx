@@ -1,101 +1,102 @@
-import * as $ from 'jquery';
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import * as React from "react";
 
-export interface Props extends React.Props<Component> {
-    text:           string;
-    className:      string;
-    placeholder?:   string;
-
-    onSuccess?:     (text: string) => any;
+export interface IProps extends React.Props<Component> {
+    text: string;
+    className: string;
+    placeholder?: string;
+    onSuccess?: (text: string) => any;
 }
 
-interface State {
-    text:    string;
+interface IState {
+    text: string;
     inFocus: boolean;
 }
 
-export class Component extends React.Component<Props, State> {
+export class Component extends React.Component<IProps, IState> {
 
     public constructor() {
         super();
         this.state = {
+            inFocus: false,
             text: "",
-            inFocus: false
         };
     }
 
     public render() {
-        var value = this.state.inFocus ? this.state.text : this.props.text;
+        const value = this.state.inFocus ? this.state.text : this.props.text;
         return (
             <input
                 type="text"
                 className={this.props.className}
                 value={value}
                 placeholder={this.props.placeholder}
-                onFocus={this.onFocus.bind(this)}
-                onBlur={this.onBlur.bind(this)}
-                onKeyDown={this.onKeyPress.bind(this)}
-                onChange={this.onChange.bind(this)}
+                onFocus={this.onFocus}
+                onBlur={this.onBlur}
+                onKeyDown={this.onKeyPress}
+                onChange={this.onChange}
             />
         );
     }
 
-    public onFocus(event) {
-        if (this.state.inFocus)
+    protected onFocus = (event: React.FocusEvent<any>) => {
+        if (this.state.inFocus) {
             return;
+        }
 
         this.setState({
             inFocus: true,
-            text: this.props.text
+            text: this.props.text,
         });
     }
-    public onBlur(event) {
-        if (!this.state.inFocus)
-            return;
 
-        if (this.props.onSuccess)
+    protected onBlur = (event: React.FocusEvent<any>) => {
+        if (!this.state.inFocus) {
+            return;
+        }
+
+        if (this.props.onSuccess) {
             this.props.onSuccess(this.state.text);
+        }
 
         this.setState({
             inFocus: false,
-            text:    this.state.text
+            text: this.state.text,
         });
     }
 
-    public onKeyPress(event: React.KeyboardEvent<any>) {
-        switch(event.keyCode) {
-            case 13: //enter
+    protected onKeyPress = (event: React.KeyboardEvent<any>) => {
+        switch (event.keyCode) {
+            case 13: // enter
                 this.onEnter(event);
                 break;
-            case 27: //escape
+            case 27: // escape
                 this.onEscape(event);
                 break;
         }
     }
-    public onEnter(event: React.KeyboardEvent<any>) {
+    protected onEnter(event: React.KeyboardEvent<any>) {
         event.preventDefault();
         event.stopPropagation();
 
-        if (this.props.onSuccess)
+        if (this.props.onSuccess) {
             this.props.onSuccess(this.state.text);
+        }
     }
 
-    public onEscape(event: React.KeyboardEvent<any>) {
+    protected onEscape(event: React.KeyboardEvent<any>) {
         event.preventDefault();
         event.stopPropagation();
 
         this.setState({
             inFocus: this.state.inFocus,
-            text:    this.props.text
+            text: this.props.text,
         });
     }
 
-    public onChange(event: React.FormEvent<any>) {
-        var target = ReactDOM.findDOMNode(this);
+    protected onChange = (event: React.ChangeEvent<any>) => {
         this.setState({
             inFocus: this.state.inFocus,
-            text:    target['value']
+            text: event.target.value,
         });
     }
 }

@@ -1,179 +1,195 @@
-import * as $ from 'jquery';
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import * as SanitizeHTML from 'sanitize-html';
+import * as $ from "jquery";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+import * as SanitizeHTML from "sanitize-html";
 
-export interface Props extends React.Props<Component> {
+export interface IProps extends React.Props<Component> {
     singleLine: boolean;
-    html:       string;
-    className:  string;
+    html: string;
+    className: string;
 
-    onChange?:  (htmlNew: string) => any;
+    onChange?: (htmlNew: string) => any;
     onSuccess?: (htmlNew: string) => any;
-    onCancel?:  (htmlOld: string) => any;
+    onCancel?: (htmlOld: string) => any;
 }
 
-interface State {
+interface IState {
     htmlNew: string;
     htmlOld: string;
     inFocus: boolean;
 }
 
-export class Component extends React.Component<Props, State> {
-    counter: number = 0;
+export class Component extends React.Component<IProps, IState> {
+
+    protected counter: number = 0;
+
     public constructor() {
         super();
         this.state = {
             htmlNew: "",
             htmlOld: "",
-            inFocus: false
+            inFocus: false,
         };
     }
 
     public render() {
-        var html = this.state.inFocus ? this.state.htmlNew : this.props.html;
-        var innerHtml = {__html:this.sanitizeHTML(html)};
+        const html = this.state.inFocus ? this.state.htmlNew : this.props.html;
+        const innerHtml = {
+            __html: this.sanitizeHTML(html),
+        };
         return (
             <div
                 id={"counter" + ++this.counter}
                 className={this.props.className}
                 contentEditable={true}
-                onFocus={this.onFocus.bind(this)}
-                onBlur={this.onBlur.bind(this)}
-                onPaste={this.onPaste.bind(this)}
-                onKeyDown={this.onKeyPress.bind(this)}
-                onInput={this.onChange.bind(this)}
+                onFocus={this.onFocus}
+                onBlur={this.onBlur}
+                onPaste={this.onPaste}
+                onKeyDown={this.onKeyPress}
+                onInput={this.onChange}
                 dangerouslySetInnerHTML={innerHtml}
-                >
-            </div>
+            />
         );
     }
 
-    public shouldComponentUpdate(nextProps: Props, nextState: State) {
-        var html = nextState.inFocus ? nextState.htmlNew : nextProps.html;
-        var target = ReactDOM.findDOMNode(this);
-        return (html !== target['innerHTML']);
+    public shouldComponentUpdate(nextProps: IProps, nextState: IState) {
+        const html = nextState.inFocus ? nextState.htmlNew : nextProps.html;
+        const target = ReactDOM.findDOMNode(this);
+        return (html !== target.innerHTML);
     }
+
     public componentDidUpdate() {
-        var html = this.state.inFocus ? this.state.htmlNew : this.props.html;
-        var target = ReactDOM.findDOMNode(this);
+        const html = this.state.inFocus ? this.state.htmlNew : this.props.html;
+        const target = ReactDOM.findDOMNode(this);
 
-        if (html !== target['innerHTML'])
-            target['innerHTML'] = html;
-    }
-
-    public onFocus(event) {
-        if (this.state.inFocus)
-            return;
-
-        this.setState({
-            inFocus: true,
-            htmlNew: this.props.html,
-            htmlOld: this.props.html
-        });
-    }
-    public onBlur(event) {
-        if (!this.state.inFocus)
-            return;
-
-        if (this.props.onSuccess)
-            this.props.onSuccess(this.state.htmlNew);
-
-        this.setState({
-            inFocus: false,
-            htmlNew: this.state.htmlNew,
-            htmlOld: this.state.htmlNew
-        });
-    }
-    public onPaste(ev : React.ClipboardEvent<any>) {
-        ev.preventDefault();
-        var html = ev.clipboardData.getData('text/html');
-        if (!html) {
-            html = ev.clipboardData.getData('text/plain');
-
-            var regexToken = /(((ftp|https?):\/\/)[\-\w@:%_\+.~#?,&\/\/=]+)|((mailto:)?[_.\w-]+@([\w][\w\-]+\.)+[a-zA-Z]{2,3})/g;
-            html = html.replace(regexToken, '<a href="$1">$1</a>');
+        if (html !== target.innerHTML) {
+            target.innerHTML = html;
         }
-        if (!html)
+    }
+
+    protected onFocus = (event) => {
+        if (this.state.inFocus) {
             return;
+        }
+
+        this.setState({
+            htmlNew: this.props.html,
+            htmlOld: this.props.html,
+            inFocus: true,
+        });
+    }
+
+    protected onBlur = (event) => {
+        if (!this.state.inFocus) {
+            return;
+        }
+
+        if (this.props.onSuccess) {
+            this.props.onSuccess(this.state.htmlNew);
+        }
+
+        this.setState({
+            htmlNew: this.state.htmlNew,
+            htmlOld: this.state.htmlNew,
+            inFocus: false,
+        });
+    }
+
+    protected onPaste = (ev: React.ClipboardEvent<any>) => {
+        ev.preventDefault();
+        let html = ev.clipboardData.getData("text/html");
+        if (!html) {
+            html = ev.clipboardData.getData("text/plain");
+
+            // tslint:disable-next-line:max-line-length
+            const regexToken = /(((ftp|https?):\/\/)[\-\w@:%_\+.~#?,&\/\/=]+)|((mailto:)?[_.\w-]+@([\w][\w\-]+\.)+[a-zA-Z]{2,3})/g;
+            html = html.replace(regexToken, "<a href=\"$1\">$1</a>");
+        }
+        if (!html) {
+            return;
+        }
 
         this.replaceCurrentSelection(this.sanitizeHTML(html));
 
-        var target = ReactDOM.findDOMNode(this);
+        const target = ReactDOM.findDOMNode(this);
         this.setState({
+            htmlNew: target.innerHTML,
+            htmlOld: this.state.htmlOld,
             inFocus: this.state.inFocus,
-            htmlNew: target['innerHTML'],
-            htmlOld: this.state.htmlOld
         });
 
-        if (this.props.onChange)
+        if (this.props.onChange) {
             this.props.onChange(this.state.htmlNew);
-
+        }
     }
 
-    public onKeyPress(event: React.KeyboardEvent<any>) {
-        switch(event.keyCode) {
-            case 13: //enter
-                if (this.props.singleLine || event.altKey)
+    protected onKeyPress = (event: React.KeyboardEvent<any>) => {
+        switch (event.keyCode) {
+            case 13: // enter
+                if (this.props.singleLine || event.altKey) {
                     this.onEnter(event);
+                }
                 break;
-            case 27: //escape
+            case 27: // escape
                 this.onEscape(event);
                 break;
         }
     }
-    public onEnter(event: React.KeyboardEvent<any>) {
+    protected onEnter(event: React.KeyboardEvent<any>) {
         event.preventDefault();
         event.stopPropagation();
 
         this.setState({
-            inFocus: this.state.inFocus,
             htmlNew: this.state.htmlNew,
-            htmlOld: this.state.htmlNew
+            htmlOld: this.state.htmlNew,
+            inFocus: this.state.inFocus,
         });
 
-        if (this.props.onSuccess)
+        if (this.props.onSuccess) {
             this.props.onSuccess(this.state.htmlNew);
+        }
     }
 
-    public onEscape(event: React.KeyboardEvent<any>) {
+    protected onEscape(event: React.KeyboardEvent<any>) {
         event.preventDefault();
         event.stopPropagation();
 
         this.setState({
-            inFocus: this.state.inFocus,
             htmlNew: this.state.htmlOld,
-            htmlOld: this.state.htmlOld
-        });
-
-        if (this.props.onChange)
-            this.props.onChange(this.state.htmlOld);
-
-        if (this.props.onCancel)
-            this.props.onCancel(this.state.htmlOld);
-    }
-
-    public onChange(event: React.FormEvent<any>) {
-        var target = ReactDOM.findDOMNode(this);
-        this.setState({
+            htmlOld: this.state.htmlOld,
             inFocus: this.state.inFocus,
-            htmlNew: target['innerHTML'],
-            htmlOld: this.state.htmlOld
         });
 
-        if (this.props.onChange)
-            this.props.onChange(this.state.htmlNew);
+        if (this.props.onChange) {
+            this.props.onChange(this.state.htmlOld);
+        }
+        if (this.props.onCancel) {
+            this.props.onCancel(this.state.htmlOld);
+        }
     }
 
-    private replaceCurrentSelection(html: string) {
-        var selection = window.getSelection();
-        var range = selection.getRangeAt(0);
+    protected onChange = (event: React.FormEvent<any>) => {
+        const target = ReactDOM.findDOMNode(this);
+        this.setState({
+            htmlNew: target.innerHTML,
+            htmlOld: this.state.htmlOld,
+            inFocus: this.state.inFocus,
+        });
+
+        if (this.props.onChange) {
+            this.props.onChange(this.state.htmlNew);
+        }
+    }
+
+    protected replaceCurrentSelection(html: string) {
+        const selection = window.getSelection();
+        const range = selection.getRangeAt(0);
         range.deleteContents();
-        var fragment = range.createContextualFragment('');
-        $('<span>' + html + '</span>').each((index: number, element: Element) => {
+        const fragment = range.createContextualFragment("");
+        $("<span>" + html + "</span>").each((index: number, element: Element) => {
             fragment.appendChild(element);
         });
-        var replacementEnd = fragment.lastChild;
+        const replacementEnd = fragment.lastChild;
         range.insertNode(fragment);
 
         // Set cursor at the end of the replaced content, just like browsers do.
@@ -183,27 +199,27 @@ export class Component extends React.Component<Props, State> {
         selection.addRange(range);
     }
 
-    public sanitizeHTML(html: string) {
-        var options = $.extend(true, {}, SanitizeHTML.defaults, {
-            allowedTags :[
-                'img'
-            ],
+    protected sanitizeHTML(html: string) {
+        const options = $.extend(true, {}, SanitizeHTML.defaults, {
             allowedAttributes: {
-                a: [ 'contenteditable', 'href', 'name', 'target' ]
+                a: ["contenteditable", "href", "name", "target"],
             },
+            allowedTags: [
+                "img",
+            ],
             transformTags: {
-                'a': (tagName, attribs) => {
+                a: (tagName, attribs) => {
                     return {
-                        tagName,
                         attribs: $.extend({}, attribs, {
-                            contenteditable:"false",
-                            target:"_blank"
-                        })
+                            contenteditable: "false",
+                            target: "_blank",
+                        }),
+                        tagName,
                     };
-                }
-            }
+                },
+            },
         });
-        return SanitizeHTML(html,options);
+        return SanitizeHTML(html, options);
     }
 
 }

@@ -1,17 +1,18 @@
-import * as React from 'react';
-import * as Moment from 'moment';
-import * as Model from '../model/task';
+import * as Moment from "moment";
+import * as React from "react";
 
-export interface Props extends React.Props<Component> {
-    task:                    Model.Task,
-    requestUncompletedTasks: (callback: (uncompletedTasks: Model.Task[])=>any) => any;
-};
+import * as Model from "../model/task";
 
-interface State  {
-    tasksToFollow: Model.Task[]
+export interface IProps extends React.Props<Component> {
+    task: Model.ITask;
+    requestUncompletedTasks: (callback: (uncompletedTasks: Model.ITask[]) => any) => any;
 }
 
-export class Component extends React.Component<Props, State> {
+export interface IState  {
+    tasksToFollow: Model.ITask[];
+}
+
+export class Component extends React.Component<IProps, IState> {
     public constructor() {
         super();
         this.state = {tasksToFollow: null};
@@ -24,16 +25,18 @@ export class Component extends React.Component<Props, State> {
         this.timingAdjustmentChange = this.timingAdjustmentChange.bind(this);
         this.timingAdjustmentKindChange = this.timingAdjustmentKindChange.bind(this);
     }
-    componentDidMount?(): void {
+    public componentDidMount?(): void {
         if (this.state.tasksToFollow == null) {
-            this.props.requestUncompletedTasks((tasks)=>
-                this.setState({tasksToFollow: tasks})
-            );
+            this.props.requestUncompletedTasks((
+                (tasks) => this.setState({
+                    tasksToFollow: tasks,
+                })
+            ));
         }
     }
 
     public render() {
-        let sentence = [];
+        const sentence = [];
         this.renderSentence(this.props.task.automation, sentence);
         return (
             <div className="behavior">
@@ -45,71 +48,106 @@ export class Component extends React.Component<Props, State> {
         );
     }
 
-    private renderSentence(automation: Model.Automation, sentence: JSX.Element[]) {
-        sentence.push(
+    private renderSentence(automation: Model.IAutomation, sentence: JSX.Element[]) {
+        sentence.push((
             <select value={automation.behavior} onChange={this.behaviorChange} key={sentence.length}>
                 <option value={Model.Behavior.NONE}>None</option>
                 <option value={Model.Behavior.REPEAT}>Repeat</option>
                 <option value={Model.Behavior.FOLLOWED}>Followed</option>
             </select>
-        );
-        if (automation.behavior == Model.Behavior.REPEAT) {
-            sentence.push(<span key={sentence.length}>&nbsp;task&nbsp;</span>);
+        ));
+        if (automation.behavior === Model.Behavior.REPEAT) {
+            sentence.push((<span key={sentence.length}>&nbsp;task&nbsp;</span>));
             this.renderTimingSentence(automation, sentence);
-        } else if (automation.behavior == Model.Behavior.FOLLOWED) {
-            let options = [];
+        } else if (automation.behavior === Model.Behavior.FOLLOWED) {
+            const options = [];
             if (this.state.tasksToFollow != null) {
-                for(const taskToFollow of this.state.tasksToFollow) {
-                    if (taskToFollow._id != this.props.task._id) {
-                        options.push(<option value={taskToFollow._id} key={options.length}>{taskToFollow.title}</option>);
+                for (const taskToFollow of this.state.tasksToFollow) {
+                    if (taskToFollow._id !== this.props.task._id) {
+                        options.push((
+                            <option value={taskToFollow._id} key={options.length}>
+                                {taskToFollow.title}
+                            </option>
+                        ));
                     }
                 }
             }
-            sentence.push(
+            sentence.push((
                 <span key={sentence.length}>&nbsp;by&nbsp;
                     <select value={automation.relatedTaskId} onChange={this.relatedTaskIdChange} key={sentence.length}>
                         {options}
                     </select>&nbsp;task&nbsp;
                 </span>
-            );
+            ));
             this.renderTimingSentence(automation, sentence);
         }
-        sentence.push(<span key={sentence.length}>.</span>);
+        sentence.push((<span key={sentence.length}>.</span>));
     }
-    private renderTimingSentence(automation: Model.Automation, sentence: JSX.Element[]) {
-        sentence.push(
-            <select value={automation.timingKind} onChange={this.timingKindChange} key={sentence.length}>
+    private renderTimingSentence(automation: Model.IAutomation, sentence: JSX.Element[]) {
+        sentence.push((
+            <select
+                value={automation.timingKind}
+                onChange={this.timingKindChange}
+                key={sentence.length}
+            >
                 <option value={Model.TimingKind.IN}>in</option>
                 <option value={Model.TimingKind.AFTER}>after</option>
             </select>
-        );
-        sentence.push(<span key={sentence.length}>&nbsp;</span>);
-        sentence.push(<input type="number" name="after" value={automation.timingDuration} min="0" onChange={this.timingDurationChange} key={sentence.length}/>);
-        sentence.push(<span key={sentence.length}>&nbsp;</span>);
-        sentence.push(
-            <select value={automation.timingDurationUnit} onChange={this.timingDurationUnitChange} key={sentence.length}>
+        ));
+        sentence.push((<span key={sentence.length}>&nbsp;</span>));
+        sentence.push((
+            <input
+                type="number"
+                name="after"
+                value={automation.timingDuration}
+                min="0"
+                onChange={this.timingDurationChange}
+                key={sentence.length}
+            />
+        ));
+        sentence.push((<span key={sentence.length}>&nbsp;</span>));
+        sentence.push((
+            <select
+                value={automation.timingDurationUnit}
+                onChange={this.timingDurationUnitChange}
+                key={sentence.length}
+            >
                 <option value={Model.TimingDurationUnit.MINUTE}>minute(s)</option>
                 <option value={Model.TimingDurationUnit.HOUR}>hour(s)</option>
                 <option value={Model.TimingDurationUnit.DAY}>day(s)</option>
                 <option value={Model.TimingDurationUnit.WEEK}>week(s)</option>
                 <option value={Model.TimingDurationUnit.MONTH}>month(s)</option>
             </select>
-        );
-        if (automation.timingKind == Model.TimingKind.AFTER) {
+        ));
+        if (automation.timingKind === Model.TimingKind.AFTER) {
             this.renderAfterSentence(automation, sentence);
         }
     }
 
-    private renderAfterSentence(automation: Model.Automation, sentence: JSX.Element[]) {
-        if (automation.timingAdjustmentKind == Model.TimingAdjustmentKind.DAY_OF_THE_MONTH) {
-            sentence.push(<span key={sentence.length}>&nbsp;on the&nbsp;</span>);
-            sentence.push(<input type="number" name="onday" value={automation.timingAdjustment} min="1" max="31" onChange={this.timingAdjustmentChange} key={sentence.length}/>);
-            sentence.push(<span key={sentence.length}>&nbsp;</span>);
+    private renderAfterSentence(automation: Model.IAutomation, sentence: JSX.Element[]) {
+        if (automation.timingAdjustmentKind === Model.TimingAdjustmentKind.DAY_OF_THE_MONTH) {
+            sentence.push((<span key={sentence.length}>&nbsp;on the&nbsp;</span>));
+            sentence.push((
+                <input
+                    type="number"
+                    name="onday"
+                    value={automation.timingAdjustment}
+                    min="1"
+                    max="31"
+                    onChange={this.timingAdjustmentChange}
+                    key={sentence.length}
+                />
+            ));
+            sentence.push((<span key={sentence.length}>&nbsp;</span>));
         } else {
-            sentence.push(<span key={sentence.length}>&nbsp;on&nbsp;</span>);
+            sentence.push((<span key={sentence.length}>&nbsp;on&nbsp;</span>));
         }
-        sentence.push(
-            <select value={automation.timingAdjustmentKind} onChange={this.timingAdjustmentKindChange} key={sentence.length}>
+        sentence.push((
+            <select
+                value={automation.timingAdjustmentKind}
+                onChange={this.timingAdjustmentKindChange}
+                key={sentence.length}
+            >
                 <option value={Model.TimingAdjustmentKind.MONDAY}>Monday</option>
                 <option value={Model.TimingAdjustmentKind.TUESDAY}>Tuesday</option>
                 <option value={Model.TimingAdjustmentKind.WEDNESDAY}>Wednesday</option>
@@ -119,16 +157,17 @@ export class Component extends React.Component<Props, State> {
                 <option value={Model.TimingAdjustmentKind.SUNDAY}>Sunday</option>
                 <option value={Model.TimingAdjustmentKind.DAY_OF_THE_MONTH}>day of the month</option>
             </select>
-        );
+        ));
     }
 
-    private behaviorChange(event) {
+    private behaviorChange = (event) => {
         const automation = this.props.task.automation;
-        const newBehavior = event.target.value;
-        if (automation.behavior == newBehavior)
+        const newBehavior = parseInt(event.target.value, 10);
+        if (automation.behavior === newBehavior) {
             return;
+        }
 
-        if (newBehavior == Model.Behavior.REPEAT) {
+        if (newBehavior === Model.Behavior.REPEAT) {
             if (automation.timingKind == null) {
                 automation.timingKind = Model.TimingKind.AFTER;
             }
@@ -142,7 +181,7 @@ export class Component extends React.Component<Props, State> {
                 automation.timingAdjustmentKind = Moment().isoWeekday() - 1 + Model.TimingAdjustmentKind.MONDAY;
             }
         }
-        if (newBehavior == Model.Behavior.FOLLOWED) {
+        if (newBehavior === Model.Behavior.FOLLOWED) {
             if (automation.timingKind == null) {
                 automation.timingKind = Model.TimingKind.IN;
             }
@@ -161,99 +200,115 @@ export class Component extends React.Component<Props, State> {
         Model.updateAutomation(this.props.task);
     }
 
-    private relatedTaskIdChange(event) {
+    private relatedTaskIdChange = (event) => {
         const automation = this.props.task.automation;
-        if (automation.relatedTaskId == event.target.value)
+        const value = event.target.value;
+        if (automation.relatedTaskId === value) {
             return;
+        }
 
-        automation.relatedTaskId = event.target.value;
+        automation.relatedTaskId = value;
         this.forceUpdate();
         Model.updateAutomation(this.props.task);
     }
 
-    private timingKindChange(event) {
+    private timingKindChange = (event) => {
         const automation = this.props.task.automation;
-        if (automation.timingKind == event.target.value)
+        const value = parseInt(event.target.value, 10);
+        if (automation.timingKind === value) {
             return;
+        }
 
-        if (automation.timingKind == Model.TimingKind.IN) {
+        if (automation.timingKind === Model.TimingKind.IN) {
             if (automation.timingAdjustmentKind == null) {
                 automation.timingAdjustmentKind = Moment().isoWeekday() - 1 + Model.TimingAdjustmentKind.MONDAY;
             }
         }
-        automation.timingKind = event.target.value;
+        automation.timingKind = value;
         this.forceUpdate();
         Model.updateAutomation(this.props.task);
     }
-    private timingDurationChange(event) {
-        const automation = this.props.task.automation;
-        if (automation.timingDuration == parseInt(event.target.value))
-            return;
 
-        automation.timingDuration = parseInt(event.target.value);
+    private timingDurationChange = (event) => {
+        const automation = this.props.task.automation;
+        const value = parseInt(event.target.value, 10);
+        if (automation.timingDuration === value) {
+            return;
+        }
+
+        automation.timingDuration = value;
         this.forceUpdate();
         Model.updateAutomation(this.props.task);
     }
-    private timingDurationUnitChange(event) {
+    private timingDurationUnitChange = (event) => {
         const automation = this.props.task.automation;
-        if (automation.timingDurationUnit == event.target.value)
+        const value = parseInt(event.target.value, 10);
+        if (automation.timingDurationUnit === value) {
             return;
+        }
 
-        automation.timingDurationUnit = event.target.value;
+        automation.timingDurationUnit = value;
         this.forceUpdate();
         Model.updateAutomation(this.props.task);
     }
-    private timingAdjustmentChange(event) {
-        const automation = this.props.task.automation;
-        if (automation.timingAdjustment == parseInt(event.target.value))
-            return;
 
-        automation.timingAdjustment = parseInt(event.target.value);
+    private timingAdjustmentChange = (event) => {
+        const automation = this.props.task.automation;
+        const value = parseInt(event.target.value, 10);
+        if (automation.timingAdjustment === value) {
+            return;
+        }
+
+        automation.timingAdjustment = value;
         this.forceUpdate();
         Model.updateAutomation(this.props.task);
     }
-    private timingAdjustmentKindChange(event) {
-        const automation = this.props.task.automation;
-        if (automation.timingAdjustmentKind == event.target.value)
-            return;
 
-        if (event.target.value == Model.TimingAdjustmentKind.DAY_OF_THE_MONTH) {
+    private timingAdjustmentKindChange = (event) => {
+        const automation = this.props.task.automation;
+        const value = parseInt(event.target.value, 10);
+        if (automation.timingAdjustmentKind === value) {
+            return;
+        }
+
+        if (value === Model.TimingAdjustmentKind.DAY_OF_THE_MONTH) {
             if (automation.timingAdjustment == null) {
                 automation.timingAdjustment = 1;
             }
         }
 
-        automation.timingAdjustmentKind = event.target.value;
+        automation.timingAdjustmentKind = value;
         this.forceUpdate();
         Model.updateAutomation(this.props.task);
     }
 
-    private getBestRelatedTask() : Model.Task {
-        let bestTask: Model.Task = null;
+    private getBestRelatedTask(): Model.ITask {
+        let bestTask: Model.ITask = null;
         let howGood = 0;
-        for (let task of this.state.tasksToFollow) {
-            if (task == this.props.task)
+        for (const task of this.state.tasksToFollow) {
+            if (task === this.props.task) {
                 continue;
+            }
             if (bestTask == null) {
                 bestTask = task;
                 howGood = 1;
             }
-            if (this.props.task.category == task.category) {
+            if (this.props.task.category === task.category) {
                 if (howGood < 2) {
                     bestTask = task;
                     howGood = 2;
                 }
-                if (this.props.task.project == task.project) {
+                if (this.props.task.project === task.project) {
                     if (howGood < 3) {
                         bestTask = task;
                         howGood = 3;
                     }
-                    if (this.props.task.story == task.story) {
+                    if (this.props.task.story === task.story) {
                         if (howGood < 4) {
                             bestTask = task;
                             howGood = 4;
                         }
-                        if (this.props.task.context == task.context) {
+                        if (this.props.task.context === task.context) {
                             if (howGood < 5) {
                                 bestTask = task;
                                 howGood = 5;

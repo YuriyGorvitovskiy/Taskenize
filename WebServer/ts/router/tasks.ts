@@ -31,6 +31,7 @@ router.get("/", (req, res) => {
             end: req.query.completed_end ? new Date(req.query.completed_end) : new Date(),
         };
     }
+    // console.log("Query: " + JSON.stringify(query));
     Action.getAll(query)
         .then(Util.jsonResponse(res))
         .catch(Util.errorResponse(res, "get all tasks"));
