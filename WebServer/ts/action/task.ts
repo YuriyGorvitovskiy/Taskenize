@@ -35,7 +35,7 @@ export function getMany(ids: Array<string | Mongo.ObjectID>): Promise<Model.ITas
 
 export function getAll(query: Model.IQuery): Promise<Model.ITask[]> {
     const filter: any = {
-        userId: query.user_id,
+        user_id: query.user_id,
     };
     if (query.state != null) {
         const states = [];

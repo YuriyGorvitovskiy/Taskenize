@@ -80,7 +80,7 @@ export class Application {
             host: "accounts.google.com",
             method: "GET",
             path: "/o/oauth2/logout?token=" + req.session.access_token,
-            protocol: "https",
+            protocol: "https:",
         }, (r) => {
             req.session.destroy(() => {
                 req.logout();
@@ -152,6 +152,8 @@ if (require.main === module) {
     config = require("../../OAuth/config.secret.js").config;
     // console.log("Config: " + JSON.stringify(config))
 
-    new Application().initExpress();
+    const application = new Application();
+    application.initMongoClient()
+        .then(() => application.initExpress());
 }
 /* tslint:enable:no-var-requires */

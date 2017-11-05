@@ -162,7 +162,7 @@ export class Component extends React.Component<IProps, IState> {
 
     private behaviorChange = (event) => {
         const automation = this.props.task.automation;
-        const newBehavior = event.target.value;
+        const newBehavior = parseInt(event.target.value, 10);
         if (automation.behavior === newBehavior) {
             return;
         }
@@ -202,18 +202,20 @@ export class Component extends React.Component<IProps, IState> {
 
     private relatedTaskIdChange = (event) => {
         const automation = this.props.task.automation;
-        if (automation.relatedTaskId === event.target.value) {
+        const value = event.target.value;
+        if (automation.relatedTaskId === value) {
             return;
         }
 
-        automation.relatedTaskId = event.target.value;
+        automation.relatedTaskId = value;
         this.forceUpdate();
         Model.updateAutomation(this.props.task);
     }
 
     private timingKindChange = (event) => {
         const automation = this.props.task.automation;
-        if (automation.timingKind === event.target.value) {
+        const value = parseInt(event.target.value, 10);
+        if (automation.timingKind === value) {
             return;
         }
 
@@ -222,7 +224,7 @@ export class Component extends React.Component<IProps, IState> {
                 automation.timingAdjustmentKind = Moment().isoWeekday() - 1 + Model.TimingAdjustmentKind.MONDAY;
             }
         }
-        automation.timingKind = event.target.value;
+        automation.timingKind = value;
         this.forceUpdate();
         Model.updateAutomation(this.props.task);
     }
@@ -240,11 +242,12 @@ export class Component extends React.Component<IProps, IState> {
     }
     private timingDurationUnitChange = (event) => {
         const automation = this.props.task.automation;
-        if (automation.timingDurationUnit === event.target.value) {
+        const value = parseInt(event.target.value, 10);
+        if (automation.timingDurationUnit === value) {
             return;
         }
 
-        automation.timingDurationUnit = event.target.value;
+        automation.timingDurationUnit = value;
         this.forceUpdate();
         Model.updateAutomation(this.props.task);
     }
@@ -263,17 +266,18 @@ export class Component extends React.Component<IProps, IState> {
 
     private timingAdjustmentKindChange = (event) => {
         const automation = this.props.task.automation;
-        if (automation.timingAdjustmentKind === event.target.value) {
+        const value = parseInt(event.target.value, 10);
+        if (automation.timingAdjustmentKind === value) {
             return;
         }
 
-        if (event.target.value === Model.TimingAdjustmentKind.DAY_OF_THE_MONTH) {
+        if (value === Model.TimingAdjustmentKind.DAY_OF_THE_MONTH) {
             if (automation.timingAdjustment == null) {
                 automation.timingAdjustment = 1;
             }
         }
 
-        automation.timingAdjustmentKind = event.target.value;
+        automation.timingAdjustmentKind = value;
         this.forceUpdate();
         Model.updateAutomation(this.props.task);
     }

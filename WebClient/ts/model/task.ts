@@ -125,10 +125,15 @@ export function get(id: string) {
 }
 
 export function getExecuting() {
-    const data = {
-        state: [State.PAUSED, State.RUNNING],
-    };
-    return $.getJSON("/rest/v1/tasks", data).then(parseTasksJson);
+    return $.ajax({
+        data: {
+            state: [State.PAUSED, State.RUNNING],
+        },
+        dataType: "json",
+        method: "GET",
+        traditional: true,
+        url: "/rest/v1/tasks",
+    }).then(parseTasksJson);
 }
 
 export function getCompleted(period: IPeriod) {

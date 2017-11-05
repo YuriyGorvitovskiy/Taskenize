@@ -314,7 +314,7 @@ describe("App", () => {
                     host: "accounts.google.com",
                     method: "GET",
                     path: "/o/oauth2/logout?token=" + request.session.access_token,
-                    protocol: "https",
+                    protocol: "https:",
                 });
                 callback(null);
             });
