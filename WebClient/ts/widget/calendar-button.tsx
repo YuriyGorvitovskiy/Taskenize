@@ -1,87 +1,91 @@
-import * as $ from 'jquery';
-import * as Moment from 'moment';
-import * as React from 'react';
+import * as $ from "jquery";
+import * as Moment from "moment";
+import * as React from "react";
 
-export interface Props extends React.Props<Component> {
-    id:         string;
-    date:       Date;
-    onChange:   (neDate: Date) => any;
-};
+export interface IProps extends React.Props<Component> {
+    id: string;
+    date: Date;
+    onChange: (newDate: Date) => any;
+}
 
-const FORMAT = 'MM/DD/YYYY';
+const FORMAT = "MM/DD/YYYY";
 
-export class Component extends React.Component<Props, {}> {
-    schedule_btn_id: string;
-    schedule_cal_id: string;
+export class Component extends React.Component<IProps, {}> {
+    protected scheduleBtnId: string;
+    protected scheduleCalId: string;
 
     public constructor() {
         super();
-        this.state = {
-        }
     }
 
     public componentDidMount() {
-        var item: any = $("#" + this.schedule_btn_id);
+        const item: any = $("#" + this.scheduleBtnId);
         item.popover();
-        item.on('inserted.bs.popover', () => {
-            var picker: any = $("#" + this.schedule_cal_id);
+        item.on("inserted.bs.popover", () => {
+            const picker: any = $("#" + this.scheduleCalId);
             picker.datepicker({
                 startDate: new Date(),
                 todayBtn: true,
                 todayHighlight: true,
-                weekStart: 1
+                weekStart: 1,
             });
-            picker.datepicker().on('changeDate', this.onChangeDate.bind(this));
-            $('html').click(this.onBlur.bind(this));
-            picker.click(function(event){
+            picker.datepicker().on("changeDate", this.onChangeDate);
+            $("html").click(this.onBlur);
+            picker.click((event) => {
                 event.stopPropagation();
             });
         });
-        item.on('hidden.bs.popover', () => {
-            $('html').unbind('click');
+        item.on("hidden.bs.popover", () => {
+            $("html").unbind("click");
         });
     }
 
     public render() {
-        this.schedule_btn_id = "schedule-btn-id-" + this.props.id;
-        this.schedule_cal_id = "schedule-cal-id-" + this.props.id;
-        var date = Moment(this.props.date || new Date()).format(FORMAT);
+        this.scheduleBtnId = "schedule-btn-id-" + this.props.id;
+        this.scheduleCalId = "schedule-cal-id-" + this.props.id;
+        const date = Moment(this.props.date || new Date()).format(FORMAT);
 
-        return <button className="btn btn-default"
-                id={this.schedule_btn_id}
+        return (
+            <button
+                className="btn btn-default"
+                id={this.scheduleBtnId}
                 type="button"
-                onClick={this.onClick.bind(this)}
+                onClick={this.onClick}
                 data-container="false"
                 data-toggle="popover"
                 data-placement="auto top"
                 data-trigger="manual"
-                data-content={'<div id="' + this.schedule_cal_id + '" data-date="' + date + '" ></div>'}
-                data-html={true}>
-            <span className="glyphicon glyphicon-calendar" aria-hidden="true"></span>
-        </button>
-    }
-    public onClick(ev: any) {
-        ev.stopPropagation();
-        var item: any = $("#" + this.schedule_btn_id);
-        item.popover('show');
+                data-content={"<div id=\"" + this.scheduleCalId + "\" data-date=\"" + date + "\" ></div>"}
+                data-html={true}
+            >
+                <span className="glyphicon glyphicon-calendar" aria-hidden="true" />
+            </button>
+        );
     }
 
-    public onBlur(ev: any) {
+    public onClick = (ev: any) => {
         ev.stopPropagation();
-        var item: any = $("#" + this.schedule_btn_id);
-        item.popover('hide');
+        const item: any = $("#" + this.scheduleBtnId);
+        item.popover("show");
     }
 
-    public onChangeDate(ev: any) {
-        var newMoment = Moment(ev.date);
-        var oldMoment = Moment(this.props.date || new Date());
+    public onBlur = (ev: any) => {
+        ev.stopPropagation();
+        const item: any = $("#" + this.scheduleBtnId);
+        item.popover("hide");
+    }
+
+    public onChangeDate = (ev: any) => {
+        const newMoment = Moment(ev.date);
+        const oldMoment = Moment(this.props.date || new Date());
         newMoment.hour(oldMoment.hour());
         newMoment.second(oldMoment.second());
 
-        var item: any = $("#" + this.schedule_btn_id);
-        item.popover('hide');
+        const item: any = $("#" + this.scheduleBtnId);
+        item.popover("hide");
 
-        if (this.props.onChange)
+        if (this.props.onChange) {
             this.props.onChange(newMoment.toDate());
+        }
     }
 }

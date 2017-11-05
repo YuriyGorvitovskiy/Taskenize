@@ -1,25 +1,27 @@
-import './bootstrap';
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import * as Nav from './widget/navigation-bar';
-import {ExecutionPage} from './widget/execution-page';
-import * as CompletedPage from './widget/completed-page';
+import "./bootstrap";
 
-interface IndexPageState {
-    pageId: Nav.PageId
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+
+import * as CompletedPage from "./widget/completed-page";
+import {ExecutionPage} from "./widget/execution-page";
+import * as Nav from "./widget/navigation-bar";
+
+interface IState {
+    pageId: Nav.PageId;
 }
 
-class IndexPage extends React.Component<{},IndexPageState> {
+class IndexPage extends React.Component<{}, IState> {
     public constructor() {
         super();
-        this.state={
-            pageId: Nav.PageId.EXECUTION
+        this.state = {
+            pageId: Nav.PageId.EXECUTION,
         };
     }
 
     public render() {
-        var pageComponent: any = null;
-        switch(this.state.pageId) {
+        let pageComponent: any = null;
+        switch (this.state.pageId) {
             case Nav.PageId.EXECUTION:
                 pageComponent = (<ExecutionPage />);
                 break;
@@ -29,16 +31,18 @@ class IndexPage extends React.Component<{},IndexPageState> {
         }
         return (
             <div>
-                <Nav.NavigationBar active={this.state.pageId} onPage={this.onPageSelected.bind(this)}/>
-                <div style={{marginTop:"70px"}}>
+                <Nav.NavigationBar active={this.state.pageId} onPage={this.onPageSelected}/>
+                <div style={{marginTop: "70px"}}>
                     {pageComponent}
                 </div>
             </div>
         );
     }
 
-    public onPageSelected(pageId : Nav.PageId) {
-        this.setState({pageId});
+    public onPageSelected = (pageId: Nav.PageId) => {
+        this.setState({
+            pageId,
+        });
         this.forceUpdate();
     }
 }
@@ -47,5 +51,5 @@ ReactDOM.render(
     <div>
         <IndexPage />
     </div>,
-    document.getElementById("react-root")
+    document.getElementById("react-root"),
 );

@@ -19,6 +19,7 @@ pipeline {
             steps {
                 sh 'cd ./WebClient && npm update'
                 sh 'cd ./WebClient && ./node_modules/.bin/tsc'
+                sh 'cd ./WebServer && ./node_modules/.bin/tslint ts/**/*.{ts,tsx} ts/*.{ts,tsx}'
                 sh 'cd ./WebClient && ./node_modules/.bin/snyk test'
                 sh 'cd ./WebClient && ./node_modules/.bin/nsp check'
             }

@@ -1,14 +1,16 @@
-import * as $ from 'jquery';
+import * as $ from "jquery";
 
 declare var window: any;
-if (window != null)
+if (window != null) {
     window.$ = window.jQuery = $;
+}
 
-import '../node_modules/bootstrap/dist/js/npm';
-import '../node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js';
+import "../node_modules/bootstrap/dist/js/npm";
 
-$(document).ajaxError(function (e, xhr, settings) {
-    if (xhr.status == 401) {
-        window.open('/auth', '_self', '', false);
+import "../node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js";
+
+$(document).ajaxError((e, xhr, settings) => {
+    if (xhr.status === 401) {
+        window.open("/auth", "_self", "", false);
     }
 });

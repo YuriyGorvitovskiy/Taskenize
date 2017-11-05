@@ -1,52 +1,53 @@
-import * as $ from 'jquery';
-import * as Moment from 'moment';
-import * as React from 'react';
-import * as Model from '../model/task';
-import * as Calendar from './calendar-button';
-import * as HtmlEditor from './html-editor';
-import * as Timer from './timer';
-import * as TextInput from './text-editor';
-import * as TextUtil from '../util/text';
+import * as $ from "jquery";
+import * as Moment from "moment";
+import * as React from "react";
 
-export interface Props extends React.Props<Component> {
-    task: Model.Task;
-};
+import * as Model from "../model/task";
+import * as TextUtil from "../util/text";
 
-interface State {
+import * as Calendar from "./calendar-button";
+import * as HtmlEditor from "./html-editor";
+import * as TextInput from "./text-editor";
+import * as Timer from "./timer";
+
+export interface IProps extends React.Props<Component> {
+    task: Model.ITask;
 }
 
-export class Component extends React.Component<Props, State> {
+export class Component extends React.Component<IProps, {}> {
     public constructor() {
         super();
-        this.state = {
-        }
     }
 
     public render() {
-        var durations = [];
-        $.each(this.props.task.duration, (index: number, period: Model.Period) => {
-            var active = (index == 0 && this.props.task.state == Model.State.RUNNING);
-            var from = active ? Moment(period.begin) : null;
-            var plus = Moment.duration(Moment(period.end).diff(Moment(period.begin)));
+        const durations = [];
+        $.each(this.props.task.duration, (index: number, period: Model.IPeriod) => {
+            const active = (index === 0 && this.props.task.state === Model.State.RUNNING);
+            const from = active ? Moment(period.begin) : null;
+            const plus = Moment.duration(Moment(period.end).diff(Moment(period.begin)));
 
-            var fromPart = (
+            const fromPart = (
                 <div className="duration-from">
-                    <input  type="datetime-local"
-                            value={TextUtil.formatInputDateTimeLocal(period.begin, true)}
-                            onChange={this.onDurationBeginChange.bind(this, index)}
+                    <input
+                        type="datetime-local"
+                        value={TextUtil.formatInputDateTimeLocal(period.begin, true)}
+                        // tslint:disable-next-line:jsx-no-lambda
+                        onChange={(ev) => this.onDurationBeginChange(index, ev)}
                     />
                 </div>
             );
-            var timePart = (<Timer.Component active={active} from={from} plus={plus} />);
-            var toPart;
-            var actionPart;
+            const timePart = (<Timer.Component active={active} from={from} plus={plus} />);
+            let toPart;
+            let actionPart;
             if (period.end == null) {
                 toPart = (
                     <div className="duration-to">
-                        <input  type="text"
-                                className="text-center"
-                                disabled={true}
-                                value="in progress"/>
+                        <input
+                            type="text"
+                            className="text-center"
+                            disabled={true}
+                            value="in progress"
+                        />
                     </div>
                 );
                 actionPart = (
@@ -55,27 +56,34 @@ export class Component extends React.Component<Props, State> {
             } else {
                 toPart = (
                     <div className="duration-to">
-                        <input  type="datetime-local"
-                             value={TextUtil.formatInputDateTimeLocal(period.end, true)}
-                             onChange={this.onDurationEndChange.bind(this, index)}
+                        <input
+                            type="datetime-local"
+                            value={TextUtil.formatInputDateTimeLocal(period.end, true)}
+                            // tslint:disable-next-line:jsx-no-lambda
+                            onChange={(ev) => this.onDurationEndChange(index, ev)}
                         />
                     </div>
                 );
                 actionPart = (
-                    <button type="button" className="btn btn-default" onClick={this.onDeletePeriod.bind(this,index)}>
-                        <span className="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                    <button
+                        type="button"
+                        className="btn btn-default"
+                        // tslint:disable-next-line:jsx-no-lambda
+                        onClick={() => this.onDeletePeriod(index)}
+                    >
+                        <span className="glyphicon glyphicon-trash" aria-hidden="true" />
                     </button>
                 );
             }
 
-            durations.push(
+            durations.push((
                 <div className="duration-block" key={index} >
                     {actionPart}
                     {timePart}
                     {toPart}
                     {fromPart}
                 </div>
-            );
+            ));
         });
         return (
             <div className="form-group duration">
@@ -84,32 +92,36 @@ export class Component extends React.Component<Props, State> {
         );
     }
 
-    public onDurationBeginChange(index: number, ev: React.SyntheticEvent<any>) {
-        var text = ev.target["value"];
-        if (TextUtil.formatDate(this.props.task.duration[index].begin, true) == text)
+    public onDurationBeginChange(index: number, ev: React.ChangeEvent<any>) {
+        const text = ev.target.value;
+        if (TextUtil.formatDate(this.props.task.duration[index].begin, true) === text) {
             return;
+        }
 
-        var time = TextUtil.parseDate(text)
-        if (time == null)
+        const time = TextUtil.parseDate(text);
+        if (time == null) {
             return;
+        }
 
         this.props.task.duration[index].begin = time;
         this.forceUpdate();
-        Model.updateDuration(this.props.task, index, 'begin');
+        Model.updateDuration(this.props.task, index, "begin");
     }
 
-    public onDurationEndChange(index: number, ev: React.SyntheticEvent<any>) {
-        var text = ev.target["value"];
-        if (TextUtil.formatDate(this.props.task.duration[index].end, true) == text)
+    public onDurationEndChange(index: number, ev: React.ChangeEvent<any>) {
+        const text = ev.target.value;
+        if (TextUtil.formatDate(this.props.task.duration[index].end, true) === text) {
             return;
+        }
 
-        var time = TextUtil.parseDate(text)
-        if (time == null)
+        const time = TextUtil.parseDate(text);
+        if (time == null) {
             return;
+        }
 
         this.props.task.duration[index].end = time;
         this.forceUpdate();
-        Model.updateDuration(this.props.task, index, 'end');
+        Model.updateDuration(this.props.task, index, "end");
     }
 
     public onDeletePeriod(index: number) {
@@ -118,4 +130,4 @@ export class Component extends React.Component<Props, State> {
         Model.deleteDuration(this.props.task, index);
     }
 
-};
+}

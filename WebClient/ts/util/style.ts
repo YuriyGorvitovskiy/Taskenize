@@ -1,18 +1,18 @@
 export function findBootstrapEnvironment() {
-   var envs = ['xs', 'sm', 'md', 'lg'];
+    const envs = ["xs", "sm", "md", "lg"];
 
-   var $el = $('<div>');
-   $el.appendTo($('body'));
+    const $el = $("<div>");
+    $el.appendTo($("body"));
 
-   for (var i = envs.length - 1; i >= 0; i--) {
-       var env = envs[i];
+    for (let i = envs.length - 1; i >= 0; i--) {
+       const env = envs[i];
 
-       $el.addClass('hidden-'+env);
-       if ($el.is(':hidden')) {
+       $el.addClass("hidden-" + env);
+       if ($el.is(":hidden")) {
            $el.remove();
            return env;
        }
-   }
-   $el.remove();
-   return null;
+    }
+    $el.remove();
+    return null;
 }
