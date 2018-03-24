@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-      "clean": "./dev/clean.sh",
-      "build": "./dev/build.sh",
-      "test": "./dev/test.sh"
+    "clean": "./dev/clean.sh",
+    "build": "./dev/build.sh",
+    "test": "./dev/test.sh"
   },
   "author": "Yuriy Gorvitovskiy",
   "license": "ISC",
@@ -14,7 +14,7 @@
     "bootstrap": "3.3.7",
     "bootstrap-datepicker": "1.7.1",
     "jquery": "3.2.1",
-    "moment": "2.19.1",
+    "moment": "2.21.0",
     "react": "16.0.0",
     "react-dom": "16.0.0",
     "react-wysiwyg": "2.2.1",
