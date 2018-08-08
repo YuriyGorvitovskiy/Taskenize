@@ -16,7 +16,7 @@
     "jquery": "3.2.1",
     "moment": "2.21.0",
     "react": "16.0.0",
-    "react-dom": "16.0.0",
+    "react-dom": "16.0.1",
     "react-wysiwyg": "2.2.1",
     "sanitize-html": "1.15.0"
   },
