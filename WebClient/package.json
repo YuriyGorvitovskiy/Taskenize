@@ -14,7 +14,7 @@
     "bootstrap": "3.3.7",
     "bootstrap-datepicker": "1.7.1",
     "jquery": "3.2.1",
-    "moment": "2.21.0",
+    "moment": "2.29.4",
     "react": "16.0.0",
     "react-dom": "16.0.0",
     "react-wysiwyg": "2.2.1",
